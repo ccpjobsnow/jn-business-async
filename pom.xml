@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ccp.jn</groupId>
-			<artifactId>jn-commons-business</artifactId>
+			<artifactId>jn-business-commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

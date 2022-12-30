@@ -24,11 +24,6 @@
 			<artifactId>jn-business-commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.ccp</groupId>
-			<artifactId>ccp-mensageria-consumer-gcp-pubsub</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 	</dependencies>
 

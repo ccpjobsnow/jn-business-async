@@ -1,9 +1,9 @@
-package com.ccp.jn.sync.business;
+package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;
 
-public class SaveCandidateData implements CcpProcess{
+public class SendUserToken implements CcpProcess{
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {

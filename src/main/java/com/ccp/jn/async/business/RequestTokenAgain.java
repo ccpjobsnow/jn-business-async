@@ -1,9 +1,9 @@
-package com.ccp.jn.sync.business;
+package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;
 
-public class NotifyContactUs implements CcpProcess{
+public class RequestTokenAgain implements CcpProcess{
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {

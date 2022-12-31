@@ -1,12 +1,12 @@
-package com.ccp.jn.sync;
+package com.ccp.jn.async;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.jn.sync.business.NotifyContactUs;
-import com.ccp.jn.sync.business.RequestTokenAgain;
-import com.ccp.jn.sync.business.RequestUnlockToken;
-import com.ccp.jn.sync.business.SaveCandidateData;
-import com.ccp.jn.sync.business.SaveResumesQuery;
-import com.ccp.jn.sync.business.SendUserToken;
+import com.ccp.jn.async.business.NotifyContactUs;
+import com.ccp.jn.async.business.RequestTokenAgain;
+import com.ccp.jn.async.business.RequestUnlockToken;
+import com.ccp.jn.async.business.SaveCandidateData;
+import com.ccp.jn.async.business.SaveResumesQuery;
+import com.ccp.jn.async.business.SendUserToken;
 import com.jn.commons.JnBusinessTopic;
 
 public interface AsyncServices {

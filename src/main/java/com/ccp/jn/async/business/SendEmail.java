@@ -19,33 +19,33 @@ public class SendEmail implements CcpProcess{
 	@CcpDependencyInject
 	private CcpEmailSender emailSender;
 
-	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendEmail.name());
+	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendEmail.name());
 	
 	
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
 		List<String> emails = values.getAsStringList("emails");
 		
-		List<String> apenasEmailsPermitidos = emails.stream().filter(email -> this.canMeSendEmailToThisAddress(values.put("email", email)) == false).collect(Collectors.toList());
+		CcpMapDecorator emailParameters = JnBusinessEntity._static.get(this.idToSearch, CcpConstants.DO_NOTHING);
+
+		List<String> apenasEmailsPermitidos = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
 		
 		if(apenasEmailsPermitidos.isEmpty()) {
 			return values;
 		}
 		
-		CcpMapDecorator emailParameters = JnBusinessEntity._static.get(this.idToSearch, CcpConstants.DO_NOTHING);
-		
-		emailParameters = emailParameters.put("emails", apenasEmailsPermitidos);
+		CcpMapDecorator put = emailParameters.put("emails", apenasEmailsPermitidos);
 		
 		try {
-			return this.tryToSendEmail(values, emailParameters);
+			return this.tryToSendEmail(values, put);
 
 		} catch (ThereWasClientError e) {
 		
-			return this.saveClientError(values, emailParameters);
+			return this.saveClientError(values, put);
 		
 		}catch(EmailApiIsUnavailable e) {
 			
-			return this.tryToSendEmailAgain(values, emailParameters);
+			return this.retryToSendEmail(values, put);
 	
 		}	
 		
@@ -75,7 +75,7 @@ public class SendEmail implements CcpProcess{
 	}
 
 
-	private CcpMapDecorator tryToSendEmailAgain(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
+	private CcpMapDecorator retryToSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
 		
 		Utils.sleep(5000);
 		
@@ -92,15 +92,17 @@ public class SendEmail implements CcpProcess{
 	}
 
 	
-	private boolean canMeSendEmailToThisAddress(CcpMapDecorator values) {
+	private boolean canSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail, String email) {
 		
-		boolean jaFoiEnviado = JnBusinessEntity.email_message_sent.exists(values);
+		CcpMapDecorator putAll = values.putAll(parametersToSendEmail).put("email", email);
+
+		boolean jaFoiEnviado = JnBusinessEntity.email_message_sent.exists(putAll);
 		
 		if(jaFoiEnviado) {
 			return false;
 		}
 		
-		boolean reportouComoSpam = JnBusinessEntity.email_reported_as_spam.exists(values);
+		boolean reportouComoSpam = JnBusinessEntity.email_reported_as_spam.exists(putAll);
 		
 		if(reportouComoSpam) {
 			return false;

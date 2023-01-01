@@ -65,13 +65,8 @@ public class SendInstantMessage implements CcpProcess{
 		
 		CcpMapDecorator dadosNecessariosParaEnviarMensagemPeloTelegram = values.getSubMap("botToken", "chatId", "message", "subjectType", "subject");
 		
-		Long replyTo = values.containsAllKeys("replyTo") ? values.getAsLongNumber("replyTo") : 0L;
-		String botToken = dadosNecessariosParaEnviarMensagemPeloTelegram.getAsString("botToken");
-		String message = dadosNecessariosParaEnviarMensagemPeloTelegram.getAsString("message");
-		Long chatId = dadosNecessariosParaEnviarMensagemPeloTelegram.getAsLongNumber("chatId");
-		
 		try {
-			this.instantMessenger.sendMessage(botToken, message, chatId, replyTo);
+			this.instantMessenger.sendMessage(dadosNecessariosParaEnviarMensagemPeloTelegram);
 			JnBusinessEntity.instant_messenger_try_to_send_message.remove(values);
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
 			JnBusinessEntity.instant_messenger_message_sent.save(values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));

@@ -1,6 +1,5 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.jn.async.AsyncServices;
@@ -10,8 +9,6 @@ import com.jn.commons.JnBusinessTopic;
 
 public class NotifyContactUs implements CcpProcess{
 
-	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.notifyContactUs.name());
-	
 	@CcpDependencyInject
 	private SendInstantMessage sendInstantMessage = AsyncServices.catalog.getAsObject(JnBusinessTopic.sendInstantMessage.name());
 
@@ -26,21 +23,14 @@ public class NotifyContactUs implements CcpProcess{
 			return values;
 		}
 
-		CcpMapDecorator contactUsConfigurations = JnBusinessEntity._static.get(this.idToSearch, CcpConstants.DO_NOTHING);
-		
-		CcpMapDecorator contactUsParameters = contactUsConfigurations.getInternalMap("value");
-		
-		CcpMapDecorator dadosDoUsuario = values.getSubMap("subject", "subjectType", "message", "email");
 
-		CcpMapDecorator dadosDoSuporte = contactUsParameters.getSubMap("emailTo", "chatId", "botToken");
-		
-		CcpMapDecorator todosOsDadosNecessarios = dadosDoUsuario.putAll(dadosDoSuporte);
-	
-		this.sendInstantMessage.execute(todosOsDadosNecessarios);
+		CcpMapDecorator dadosDoUsuario = values.getSubMap("subject", "subjectType", "message", "emailFrom");
 
-		this.sendEmail.execute(todosOsDadosNecessarios);
+		this.sendInstantMessage.execute(dadosDoUsuario);
+
+		this.sendEmail.execute(dadosDoUsuario);
 		
-		JnBusinessEntity.contact_us.save(todosOsDadosNecessarios);
+		JnBusinessEntity.contact_us.save(dadosDoUsuario);
 		
 		return values;
 	}

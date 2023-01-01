@@ -2,6 +2,7 @@ package com.ccp.jn.async;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.jn.async.business.NotifyContactUs;
+import com.ccp.jn.async.business.NotifyError;
 import com.ccp.jn.async.business.RequestTokenAgain;
 import com.ccp.jn.async.business.RequestUnlockToken;
 import com.ccp.jn.async.business.SaveCandidateData;
@@ -22,6 +23,7 @@ public interface AsyncServices {
 			.put(JnBusinessTopic.saveResumesQuery.name(), new SaveResumesQuery())
 			.put(JnBusinessTopic.notifyContactUs.name(), new NotifyContactUs())
 			.put(JnBusinessTopic.sendUserToken.name(), new SendUserToken())
+			.put(JnBusinessTopic.notifyError.name(), new NotifyError())
 			.put(JnBusinessTopic.sendEmail.name(), new SendEmail())
 			;
 }

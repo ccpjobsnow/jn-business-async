@@ -15,22 +15,26 @@ public class NotifyContactUs implements CcpProcess{
 	@CcpDependencyInject
 	private SendEmail sendEmail = AsyncServices.catalog.getAsObject(JnBusinessTopic.sendEmail.name());
 
+	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendEmail.name());
+
+	
 	public CcpMapDecorator execute(CcpMapDecorator values) {
-		
+	
 		boolean jaFoiCadastado = JnBusinessEntity.contact_us.exists(values);
 		
 		if(jaFoiCadastado) {
 			return values;
 		}
 
+		CcpMapDecorator parameters = JnBusinessEntity._static.get(this.idToSearch);
 
-		CcpMapDecorator dadosDoUsuario = values.getSubMap("subject", "subjectType", "message", "emailFrom");
-
-		this.sendInstantMessage.execute(dadosDoUsuario);
-
-		this.sendEmail.execute(dadosDoUsuario);
+		parameters = values.putAll(parameters);
 		
-		JnBusinessEntity.contact_us.save(dadosDoUsuario);
+		this.sendInstantMessage.execute(parameters);
+
+		this.sendEmail.execute(parameters);
+		
+		JnBusinessEntity.contact_us.save(parameters);
 		
 		return values;
 	}

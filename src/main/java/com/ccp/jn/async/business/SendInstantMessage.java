@@ -1,6 +1,5 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
@@ -23,7 +22,7 @@ public class SendInstantMessage implements CcpProcess{
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		CcpMapDecorator instantMessageParameters = JnBusinessEntity._static.get(this.idToSearch, CcpConstants.DO_NOTHING);
+		CcpMapDecorator instantMessageParameters = JnBusinessEntity._static.get(this.idToSearch);
 
 		CcpMapDecorator putAll = values.putAll(instantMessageParameters);
 

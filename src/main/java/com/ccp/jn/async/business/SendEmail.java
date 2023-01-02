@@ -3,7 +3,6 @@ package com.ccp.jn.async.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.email.CcpEmailSender;
@@ -26,7 +25,7 @@ public class SendEmail implements CcpProcess{
 		
 		List<String> emails = values.getAsStringList("emails");
 		
-		CcpMapDecorator emailParameters = JnBusinessEntity._static.get(this.idToSearch, CcpConstants.DO_NOTHING);
+		CcpMapDecorator emailParameters = JnBusinessEntity._static.get(this.idToSearch);
 
 		List<String> apenasEmailsPermitidos = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
 		

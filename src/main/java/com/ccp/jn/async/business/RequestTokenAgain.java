@@ -34,7 +34,7 @@ public class RequestTokenAgain implements CcpProcess{
 		
 		parameters = parameters.put("message", emailText);
 		
-		JnBusinessEntity.login_request.resetData(parameters);
+		JnBusinessEntity.login_token.resetData(parameters);
 
 		this.notifyContactUs.execute(parameters);
 		

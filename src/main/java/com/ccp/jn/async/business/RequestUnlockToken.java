@@ -1,16 +1,14 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.jn.async.AsyncServices;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
 
 public class RequestUnlockToken implements CcpProcess{
 
-	@CcpDependencyInject
-	private NotifyContactUs notifyContactUs = AsyncServices.catalog.getAsObject(JnBusinessTopic.requestUnlockToken.name());
+	private final NotifyContactUs notifyContactUs = CcpDependencyInjection.getInjected(NotifyContactUs.class);
 	
 
 	public CcpMapDecorator execute(CcpMapDecorator values) {

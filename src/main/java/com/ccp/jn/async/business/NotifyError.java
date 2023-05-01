@@ -1,15 +1,12 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.jn.async.AsyncServices;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessTopic;
 
 public class NotifyError implements CcpProcess{
 
-	@CcpDependencyInject
-	private NotifyContactUs notifyContactUs = AsyncServices.catalog.getAsObject(JnBusinessTopic.notifyContactUs.toString());
+	private final NotifyContactUs notifyContactUs = CcpDependencyInjection.getInjected(NotifyContactUs.class);
 	
 	
 	public void sendErrorToSupport(Throwable e) {

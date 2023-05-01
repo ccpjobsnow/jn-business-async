@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkOperation;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
-import com.ccp.jn.async.AsyncServices;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
@@ -23,8 +23,7 @@ public class SaveResumesQuery implements CcpProcess{
 			.put("2", JnBusinessEntity.keywords_hr)
 			;
 
-	@CcpDependencyInject
-	private SendInstantMessage sendInstantMessage = AsyncServices.catalog.getAsObject(JnBusinessTopic.sendInstantMessage.name());
+	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
 	
 	@CcpDependencyInject
 	private CcpDbBulkExecutor bulkExecutor;

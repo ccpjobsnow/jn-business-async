@@ -4,16 +4,14 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.jn.async.AsyncServices;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
 
 public class RequestTokenAgain implements CcpProcess{
 
-	@CcpDependencyInject
-	private NotifyContactUs notifyContactUs = AsyncServices.catalog.getAsObject(JnBusinessTopic.requestTokenAgain.name());
+	private final NotifyContactUs notifyContactUs = CcpDependencyInjection.getInjected(NotifyContactUs.class);
 	
 	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.requestTokenAgain.name());
 

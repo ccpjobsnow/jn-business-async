@@ -1,16 +1,14 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.jn.async.AsyncServices;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
 
 public class SendUserToken implements CcpProcess{
 	
-	@CcpDependencyInject
-	private SendEmail sendEmail = AsyncServices.catalog.getAsObject(JnBusinessTopic.sendEmail.name());
+	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {

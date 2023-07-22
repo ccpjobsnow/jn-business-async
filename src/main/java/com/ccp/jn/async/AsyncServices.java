@@ -1,6 +1,7 @@
 package com.ccp.jn.async;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.business.NotifyContactUs;
 import com.ccp.jn.async.business.NotifyError;
 import com.ccp.jn.async.business.RequestTokenAgain;
@@ -15,15 +16,14 @@ import com.jn.commons.JnBusinessTopic;
 public interface AsyncServices {
 	
 	CcpMapDecorator catalog = new CcpMapDecorator()
-			
-			.put(JnBusinessTopic.requestUnlockToken.name(), new RequestUnlockToken())
-			.put(JnBusinessTopic.sendInstantMessage.name(), new SendInstantMessage())
-			.put(JnBusinessTopic.saveCandidateData.name(), new SaveCandidateData())
-			.put(JnBusinessTopic.requestTokenAgain.name(), new RequestTokenAgain())
-			.put(JnBusinessTopic.saveResumesQuery.name(), new SaveResumesQuery())
-			.put(JnBusinessTopic.notifyContactUs.name(), new NotifyContactUs())
-			.put(JnBusinessTopic.sendUserToken.name(), new SendUserToken())
-			.put(JnBusinessTopic.notifyError.name(), new NotifyError())
-			.put(JnBusinessTopic.sendEmail.name(), new SendEmail())
+			.put(JnBusinessTopic.requestUnlockToken.name(), CcpDependencyInjection.getInjected(RequestUnlockToken.class))
+			.put(JnBusinessTopic.sendInstantMessage.name(), CcpDependencyInjection.getInjected(SendInstantMessage.class))
+			.put(JnBusinessTopic.saveCandidateData.name(), CcpDependencyInjection.getInjected(SaveCandidateData.class))
+			.put(JnBusinessTopic.requestTokenAgain.name(), CcpDependencyInjection.getInjected(RequestTokenAgain.class))
+			.put(JnBusinessTopic.saveResumesQuery.name(), CcpDependencyInjection.getInjected(SaveResumesQuery.class))
+			.put(JnBusinessTopic.notifyContactUs.name(), CcpDependencyInjection.getInjected(NotifyContactUs.class))
+			.put(JnBusinessTopic.sendUserToken.name(), CcpDependencyInjection.getInjected(SendUserToken.class))
+			.put(JnBusinessTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
+			.put(JnBusinessTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
 }

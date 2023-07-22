@@ -9,7 +9,6 @@ import com.jn.commons.JnBusinessTopic;
 public class RequestUnlockToken implements CcpProcess{
 
 	private final NotifyContactUs notifyContactUs = CcpDependencyInjection.getInjected(NotifyContactUs.class);
-	
 
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		

@@ -14,7 +14,7 @@ public class RequestUnlockToken implements CcpProcess{
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.requestUnlockToken.name());
 
-		CcpMapDecorator parameters = JnBusinessEntity._static.get(idToSearch);
+		CcpMapDecorator parameters = JnBusinessEntity.template.get(idToSearch);
 		
 		parameters = values.putAll(parameters);
 

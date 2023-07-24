@@ -22,7 +22,7 @@ public class SendInstantMessage implements CcpProcess{
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		CcpMapDecorator instantMessageParameters = JnBusinessEntity._static.get(this.idToSearch);
+		CcpMapDecorator instantMessageParameters = JnBusinessEntity.template.get(this.idToSearch);
 
 		CcpMapDecorator putAll = values.putAll(instantMessageParameters);
 

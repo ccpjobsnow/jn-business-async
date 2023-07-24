@@ -45,7 +45,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.saveResumesQuery.name());
-		CcpMapDecorator parameters = JnBusinessEntity._static.get(idToSearch);
+		CcpMapDecorator parameters = JnBusinessEntity.template.get(idToSearch);
 		values = values.putAll(parameters);
 		this.sendInstantMessage.execute(values);
 		

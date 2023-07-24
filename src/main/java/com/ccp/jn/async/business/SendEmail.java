@@ -25,7 +25,7 @@ public class SendEmail implements CcpProcess{
 		
 		List<String> emails = values.getAsStringList("emails");
 		
-		CcpMapDecorator emailParameters = JnBusinessEntity._static.get(this.idToSearch);
+		CcpMapDecorator emailParameters = JnBusinessEntity.template.get(this.idToSearch);
 
 		List<String> apenasEmailsPermitidos = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
 		

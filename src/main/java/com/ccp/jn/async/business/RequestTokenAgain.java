@@ -24,7 +24,7 @@ public class RequestTokenAgain implements CcpProcess{
 		
 		values = values.put("token", token);
 
-		CcpMapDecorator parameters = JnBusinessEntity._static.get(this.idToSearch);
+		CcpMapDecorator parameters = JnBusinessEntity.template.get(this.idToSearch);
 	
 		parameters = values.putAll(parameters);
 		

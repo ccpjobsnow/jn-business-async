@@ -11,11 +11,12 @@ import com.ccp.jn.async.business.SaveResumesQuery;
 import com.ccp.jn.async.business.SendEmail;
 import com.ccp.jn.async.business.SendInstantMessage;
 import com.ccp.jn.async.business.SendUserToken;
+import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessTopic;
 
-public interface AsyncServices {
+public class AsyncServices {
 	
-	CcpMapDecorator catalog = new CcpMapDecorator()
+	private static CcpMapDecorator catalog = new CcpMapDecorator()
 			.put(JnBusinessTopic.requestUnlockToken.name(), CcpDependencyInjection.getInjected(RequestUnlockToken.class))
 			.put(JnBusinessTopic.sendInstantMessage.name(), CcpDependencyInjection.getInjected(SendInstantMessage.class))
 			.put(JnBusinessTopic.saveCandidateData.name(), CcpDependencyInjection.getInjected(SaveCandidateData.class))
@@ -26,4 +27,12 @@ public interface AsyncServices {
 			.put(JnBusinessTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
 			.put(JnBusinessTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
+	
+	public static CcpProcess getProcess(String processName) {
+		CcpProcess asObject = catalog.getAsObject(processName);
+		if(asObject == null) {
+			throw new RuntimeException("The process '" + processName + "' was not found");
+		}
+		return asObject;
+	}
 }

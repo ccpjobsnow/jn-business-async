@@ -23,7 +23,7 @@ public class NotifyContactUs implements CcpProcess{
 			return values;
 		}
 
-		CcpMapDecorator parameters = JnBusinessEntity.template.get(this.idToSearch);
+		CcpMapDecorator parameters = JnBusinessEntity.message.get(this.idToSearch);
 
 		parameters = values.putAll(parameters);
 		

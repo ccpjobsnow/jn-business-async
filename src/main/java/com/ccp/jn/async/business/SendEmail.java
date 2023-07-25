@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
@@ -18,22 +20,27 @@ public class SendEmail implements CcpProcess{
 	@CcpDependencyInject
 	private CcpEmailSender emailSender;
 
-	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendEmail.name());
-	
+	@CcpDependencyInject
+	private CcpDbCrud crud;
+
+	private MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
+
 	
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		List<String> emails = values.getAsStringList("emails");
+		List<String> emails = values.getAsStringList("emails", "email");
 		
-		CcpMapDecorator emailParameters = JnBusinessEntity.template.get(this.idToSearch);
-
-		List<String> apenasEmailsPermitidos = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
+		String language = values.getAsString("language");
 		
-		if(apenasEmailsPermitidos.isEmpty()) {
+		CcpMapDecorator emailParameters = this.messagesTranslation.getMergedParameters(JnBusinessTopic.sendEmail, values, language, "subject", "sender", "subjectType");
+		
+		List<String> justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
+		
+		if(justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent.isEmpty()) {
 			return values;
 		}
 		
-		CcpMapDecorator put = emailParameters.put("emails", apenasEmailsPermitidos);
+		CcpMapDecorator put = emailParameters.put("emails", justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent);
 		
 		try {
 			return this.tryToSendEmail(values, put);
@@ -95,18 +102,18 @@ public class SendEmail implements CcpProcess{
 		
 		CcpMapDecorator putAll = values.putAll(parametersToSendEmail).put("email", email);
 
-		boolean jaFoiEnviado = JnBusinessEntity.email_message_sent.exists(putAll);
-		
-		if(jaFoiEnviado) {
+		try {
+			this.crud
+			.useThisId(putAll)
+			.toBeginProcedureAnd()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.email_reported_as_spam).returnStatus(409).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.email_message_sent).returnStatus(409)
+			.andFinally()
+			.endThisProcedure()
+			;
+			return true;
+		} catch (Exception e) {
 			return false;
 		}
-		
-		boolean reportouComoSpam = JnBusinessEntity.email_reported_as_spam.exists(putAll);
-		
-		if(reportouComoSpam) {
-			return false;
-		}
-		
-		return true;
 	}
 }

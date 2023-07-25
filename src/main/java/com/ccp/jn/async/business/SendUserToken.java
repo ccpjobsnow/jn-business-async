@@ -9,22 +9,12 @@ import com.jn.commons.JnBusinessTopic;
 public class SendUserToken implements CcpProcess{
 	
 	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
+	private final EmailToken emailToken = CcpDependencyInjection.getInjected(EmailToken.class);
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
-	
-		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendUserToken.name());
-
-		CcpMapDecorator parameters = JnBusinessEntity.template.get(idToSearch);
 		
-		parameters = values.putAll(parameters);
-
-		String emailText = parameters.getFilledTemplate("emailTemplate");
-		
-		parameters = parameters.put("message", emailText);
-		
-		this.sendEmail.execute(parameters);
-		
+		this.emailToken.execute(values, JnBusinessTopic.sendUserToken, JnBusinessEntity.login_token, this.sendEmail);
 		return values;
 	}
 

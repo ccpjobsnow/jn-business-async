@@ -3,6 +3,7 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger.InstantMessageApiIsUnavailable;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger.ThisBotWasBlockedByThisUser;
@@ -16,6 +17,8 @@ public class SendInstantMessage implements CcpProcess{
 
 	@CcpDependencyInject
 	private CcpInstantMessenger instantMessenger;
+	
+	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
 	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendInstantMessage.name());
 
@@ -56,7 +59,7 @@ public class SendInstantMessage implements CcpProcess{
 		this.instantMessenger.sendMessage(putAll);
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
 		JnBusinessEntity.instant_messenger_message_sent.save(putAll.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
-		JnBusinessEntity.instant_messenger_try_to_send_message.removeTries(putAll, "tries", 3);
+		this.removeTries.execute(putAll, "tries", 3, JnBusinessEntity.instant_messenger_try_to_send_message);
 		return putAll;
 	}
 

@@ -4,6 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.business.NotifyContactUs;
 import com.ccp.jn.async.business.NotifyError;
+import com.ccp.jn.async.business.RemoveTries;
 import com.ccp.jn.async.business.RequestTokenAgain;
 import com.ccp.jn.async.business.RequestUnlockToken;
 import com.ccp.jn.async.business.SaveCandidateData;
@@ -25,6 +26,7 @@ public class AsyncServices {
 			.put(JnBusinessTopic.notifyContactUs.name(), CcpDependencyInjection.getInjected(NotifyContactUs.class))
 			.put(JnBusinessTopic.sendUserToken.name(), CcpDependencyInjection.getInjected(SendUserToken.class))
 			.put(JnBusinessTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
+			.put(JnBusinessTopic.removeTries.name(), CcpDependencyInjection.getInjected(RemoveTries.class))
 			.put(JnBusinessTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
 	

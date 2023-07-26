@@ -90,7 +90,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpBulkOperation.INSERT, keywordsUnknown);
+		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpBulkOperation.CREATE, keywordsUnknown);
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

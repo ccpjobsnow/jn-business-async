@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.bulk.CcpBulkOperation;
+import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
@@ -23,6 +25,11 @@ public class SendEmail implements CcpProcess{
 
 	@CcpDependencyInject
 	private CcpDbCrud crud;
+	
+	@CcpDependencyInject
+	private CcpDbBulkExecutor dbBulkExecutor;
+
+	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
 	private MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
 
@@ -55,7 +62,6 @@ public class SendEmail implements CcpProcess{
 			return this.retryToSendEmail(values, put);
 	
 		}	
-		
 	}
 
 	private CcpMapDecorator tryToSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
@@ -64,13 +70,14 @@ public class SendEmail implements CcpProcess{
 
 		this.emailSender.send(putAll);
 
-		JnBusinessEntity.email_try_to_send_message.removeTries(putAll, "tries", 3);
+		this.removeTries.execute(putAll, "tries", 3, JnBusinessEntity.email_try_to_send_message);
 		
 		List<String> emails = putAll.getAsStringList("emails");
 		
-		for (String email : emails) {
-			JnBusinessEntity.email_message_sent.save(putAll.put("email", email));
-		}
+		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
+		
+		this.dbBulkExecutor.commit(records, CcpBulkOperation.CREATE, JnBusinessEntity.email_message_sent);
+
 		return values;
 	}
 

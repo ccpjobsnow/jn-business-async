@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.bulk.CcpBulkOperation;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
@@ -90,7 +89,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpBulkOperation.CREATE, keywordsUnknown);
+		this.bulkExecutor.commit(newUnknowKeywordsToSave, "create", keywordsUnknown);
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

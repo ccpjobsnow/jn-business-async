@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.bulk.CcpBulkOperation;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.email.CcpEmailSender;
@@ -76,7 +75,7 @@ public class SendEmail implements CcpProcess{
 		
 		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
 		
-		this.dbBulkExecutor.commit(records, CcpBulkOperation.CREATE, JnBusinessEntity.email_message_sent);
+		this.dbBulkExecutor.commit(records, "create", JnBusinessEntity.email_message_sent);
 
 		return values;
 	}

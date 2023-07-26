@@ -10,6 +10,7 @@ import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
+import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
 import com.jn.commons.JnBusinessEntity;
@@ -106,13 +107,13 @@ public class SendEmail implements CcpProcess{
 			this.crud
 			.useThisId(putAll)
 			.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.email_reported_as_spam).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.email_message_sent).returnStatus(409)
+			.ifThisIdIsPresentInTable(JnBusinessEntity.email_reported_as_spam).returnStatus(409).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.email_message_sent).returnStatus(409)
 			.andFinally()
 			.endThisProcedure()
 			;
 			return true;
-		} catch (Exception e) {
+		} catch (CcpFlow e) {
 			return false;
 		}
 	}

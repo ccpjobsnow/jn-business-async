@@ -7,14 +7,16 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
-import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnBulkAudit;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class SendEmail implements CcpProcess{
 
@@ -22,7 +24,7 @@ public class SendEmail implements CcpProcess{
 	private CcpEmailSender emailSender;
 
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 	
 	@CcpDependencyInject
 	private CcpDbBulkExecutor dbBulkExecutor;
@@ -38,9 +40,11 @@ public class SendEmail implements CcpProcess{
 		
 		String language = values.getAsString("language");
 		
-		CcpMapDecorator emailParameters = this.messagesTranslation.getMergedParameters(JnBusinessTopic.sendEmail, values, language, "subject", "sender", "subjectType");
+		CcpMapDecorator emailParameters = this.messagesTranslation.getMergedParameters(JnTopic.sendEmail, values, language, "subject", "sender", "subjectType");
 		
-		List<String> justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent = emails.stream().filter(email -> this.canSendEmail(values, emailParameters, email)).collect(Collectors.toList());
+		List<String> justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent = emails.stream().filter(email -> 
+				this.crud.noMatches(values.putAll(emailParameters).put("email", email), JnEntity.email_message_sent, JnEntity.email_reported_as_spam)
+		).collect(Collectors.toList());
 		
 		if(justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent.isEmpty()) {
 			return values;
@@ -68,13 +72,13 @@ public class SendEmail implements CcpProcess{
 
 		this.emailSender.send(putAll);
 
-		this.removeTries.execute(putAll, "tries", 3, JnBusinessEntity.email_try_to_send_message);
+		this.removeTries.execute(putAll, "tries", 3, JnEntity.email_try_to_send_message);
 		
 		List<String> emails = putAll.getAsStringList("emails");
 		
 		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
 		
-		this.dbBulkExecutor.commit(records, "create", JnBusinessEntity.email_message_sent);
+		this.dbBulkExecutor.commit(records, CcpOperationType.create, JnEntity.email_message_sent, new JnBulkAudit());
 
 		return values;
 	}
@@ -82,7 +86,7 @@ public class SendEmail implements CcpProcess{
 
 	private CcpMapDecorator saveClientError(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
 		CcpMapDecorator putAll = values.putAll(parametersToSendEmail);
-		JnBusinessEntity.email_api_client_error.save(putAll);
+		JnEntity.email_api_client_error.createOrUpdate(putAll);
 		return values;
 	}
 
@@ -93,10 +97,10 @@ public class SendEmail implements CcpProcess{
 		
 		CcpMapDecorator putAll = values.putAll(parametersToSendEmail);
 		
-		boolean exceededTries = JnBusinessEntity.email_try_to_send_message.exceededTries(putAll, "tries", 3);
+		boolean exceededTries = JnEntity.email_try_to_send_message.exceededTries(putAll, "tries", 3);
 		
 		if(exceededTries) {
-			JnBusinessEntity.email_api_unavailable.save(putAll);
+			JnEntity.email_api_unavailable.createOrUpdate(putAll);
 			return values;
 		}
 		
@@ -104,9 +108,4 @@ public class SendEmail implements CcpProcess{
 	}
 
 	
-	private boolean canSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail, String email) {
-		CcpMapDecorator putAll = values.putAll(parametersToSendEmail).put("email", email);
-		boolean noMatches = this.crud.noMatches(putAll, JnBusinessEntity.email_message_sent, JnBusinessEntity.email_reported_as_spam);
-		return noMatches;
-	}
 }

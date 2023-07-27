@@ -3,8 +3,8 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class NotifyContactUs implements CcpProcess{
 
@@ -12,18 +12,18 @@ public class NotifyContactUs implements CcpProcess{
 
 	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
 
-	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendEmail.name());
+	private CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.sendEmail.name());
 
 	
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 	
-		boolean jaFoiCadastado = JnBusinessEntity.contact_us.exists(values);
+		boolean jaFoiCadastado = JnEntity.contact_us.exists(values);
 		
 		if(jaFoiCadastado) {
 			return values;
 		}
 
-		CcpMapDecorator parameters = JnBusinessEntity.message.get(this.idToSearch);
+		CcpMapDecorator parameters = JnEntity.message.getOneById(this.idToSearch);
 
 		parameters = values.putAll(parameters);
 		
@@ -31,7 +31,7 @@ public class NotifyContactUs implements CcpProcess{
 
 		this.sendEmail.execute(parameters);
 		
-		JnBusinessEntity.contact_us.save(parameters);
+		JnEntity.contact_us.createOrUpdate(parameters);
 		
 		return values;
 	}

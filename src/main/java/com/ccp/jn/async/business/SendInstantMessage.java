@@ -10,8 +10,8 @@ import com.ccp.especifications.instant.messenger.CcpInstantMessenger.ThisBotWasB
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger.TooManyRequests;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class SendInstantMessage implements CcpProcess{
 
@@ -20,22 +20,22 @@ public class SendInstantMessage implements CcpProcess{
 	
 	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
-	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.sendInstantMessage.name());
+	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.sendInstantMessage.name());
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		CcpMapDecorator instantMessageParameters = JnBusinessEntity.message.get(this.idToSearch);
+		CcpMapDecorator instantMessageParameters = JnEntity.message.getOneById(this.idToSearch);
 
 		CcpMapDecorator putAll = values.putAll(instantMessageParameters);
 
-		boolean esteUsuarioBloqueouEsteBot = JnBusinessEntity.instant_messenger_bot_locked.exists(putAll);
+		boolean esteUsuarioBloqueouEsteBot = JnEntity.instant_messenger_bot_locked.exists(putAll);
 		
 		if(esteUsuarioBloqueouEsteBot) {
 			return values;
 		}
 		
-		boolean estaMensagemJaFoiEnviadaNesteIntervalo = JnBusinessEntity.instant_messenger_message_sent.exists(putAll);
+		boolean estaMensagemJaFoiEnviadaNesteIntervalo = JnEntity.instant_messenger_message_sent.exists(putAll);
 		
 		if(estaMensagemJaFoiEnviadaNesteIntervalo) {
 			Utils.sleep(3000);
@@ -58,21 +58,21 @@ public class SendInstantMessage implements CcpProcess{
 	private CcpMapDecorator tryToSendIntantMessage(CcpMapDecorator putAll) {
 		this.instantMessenger.sendMessage(putAll);
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
-		JnBusinessEntity.instant_messenger_message_sent.save(putAll.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
-		this.removeTries.execute(putAll, "tries", 3, JnBusinessEntity.instant_messenger_try_to_send_message);
+		JnEntity.instant_messenger_message_sent.createOrUpdate(putAll.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
+		this.removeTries.execute(putAll, "tries", 3, JnEntity.instant_messenger_try_to_send_message);
 		return putAll;
 	}
 
 	private CcpMapDecorator saveBlockedBot(CcpMapDecorator putAll) {
-		JnBusinessEntity.instant_messenger_bot_locked.save(putAll);
+		JnEntity.instant_messenger_bot_locked.createOrUpdate(putAll);
 		return putAll;
 	}
 
 	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator putAll) {
-		boolean exceededTries = JnBusinessEntity.instant_messenger_try_to_send_message.exceededTries(putAll, "tries", 3);
+		boolean exceededTries = JnEntity.instant_messenger_try_to_send_message.exceededTries(putAll, "tries", 3);
 		
 		if(exceededTries) {
-			JnBusinessEntity.instant_messenger_api_unavailable.save(putAll);
+			JnEntity.instant_messenger_api_unavailable.createOrUpdate(putAll);
 			return putAll;
 		}
 		

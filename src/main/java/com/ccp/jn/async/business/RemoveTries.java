@@ -13,14 +13,14 @@ import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Should;
 import com.ccp.especifications.db.utils.DefaultField;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class RemoveTries implements CcpProcess{
 
 	@CcpDependencyInject
 	private CcpDbQueryExecutor requestExecutor;
 	
-	public CcpMapDecorator execute(CcpMapDecorator object, String fieldName, Integer limit, JnBusinessEntity... entities) {
+	public CcpMapDecorator execute(CcpMapDecorator object, String fieldName, Integer limit, JnEntity... entities) {
 
 		Should startShould = new ElasticQuery()
 		.startQuery()
@@ -31,7 +31,7 @@ public class RemoveTries implements CcpProcess{
 		
 		for(int k = 0; k < limit; k++) {
 			CcpMapDecorator put = object.put(fieldName, k);
-			for (JnBusinessEntity entity : entities) {
+			for (JnEntity entity : entities) {
 				String id = entity.getId(put);
 				ids.add(id);
 			}
@@ -57,8 +57,8 @@ public class RemoveTries implements CcpProcess{
 		String fieldName = values.getAsString("fieldName");
 		Integer limit = values.getAsIntegerNumber("limit");
 		List<String> array = values.getAsStringList("entities");
-		JnBusinessEntity[] entities = new JnBusinessEntity[array.size()];
-		array.stream().map(x -> JnBusinessEntity.valueOf(x)).collect(Collectors.toList()).toArray(entities);
+		JnEntity[] entities = new JnEntity[array.size()];
+		array.stream().map(x -> JnEntity.valueOf(x)).collect(Collectors.toList()).toArray(entities);
 		CcpMapDecorator remove = this.execute(values, fieldName, limit, entities);
 		return remove;
 	}

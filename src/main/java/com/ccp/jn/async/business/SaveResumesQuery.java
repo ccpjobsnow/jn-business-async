@@ -7,19 +7,21 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
+import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnBulkAudit;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 import com.jn.commons.tables.fields.A3D_candidate;
 import com.jn.commons.tables.fields.A3D_keywords_unknown;
 
 public class SaveResumesQuery implements CcpProcess{
 
 	private CcpMapDecorator keywordsTables = new CcpMapDecorator()
-			.put("4", JnBusinessEntity.keywords_operational)
-			.put("3", JnBusinessEntity.keywords_college)
-			.put("1", JnBusinessEntity.keywords_it)
-			.put("2", JnBusinessEntity.keywords_hr)
+			.put("4", JnEntity.keywords_operational)
+			.put("3", JnEntity.keywords_college)
+			.put("1", JnEntity.keywords_it)
+			.put("2", JnEntity.keywords_hr)
 			;
 
 	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
@@ -30,7 +32,7 @@ public class SaveResumesQuery implements CcpProcess{
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		JnBusinessEntity.search_resumes_stats.save(values);
+		JnEntity.search_resumes_stats.createOrUpdate(values);
 		
 		values = this.getUnknownKeywords(values, "requiredKeywords");
 		values = this.getUnknownKeywords(values, "optionalKeywords");
@@ -43,8 +45,8 @@ public class SaveResumesQuery implements CcpProcess{
 			return values;
 		}
 		
-		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnBusinessTopic.saveResumesQuery.name());
-		CcpMapDecorator parameters = JnBusinessEntity.message.get(idToSearch);
+		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
+		CcpMapDecorator parameters = JnEntity.message.getOneById(idToSearch);
 		values = values.putAll(parameters);
 		this.sendInstantMessage.execute(values);
 		
@@ -69,7 +71,7 @@ public class SaveResumesQuery implements CcpProcess{
 			return values;
 		}
 		
-		JnBusinessEntity keywordsTable = this.keywordsTables.getAsObject(jobType.toString());
+		JnEntity keywordsTable = this.keywordsTables.getAsObject(jobType.toString());
 	
 		if(keywordsTable == null) {
 			return values;
@@ -77,7 +79,7 @@ public class SaveResumesQuery implements CcpProcess{
 
 		
 		List<String> keywords = values.getAsStringList(keywordType);
-		JnBusinessEntity keywordsUnknown = JnBusinessEntity.keywords_unknown;
+		JnEntity keywordsUnknown = JnEntity.keywords_unknown;
 	
 		List<CcpMapDecorator> idsToKnownWords = keywords.stream().map(keyword -> this.putKeyword(keyword)).collect(Collectors.toList());
 		List<CcpMapDecorator> unknowKeywords = keywordsTable.getManyByIds(idsToKnownWords).stream().filter(x -> this.notFound(x)).collect(Collectors.toList());
@@ -89,7 +91,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.bulkExecutor.commit(newUnknowKeywordsToSave, "create", keywordsUnknown);
+		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown, new JnBulkAudit());
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

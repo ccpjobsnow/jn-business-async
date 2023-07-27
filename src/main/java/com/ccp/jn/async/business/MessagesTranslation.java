@@ -5,21 +5,21 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.jn.commons.JnBusinessEntity;
+import com.ccp.especifications.db.crud.CcpDao;
+import com.jn.commons.JnEntity;
 
 public class MessagesTranslation {
 
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 
 	public CcpMapDecorator translate(Enum<?> _enum, String language, String key, CcpMapDecorator externalParameters) {
 		
 		CcpMapDecorator manyByIdAsSingle = this.getManyByIdAsSingle(language, _enum);
 		
-		CcpMapDecorator values = manyByIdAsSingle.getInternalMap(JnBusinessEntity.values.name()).getInternalMap("value");
+		CcpMapDecorator values = manyByIdAsSingle.getInternalMap(JnEntity.values.name()).getInternalMap("value");
 		
-		CcpMapDecorator message = manyByIdAsSingle.getInternalMap(JnBusinessEntity.message.name());
+		CcpMapDecorator message = manyByIdAsSingle.getInternalMap(JnEntity.message.name());
 		
 		CcpMapDecorator translated = message.putAll(values).putFilledTemplate("value", key);
 		
@@ -73,7 +73,7 @@ public class MessagesTranslation {
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("id", templateName).put("language", language);
 
-		List<CcpMapDecorator> manyById = this.crud.getManyById(idToSearch, JnBusinessEntity.message, JnBusinessEntity.values);
+		List<CcpMapDecorator> manyById = this.crud.getManyById(idToSearch, JnEntity.message, JnEntity.values);
 		return manyById;
 	}
 

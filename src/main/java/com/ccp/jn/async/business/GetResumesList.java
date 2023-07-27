@@ -8,7 +8,7 @@ import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class GetResumesList implements CcpProcess {
 
@@ -29,7 +29,7 @@ public class GetResumesList implements CcpProcess {
 		
 		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 
-		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnBusinessEntity.candidate.name());
+		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnEntity.candidate.name());
 		
 		List<CcpMapDecorator> resultAsList = selectFrom.getResultAsList();
 		

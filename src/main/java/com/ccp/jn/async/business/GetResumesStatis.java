@@ -9,9 +9,9 @@ import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
-import com.ccp.especifications.db.utils.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpField;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 import com.jn.commons.tables.fields.A3D_candidate;
 
 public class GetResumesStatis implements CcpProcess {
@@ -31,7 +31,7 @@ public class GetResumesStatis implements CcpProcess {
 		
 		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 		
-		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnBusinessEntity.candidate.name());
+		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnEntity.candidate.name());
 		
 		CcpMapDecorator aggregations = selectFrom.getAggregations();
 
@@ -61,14 +61,14 @@ public class GetResumesStatis implements CcpProcess {
 	}
 
 	
-	private CcpMapDecorator getMapDecorator(CcpMapDecorator ddd, CcpDbTableField... fields) {
+	private CcpMapDecorator getMapDecorator(CcpMapDecorator ddd, CcpField... fields) {
 		
 		CcpMapDecorator values = new CcpMapDecorator()
 				.put("ddd", ddd.getAsIntegerNumber("key"))
 				.put("total", ddd.getAsIntegerNumber("doc_count"))
 				;
 		
-		for (CcpDbTableField field : fields) {
+		for (CcpField field : fields) {
 			String fieldName = field.name();
 			CcpMapDecorator internalMap = ddd.getInternalMap(fieldName);
 			Double value = internalMap.getAsDoubleNumber("value");

@@ -10,7 +10,7 @@ import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 
 
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnTopic;
 import com.jn.commons.tables.fields.A3D_candidate;
 
 public class ListResumes {
@@ -38,7 +38,7 @@ public class ListResumes {
 
 	private void sendToTopic(CcpMapDecorator values, List<Map<String, Object>> extractResults, String recruiter) {
 		CcpMapDecorator message = new CcpMapDecorator().put("query",values).put("results", extractResults).put("recruiter", recruiter);
-		this.mensageriaSender.send(message, JnBusinessTopic.saveResumesQuery);
+		this.mensageriaSender.send(message, JnTopic.saveResumesQuery);
 	}
 
 	private List<Map<String, Object>> extractResults(CcpMapDecorator values) {

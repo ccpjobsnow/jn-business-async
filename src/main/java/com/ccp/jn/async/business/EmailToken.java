@@ -6,15 +6,21 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class EmailToken {
 	
 	private MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
 	
-	public void execute(CcpMapDecorator values, JnBusinessTopic templateId, JnBusinessEntity tableToSave, CcpProcess businessExecutor) {
-
+	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity tableToSave, CcpProcess businessExecutor) {
+		
+		boolean alreadyInsertedToday = tableToSave.exists(values);
+		
+		if(alreadyInsertedToday) {
+			return;
+		}
+		
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 
 		String token = textDecorator.generateToken(8);
@@ -29,6 +35,6 @@ public class EmailToken {
 
 		CcpMapDecorator tokenData = values.getSubMap("email").put("token", token);
 		
-		tableToSave.save(tokenData);
+		tableToSave.createOrUpdate(tokenData);
 	}
 }

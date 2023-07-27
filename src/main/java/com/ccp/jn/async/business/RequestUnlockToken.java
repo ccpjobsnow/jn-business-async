@@ -3,8 +3,8 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class RequestUnlockToken implements CcpProcess{
 
@@ -14,7 +14,7 @@ public class RequestUnlockToken implements CcpProcess{
 
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		this.emailToken.execute(values, JnBusinessTopic.requestUnlockToken, JnBusinessEntity.request_unlock_token, this.notifyContactUs);
+		this.emailToken.execute(values, JnTopic.requestUnlockToken, JnEntity.request_unlock_token, this.notifyContactUs);
 
 		return values;
 	}

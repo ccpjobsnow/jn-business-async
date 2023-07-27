@@ -13,7 +13,6 @@ public class SendUserToken implements CcpProcess{
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
-		
 		this.emailToken.execute(values, JnBusinessTopic.sendUserToken, JnBusinessEntity.login_token, this.sendEmail);
 		return values;
 	}

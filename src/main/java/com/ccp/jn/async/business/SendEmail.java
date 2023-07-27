@@ -11,7 +11,6 @@ import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
-import com.ccp.exceptions.commons.CcpFlow;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
 import com.jn.commons.JnBusinessEntity;
@@ -106,21 +105,8 @@ public class SendEmail implements CcpProcess{
 
 	
 	private boolean canSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail, String email) {
-		
 		CcpMapDecorator putAll = values.putAll(parametersToSendEmail).put("email", email);
-
-		try {
-			this.crud
-			.useThisId(putAll)
-			.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.email_reported_as_spam).returnStatus(409).and()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.email_message_sent).returnStatus(409)
-			.andFinally()
-			.endThisProcedure()
-			;
-			return true;
-		} catch (CcpFlow e) {
-			return false;
-		}
+		boolean noMatches = this.crud.noMatches(putAll, JnBusinessEntity.email_message_sent, JnBusinessEntity.email_reported_as_spam);
+		return noMatches;
 	}
 }

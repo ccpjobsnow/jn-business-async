@@ -17,9 +17,9 @@ public class MessagesTranslation {
 		
 		CcpMapDecorator manyByIdAsSingle = this.getManyByIdAsSingle(language, _enum);
 		
-		CcpMapDecorator values = manyByIdAsSingle.getInternalMap(JnEntity.values.name()).getInternalMap("value");
+		CcpMapDecorator values = manyByIdAsSingle.getInternalMap(JnEntity.parameters.name()).getInternalMap("value");
 		
-		CcpMapDecorator message = manyByIdAsSingle.getInternalMap(JnEntity.message.name());
+		CcpMapDecorator message = manyByIdAsSingle.getInternalMap(JnEntity.messages.name());
 		
 		CcpMapDecorator translated = message.putAll(values).putFilledTemplate("value", key);
 		
@@ -73,7 +73,7 @@ public class MessagesTranslation {
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("id", templateName).put("language", language);
 
-		List<CcpMapDecorator> manyById = this.crud.getManyById(idToSearch, JnEntity.message, JnEntity.values);
+		List<CcpMapDecorator> manyById = this.crud.getManyById(idToSearch, JnEntity.messages, JnEntity.parameters);
 		return manyById;
 	}
 

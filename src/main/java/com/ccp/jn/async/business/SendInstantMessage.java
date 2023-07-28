@@ -25,7 +25,7 @@ public class SendInstantMessage implements CcpProcess{
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		CcpMapDecorator instantMessageParameters = JnEntity.message.getOneById(this.idToSearch);
+		CcpMapDecorator instantMessageParameters = JnEntity.messages.getOneById(this.idToSearch);
 
 		CcpMapDecorator putAll = values.putAll(instantMessageParameters);
 

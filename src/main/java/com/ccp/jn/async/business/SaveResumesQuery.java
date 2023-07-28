@@ -9,7 +9,6 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBulkAudit;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 import com.jn.commons.tables.fields.A3D_candidate;
@@ -25,6 +24,8 @@ public class SaveResumesQuery implements CcpProcess{
 			;
 
 	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
+
+	private JnBulkAudit bulkAudit = CcpDependencyInjection.getInjected(JnBulkAudit.class);
 	
 	@CcpDependencyInject
 	private CcpDbBulkExecutor bulkExecutor;
@@ -46,7 +47,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
-		CcpMapDecorator parameters = JnEntity.message.getOneById(idToSearch);
+		CcpMapDecorator parameters = JnEntity.messages.getOneById(idToSearch);
 		values = values.putAll(parameters);
 		this.sendInstantMessage.execute(values);
 		
@@ -91,7 +92,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown, new JnBulkAudit());
+		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown, this.bulkAudit);
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

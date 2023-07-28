@@ -16,7 +16,6 @@ import com.ccp.jn.async.exceptions.EmailMessageNotSent;
 import com.ccp.jn.async.exceptions.ExceededTriesToSentMailMessage;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
-import com.jn.commons.JnBulkAudit;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
@@ -30,6 +29,8 @@ public class SendEmail implements CcpProcess{
 	
 	@CcpDependencyInject
 	private CcpDbBulkExecutor dbBulkExecutor;
+
+	private JnBulkAudit bulkAudit = CcpDependencyInjection.getInjected(JnBulkAudit.class);
 
 	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
@@ -80,7 +81,7 @@ public class SendEmail implements CcpProcess{
 		
 		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
 		
-		this.dbBulkExecutor.commit(records, CcpOperationType.create, JnEntity.email_message_sent, new JnBulkAudit());
+		this.dbBulkExecutor.commit(records, CcpOperationType.create, JnEntity.email_message_sent, this.bulkAudit);
 
 		return values;
 	}

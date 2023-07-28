@@ -12,6 +12,8 @@ import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
+import com.ccp.jn.async.exceptions.EmailMessageNotSent;
+import com.ccp.jn.async.exceptions.ExceededTriesToSentMailMessage;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
 import com.jn.commons.JnBulkAudit;
@@ -41,13 +43,13 @@ public class SendEmail implements CcpProcess{
 		String language = values.getAsString("language");
 		
 		CcpMapDecorator emailParameters = this.messagesTranslation.getMergedParameters(JnTopic.sendEmail, values, language, "subject", "sender", "subjectType");
-		
+		//TODO TRAZER TODOS OS E-MAILS DE UMA SÓ VEZ
 		List<String> justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent = emails.stream().filter(email -> 
 				this.crud.noMatches(values.putAll(emailParameters).put("email", email), JnEntity.email_message_sent, JnEntity.email_reported_as_spam)
 		).collect(Collectors.toList());
 		
 		if(justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent.isEmpty()) {
-			return values;
+			throw new EmailMessageNotSent();
 		}
 		
 		CcpMapDecorator put = emailParameters.put("emails", justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent);
@@ -57,12 +59,12 @@ public class SendEmail implements CcpProcess{
 
 		} catch (ThereWasClientError e) {
 		
-			return this.saveClientError(values, put);
+			this.saveClientError(values, put);
+			throw e;
 		
 		}catch(EmailApiIsUnavailable e) {
 			
 			return this.retryToSendEmail(values, put);
-	
 		}	
 	}
 
@@ -101,7 +103,7 @@ public class SendEmail implements CcpProcess{
 		
 		if(exceededTries) {
 			JnEntity.email_api_unavailable.createOrUpdate(putAll);
-			return values;
+			throw new ExceededTriesToSentMailMessage();
 		}
 		
 		return this.execute(values);

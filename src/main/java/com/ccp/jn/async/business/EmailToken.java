@@ -5,6 +5,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.jn.async.exceptions.EmailMessageNotSent;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
@@ -30,11 +31,14 @@ public class EmailToken {
 		String language = values.getAsString("language");
 		
 		CcpMapDecorator messageToSend = this.messagesTranslation.translate(templateId, language, "message", externalParameters);
-		
-		businessExecutor.execute(messageToSend);
-
-		CcpMapDecorator tokenData = values.getSubMap("email").put("token", token);
-		
-		tableToSave.createOrUpdate(tokenData);
+		try {
+			businessExecutor.execute(messageToSend);
+			
+			CcpMapDecorator tokenData = values.getSubMap("email").put("token", token);
+			
+			tableToSave.createOrUpdate(tokenData);
+			
+		} catch (EmailMessageNotSent e) {
+		}
 	}
 }

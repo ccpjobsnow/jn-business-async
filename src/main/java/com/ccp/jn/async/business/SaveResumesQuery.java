@@ -10,12 +10,12 @@ import com.ccp.jn.async.commons.others.CommitAndAudit;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
-import com.jn.commons.tables.fields.A3D_candidate;
-import com.jn.commons.tables.fields.A3D_keywords_unknown;
+import com.jn.commons.entities.fields.A3D_candidate;
+import com.jn.commons.entities.fields.A3D_keywords_unknown;
 
 public class SaveResumesQuery implements CcpProcess{
 
-	private CcpMapDecorator keywordsTables = new CcpMapDecorator()
+	private CcpMapDecorator keywordsentities = new CcpMapDecorator()
 			.put("4", JnEntity.keywords_operational)
 			.put("3", JnEntity.keywords_college)
 			.put("1", JnEntity.keywords_it)
@@ -68,9 +68,9 @@ public class SaveResumesQuery implements CcpProcess{
 			return values;
 		}
 		
-		JnEntity keywordsTable = this.keywordsTables.getAsObject(jobType.toString());
+		JnEntity keywordsEntity = this.keywordsentities.getAsObject(jobType.toString());
 	
-		if(keywordsTable == null) {
+		if(keywordsEntity == null) {
 			return values;
 		}
 
@@ -79,7 +79,7 @@ public class SaveResumesQuery implements CcpProcess{
 		JnEntity keywordsUnknown = JnEntity.keywords_unknown;
 	
 		List<CcpMapDecorator> idsToKnownWords = keywords.stream().map(keyword -> this.putKeyword(keyword)).collect(Collectors.toList());
-		List<CcpMapDecorator> unknowKeywords = keywordsTable.getManyByIds(idsToKnownWords).stream().filter(x -> this.notFound(x)).collect(Collectors.toList());
+		List<CcpMapDecorator> unknowKeywords = keywordsEntity.getManyByIds(idsToKnownWords).stream().filter(x -> this.notFound(x)).collect(Collectors.toList());
 		List<CcpMapDecorator> idsToUnknownWords = unknowKeywords.stream().map(keyword -> this.getUnknownKeyword(keywordType, jobType)).collect(Collectors.toList());
 		List<CcpMapDecorator> newUnknowKeywords = keywordsUnknown.getManyByIds(idsToUnknownWords).stream().filter(x -> this.notFound(x)).collect(Collectors.toList());
 		

@@ -13,6 +13,7 @@ import com.ccp.jn.async.business.SendEmail;
 import com.ccp.jn.async.business.SendInstantMessage;
 import com.ccp.jn.async.business.SendUserToken;
 import com.ccp.process.CcpProcess;
+import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class AsyncServices {
@@ -38,9 +39,25 @@ public class AsyncServices {
 		return asObject;
 	}
 	
-	public static CcpMapDecorator executeProcess(String processName, CcpMapDecorator values) {
-		CcpProcess process = getProcess(processName);
-		CcpMapDecorator result = process.execute(values);
-		return result;
+	public static void executeProcess(String processName, CcpMapDecorator values) {
+		
+		String asyncTaskId = values.getAsString("asyncTaskId");
+		CcpMapDecorator messageDetails = JnEntity.async_task.getOneById(asyncTaskId);	
+		
+		try {
+			CcpProcess process = getProcess(processName);
+			CcpMapDecorator response = process.execute(values);
+			saveProcessResult(messageDetails, response, true);
+		} catch (Throwable e) {
+			CcpMapDecorator response = new CcpMapDecorator(e);
+			saveProcessResult(messageDetails, response, false);
+			throw e;
+		}
+	}
+
+	private static void saveProcessResult(CcpMapDecorator messageDetails, CcpMapDecorator response, boolean success) {
+		Long finished = System.currentTimeMillis();
+		CcpMapDecorator processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
+		JnEntity.async_task.createOrUpdate(processResult);
 	}
 }

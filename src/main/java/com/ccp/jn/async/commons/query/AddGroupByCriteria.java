@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.tables.fields.A3D_candidate;
+import com.jn.commons.entities.fields.A3D_candidate;
 
 public class AddGroupByCriteria implements CcpProcess {
 

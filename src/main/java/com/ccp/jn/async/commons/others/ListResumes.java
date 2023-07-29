@@ -15,7 +15,7 @@ import com.ccp.jn.async.commons.query.AddRequiredKeywordsFilter;
 import com.ccp.jn.async.commons.query.AddSizeInTheQuery;
 import com.ccp.jn.async.commons.query.AddSortCriteria;
 import com.jn.commons.JnTopic;
-import com.jn.commons.tables.fields.A3D_candidate;
+import com.jn.commons.entities.fields.A3D_candidate;
 
 public class ListResumes {
 

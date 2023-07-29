@@ -5,7 +5,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.jn.async.exceptions.EmailMessageNotSent;
+import com.ccp.exceptions.email.EmailMessageNotSent;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
@@ -14,13 +14,7 @@ public class EmailToken {
 	
 	private MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
 	
-	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity tableToSave, CcpProcess businessExecutor) {
-		
-		boolean alreadyInsertedToday = tableToSave.exists(values);
-		
-		if(alreadyInsertedToday) {
-			return;
-		}
+	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity entityToSave, CcpProcess businessExecutor) {
 		
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 
@@ -36,7 +30,7 @@ public class EmailToken {
 			
 			CcpMapDecorator tokenData = values.getSubMap("email").put("token", token);
 			
-			tableToSave.createOrUpdate(tokenData);
+			entityToSave.createOrUpdate(tokenData);
 			
 		} catch (EmailMessageNotSent e) {
 		}

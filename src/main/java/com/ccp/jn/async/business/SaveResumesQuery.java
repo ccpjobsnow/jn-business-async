@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
@@ -25,10 +23,7 @@ public class SaveResumesQuery implements CcpProcess{
 
 	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
 
-	private JnBulkAudit bulkAudit = CcpDependencyInjection.getInjected(JnBulkAudit.class);
-	
-	@CcpDependencyInject
-	private CcpDbBulkExecutor bulkExecutor;
+	private CommitAndAudit commitAndAudit = CcpDependencyInjection.getInjected(CommitAndAudit.class);
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
@@ -92,7 +87,7 @@ public class SaveResumesQuery implements CcpProcess{
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.bulkExecutor.commit(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown, this.bulkAudit);
+		this.commitAndAudit.execute(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown);
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

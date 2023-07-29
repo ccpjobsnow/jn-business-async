@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.crud.CcpDao;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
@@ -27,10 +26,7 @@ public class SendEmail implements CcpProcess{
 	@CcpDependencyInject
 	private CcpDao crud;
 	
-	@CcpDependencyInject
-	private CcpDbBulkExecutor dbBulkExecutor;
-
-	private JnBulkAudit bulkAudit = CcpDependencyInjection.getInjected(JnBulkAudit.class);
+	private CommitAndAudit commitAndAudit = CcpDependencyInjection.getInjected(CommitAndAudit.class);
 
 	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
@@ -81,7 +77,7 @@ public class SendEmail implements CcpProcess{
 		
 		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
 		
-		this.dbBulkExecutor.commit(records, CcpOperationType.create, JnEntity.email_message_sent, this.bulkAudit);
+		this.commitAndAudit.execute(records, CcpOperationType.create, JnEntity.email_message_sent);
 
 		return values;
 	}

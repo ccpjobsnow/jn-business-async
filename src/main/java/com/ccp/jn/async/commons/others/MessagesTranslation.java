@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons.others;
 
 import java.util.List;
 import java.util.stream.Collectors;

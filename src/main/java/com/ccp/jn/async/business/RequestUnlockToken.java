@@ -2,6 +2,7 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.jn.async.commons.others.EmailToken;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;

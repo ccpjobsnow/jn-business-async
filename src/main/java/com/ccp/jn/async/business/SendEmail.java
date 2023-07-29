@@ -11,6 +11,8 @@ import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.especifications.email.CcpEmailSender.EmailApiIsUnavailable;
 import com.ccp.especifications.email.CcpEmailSender.ThereWasClientError;
+import com.ccp.jn.async.commons.others.CommitAndAudit;
+import com.ccp.jn.async.commons.others.MessagesTranslation;
 import com.ccp.jn.async.exceptions.EmailMessageNotSent;
 import com.ccp.jn.async.exceptions.ExceededTriesToSentMailMessage;
 import com.ccp.process.CcpProcess;

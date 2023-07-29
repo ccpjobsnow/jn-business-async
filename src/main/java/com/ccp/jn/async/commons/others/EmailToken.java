@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons.others;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;

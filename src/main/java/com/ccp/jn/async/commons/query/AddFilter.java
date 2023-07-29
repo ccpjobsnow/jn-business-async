@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons.query;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.Must;

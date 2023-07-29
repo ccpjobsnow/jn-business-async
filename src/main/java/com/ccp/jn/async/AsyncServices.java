@@ -30,11 +30,17 @@ public class AsyncServices {
 			.put(JnTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
 	
-	public static CcpProcess getProcess(String processName) {
+	private static CcpProcess getProcess(String processName) {
 		CcpProcess asObject = catalog.getAsObject(processName);
 		if(asObject == null) {
 			throw new RuntimeException("The process '" + processName + "' was not found");
 		}
 		return asObject;
+	}
+	
+	public static CcpMapDecorator executeProcess(String processName, CcpMapDecorator values) {
+		CcpProcess process = getProcess(processName);
+		CcpMapDecorator result = process.execute(values);
+		return result;
 	}
 }

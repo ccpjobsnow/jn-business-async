@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpOperationType;
+import com.ccp.jn.async.commons.others.CommitAndAudit;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;

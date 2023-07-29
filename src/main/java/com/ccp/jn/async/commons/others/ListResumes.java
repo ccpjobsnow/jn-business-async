@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons.others;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,12 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-
-
+import com.ccp.jn.async.commons.query.AddFilter;
+import com.ccp.jn.async.commons.query.AddGroupByCriteria;
+import com.ccp.jn.async.commons.query.AddOptionalKeywordsFilter;
+import com.ccp.jn.async.commons.query.AddRequiredKeywordsFilter;
+import com.ccp.jn.async.commons.query.AddSizeInTheQuery;
+import com.ccp.jn.async.commons.query.AddSortCriteria;
 import com.jn.commons.JnTopic;
 import com.jn.commons.tables.fields.A3D_candidate;
 

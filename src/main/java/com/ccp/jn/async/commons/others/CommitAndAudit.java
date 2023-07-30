@@ -15,7 +15,7 @@ public class CommitAndAudit {
 	private CcpDbBulkExecutor dbBulkExecutor;
 	
 	public void execute(List<CcpMapDecorator> records, CcpOperationType operation, CcpEntity entity) {
-		this.dbBulkExecutor.commitAndAudit(records, operation, entity, JnEntity.audit, JnEntity.record_to_reprocess);
+		this.dbBulkExecutor.commitAndAuditAndSaveErrors(records, operation, entity, JnEntity.audit, JnEntity.record_to_reprocess);
 
 	}
 	

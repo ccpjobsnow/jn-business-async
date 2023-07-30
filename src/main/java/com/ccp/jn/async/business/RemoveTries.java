@@ -29,7 +29,7 @@ public class RemoveTries implements CcpProcess{
 		
 		Set<String> ids = new HashSet<>();
 		
-		for(int k = 0; k < limit; k++) {
+		for(int k = 1; k <= limit; k++) {
 			CcpMapDecorator put = object.put(fieldName, k);
 			for (JnEntity entity : entities) {
 				String id = entity.getId(put);

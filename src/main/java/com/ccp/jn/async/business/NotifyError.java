@@ -3,6 +3,7 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.process.CcpProcess;
+import com.jn.commons.JnTopic;
 
 public class NotifyError implements CcpProcess{
 
@@ -29,9 +30,8 @@ public class NotifyError implements CcpProcess{
 
 
 	private CcpMapDecorator notifyContactUs(CcpMapDecorator parameters) {
-		String hash = parameters.getHash("SHA1");
 		
-		parameters = parameters.put("subjectType", hash);
+		parameters = parameters.put("subjectType", JnTopic.notifyError);
 		
 		this.notifyContactUs.execute(parameters);
 		

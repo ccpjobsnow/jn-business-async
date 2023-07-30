@@ -42,17 +42,22 @@ public class AsyncServices {
 	public static void executeProcess(String processName, CcpMapDecorator values) {
 		
 		String asyncTaskId = values.getAsString("asyncTaskId");
-		CcpMapDecorator messageDetails = JnEntity.async_task.getOneById(asyncTaskId);	
+		CcpMapDecorator asyncTaskDetails = JnEntity.async_task.getOneById(asyncTaskId);	
 		
 		try {
-			CcpProcess process = getProcess(processName);
-			CcpMapDecorator response = process.execute(values);
-			saveProcessResult(messageDetails, response, true);
+			CcpMapDecorator response = execute(processName, values);
+			saveProcessResult(asyncTaskDetails, response, true);
 		} catch (Throwable e) {
 			CcpMapDecorator response = new CcpMapDecorator(e);
-			saveProcessResult(messageDetails, response, false);
+			saveProcessResult(asyncTaskDetails, response, false);
 			throw e;
 		}
+	}
+
+	public static CcpMapDecorator execute(String processName, CcpMapDecorator values) {
+		CcpProcess process = getProcess(processName);
+		CcpMapDecorator response = process.execute(values);
+		return response;
 	}
 
 	private static void saveProcessResult(CcpMapDecorator messageDetails, CcpMapDecorator response, boolean success) {

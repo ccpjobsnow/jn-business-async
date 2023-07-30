@@ -12,9 +12,15 @@ import com.jn.commons.JnTopic;
 
 public class EmailToken {
 	
-	private MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
+	private final MessagesTranslation messagesTranslation = CcpDependencyInjection.getInjected(MessagesTranslation.class);
 	
 	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity entityToSave, CcpProcess businessExecutor) {
+		
+		boolean alreadyInserted = entityToSave.exists(values);
+		
+		if(alreadyInserted) {
+			return;
+		}
 		
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 

@@ -54,16 +54,18 @@ public class SendEmail implements CcpProcess{
 		CcpMapDecorator put = emailParameters.put("emails", justEmailsThatWasNotRepportedAsSpamAndNotAlreadySent);
 		
 		try {
-			return this.tryToSendEmail(values, put);
+			CcpMapDecorator entity = this.tryToSendEmail(values, put);
+			this.removeTries.execute(entity, "tries", 3, JnEntity.email_try_to_send_message);
+			return values;
 
 		} catch (ThereWasClientError e) {
-		
-			this.saveClientError(values, put);
+			CcpMapDecorator asEntity = e.asEntity();
+			JnEntity.email_api_client_error.createOrUpdate(asEntity);
 			throw e;
 		
 		}catch(EmailApiIsUnavailable e) {
 			
-			return this.retryToSendEmail(values, put);
+			return this.retryToSendEmail(values, e);
 		}	
 	}
 
@@ -71,41 +73,32 @@ public class SendEmail implements CcpProcess{
 
 		CcpMapDecorator putAll = values.putAll(parametersToSendEmail);
 
-		this.emailSender.send(putAll);
+		CcpMapDecorator send = this.emailSender.send(putAll);
 
-		this.removeTries.execute(putAll, "tries", 3, JnEntity.email_try_to_send_message);
-		
 		List<String> emails = putAll.getAsStringList("emails");
 		
 		List<CcpMapDecorator> records = emails.stream().map(email -> putAll.put("email", email)).collect(Collectors.toList());
 		
 		this.commitAndAudit.execute(records, CcpOperationType.create, JnEntity.email_message_sent);
 
-		return values;
+		return send;
 	}
 
-
-	private CcpMapDecorator saveClientError(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
-		CcpMapDecorator putAll = values.putAll(parametersToSendEmail);
-		JnEntity.email_api_client_error.createOrUpdate(putAll);
-		return values;
-	}
-
-
-	private CcpMapDecorator retryToSendEmail(CcpMapDecorator values, CcpMapDecorator parametersToSendEmail) {
+	private CcpMapDecorator retryToSendEmail(CcpMapDecorator values, EmailApiIsUnavailable e) {
 		
 		Utils.sleep(5000);
 		
-		CcpMapDecorator putAll = values.putAll(parametersToSendEmail);
+		CcpMapDecorator entity = e.asEntity();
 		
-		boolean exceededTries = JnEntity.email_try_to_send_message.exceededTries(putAll, "tries", 3);
+		boolean exceededTries = JnEntity.email_try_to_send_message.exceededTries(entity, "tries", 3);
 		
 		if(exceededTries) {
-			JnEntity.email_api_unavailable.createOrUpdate(putAll);
+			JnEntity.email_api_unavailable.createOrUpdate(entity);
 			throw new ExceededTriesToSentMailMessage();
 		}
 		
-		return this.execute(values);
+		CcpMapDecorator execute = this.execute(values);
+		return execute;
 	}
 
 	

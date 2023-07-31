@@ -26,8 +26,8 @@ public class AsyncServices {
 			.put(JnTopic.saveResumesQuery.name(), CcpDependencyInjection.getInjected(SaveResumesQuery.class))
 			.put(JnTopic.notifyContactUs.name(), CcpDependencyInjection.getInjected(NotifyContactUs.class))
 			.put(JnTopic.sendUserToken.name(), CcpDependencyInjection.getInjected(SendUserToken.class))
-			.put(JnTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
 			.put(JnTopic.removeTries.name(), CcpDependencyInjection.getInjected(RemoveTries.class))
+			.put(JnTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
 			.put(JnTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
 	

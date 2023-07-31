@@ -4,54 +4,53 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
-import com.ccp.especifications.instant.messenger.CcpInstantMessenger.InstantMessageApiIsUnavailable;
-import com.ccp.especifications.instant.messenger.CcpInstantMessenger.ThisBotWasBlockedByThisUser;
-import com.ccp.especifications.instant.messenger.CcpInstantMessenger.TooManyRequests;
+import com.ccp.exceptions.instant.messenger.InstantMessageApiIsUnavailable;
+import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
+import com.ccp.exceptions.instant.messenger.TooManyRequests;
 import com.ccp.process.CcpProcess;
 import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
 
 public class SendInstantMessage implements CcpProcess{
 
 	@CcpDependencyInject
 	private CcpInstantMessenger instantMessenger;
-	
-	private RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
-	CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.sendInstantMessage.name());
+	@CcpDependencyInject
+	private CcpDao dao;
+	
+	private final RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
-		CcpMapDecorator instantMessageParameters = JnEntity.messages.getOneById(this.idToSearch);
+		CcpMapDecorator allData = this.dao.getAllData(values, JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
 
-		CcpMapDecorator putAll = values.putAll(instantMessageParameters);
-
-		boolean esteUsuarioBloqueouEsteBot = JnEntity.instant_messenger_bot_locked.exists(putAll);
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  allData.containsKey(JnEntity.instant_messenger_message_sent.name());
 		
-		if(esteUsuarioBloqueouEsteBot) {
+		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
+			Utils.sleep(3000);
+			CcpMapDecorator execute = this.execute(values);
+			return execute;
+		}
+
+		boolean thisBotHasBeenBlocked = allData.containsKey(JnEntity.instant_messenger_bot_locked.name());
+		
+		if(thisBotHasBeenBlocked) {
 			return values;
 		}
 		
-		boolean estaMensagemJaFoiEnviadaNesteIntervalo = JnEntity.instant_messenger_message_sent.exists(putAll);
-		
-		if(estaMensagemJaFoiEnviadaNesteIntervalo) {
-			Utils.sleep(3000);
-			CcpMapDecorator enviarMensagem = this.execute(putAll);
-			return enviarMensagem;
-		}
-		
 		try {
-			return this.tryToSendIntantMessage(putAll);
+			return this.tryToSendIntantMessage(values);
 		} catch (TooManyRequests e) {
 			Utils.sleep(3000);
-			return this.execute(putAll);
+			return this.execute(values);
 		} catch(ThisBotWasBlockedByThisUser e) {
-			return saveBlockedBot(putAll);
+			return saveBlockedBot(values);
 		}catch(InstantMessageApiIsUnavailable e) {
-			return this.retryToSendIntantMessage(putAll);
+			return this.retryToSendIntantMessage(values);
 		}
 	}
 

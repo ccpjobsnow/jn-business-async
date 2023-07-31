@@ -22,7 +22,7 @@ public class SendUserToken implements CcpProcess{
 		
 		CcpMapDecorator externalParameters = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN).put("subjectType", JnTopic.sendUserToken.name());
 
-		this.messagesTranslatorAndSender.execute(externalParameters, JnTopic.sendUserToken, JnEntity.login_token, Arrays.asList(this.sendEmail), "message");
+		this.messagesTranslatorAndSender.execute(externalParameters, JnTopic.sendUserToken, JnEntity.login_token, Arrays.asList(this.sendEmail), "emailMessage");
 		
 		return values;
 	}

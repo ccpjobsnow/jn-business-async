@@ -23,13 +23,17 @@ public class NotifySupport {
 	
 	public NotifySupport() {
 		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFileFromClassLoader().getAsString("supportLanguage");
+	
+		if(this.supportLanguage.trim().isEmpty()) {
+			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
+		}
 	}
 	
 	public CcpMapDecorator execute(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
 
 		List<CcpProcess> asList = Arrays.asList(this.sendInstantMessage, this.sendEmail);
 		
-		CcpMapDecorator put = values.put("botType", JnInstantMessageBotType.support).put("language", this.supportLanguage);
+		CcpMapDecorator put = values.put("botTokenKey", JnInstantMessageBotType.instantMessageBotTokenSupport).put("language", this.supportLanguage);
 		
 		this.messagesTranslatorAndSender.execute(put, topic, entity, asList, "telegramMessage", "emailMessage", "subject");
 

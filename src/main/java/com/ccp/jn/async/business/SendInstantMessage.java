@@ -6,7 +6,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
-import com.ccp.exceptions.instant.messenger.InstantMessageApiIsUnavailable;
+import com.ccp.exceptions.http.CcpHttpInternalServerError;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.TooManyRequests;
 import com.ccp.process.CcpProcess;
@@ -49,7 +49,7 @@ public class SendInstantMessage implements CcpProcess{
 			return this.execute(values);
 		} catch(ThisBotWasBlockedByThisUser e) {
 			return saveBlockedBot(values);
-		}catch(InstantMessageApiIsUnavailable e) {
+		}catch(CcpHttpInternalServerError e) {
 			return this.retryToSendIntantMessage(values);
 		}
 	}

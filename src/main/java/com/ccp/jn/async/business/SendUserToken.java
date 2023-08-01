@@ -2,6 +2,7 @@
 package com.ccp.jn.async.business;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
@@ -22,7 +23,9 @@ public class SendUserToken implements CcpProcess{
 		
 		CcpMapDecorator externalParameters = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN).put("subjectType", JnTopic.sendUserToken.name());
 
-		this.messagesTranslatorAndSender.execute(externalParameters, JnTopic.sendUserToken, JnEntity.login_token, Arrays.asList(this.sendEmail), "emailMessage");
+		List<CcpProcess> processes = Arrays.asList(this.sendEmail);
+		
+		this.messagesTranslatorAndSender.execute(externalParameters, JnTopic.sendUserToken, JnEntity.login_token, processes, "emailMessage");
 		
 		return values;
 	}

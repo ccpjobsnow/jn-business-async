@@ -6,7 +6,6 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
-import com.ccp.exceptions.http.CcpHttpInternalServerError;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.TooManyRequests;
 import com.ccp.process.CcpProcess;
@@ -21,8 +20,8 @@ public class SendInstantMessage implements CcpProcess{
 	@CcpDependencyInject
 	private CcpDao dao;
 	
-	private final RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
-
+	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
+	
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
@@ -43,23 +42,16 @@ public class SendInstantMessage implements CcpProcess{
 		}
 		
 		try {
-			return this.tryToSendIntantMessage(values);
+			this.sendHttpRequest.execute(values, x -> this.instantMessenger.sendMessage(x));
+			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
+			JnEntity.instant_messenger_message_sent.createOrUpdate(values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
+			return values;
 		} catch (TooManyRequests e) {
 			Utils.sleep(3000);
 			return this.execute(values);
 		} catch(ThisBotWasBlockedByThisUser e) {
 			return saveBlockedBot(values);
-		}catch(CcpHttpInternalServerError e) {
-			return this.retryToSendIntantMessage(values);
 		}
-	}
-
-	private CcpMapDecorator tryToSendIntantMessage(CcpMapDecorator putAll) {
-		this.instantMessenger.sendMessage(putAll);
-		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
-		JnEntity.instant_messenger_message_sent.createOrUpdate(putAll.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
-		this.removeTries.execute(putAll, "tries", 3, JnEntity.instant_messenger_try_to_send_message);
-		return putAll;
 	}
 
 	private CcpMapDecorator saveBlockedBot(CcpMapDecorator putAll) {
@@ -67,15 +59,4 @@ public class SendInstantMessage implements CcpProcess{
 		return putAll;
 	}
 
-	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator putAll) {
-		boolean exceededTries = JnEntity.instant_messenger_try_to_send_message.exceededTries(putAll, "tries", 3);
-		
-		if(exceededTries) {
-			JnEntity.instant_messenger_api_unavailable.createOrUpdate(putAll);
-			return putAll;
-		}
-		
-		Utils.sleep(5000);
-		return this.execute(putAll);
-	}
 }

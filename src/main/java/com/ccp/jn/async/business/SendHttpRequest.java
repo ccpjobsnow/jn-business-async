@@ -10,13 +10,13 @@ import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
 
 public class SendHttpRequest {
-
+	//TODO API TYPE
 	private final RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
 	public void execute(CcpMapDecorator values, Consumer<CcpMapDecorator> processThatSendsHttpRequest) {
 		try {
 			processThatSendsHttpRequest.accept(values);
-			this.removeTries.execute(values, "tries", 3, JnEntity.http_api_retry_send_request);
+			this.removeTries.apply(values, "tries", 3, JnEntity.http_api_retry_send_request);
 		} catch (CcpHttpServerError e) {
 			this.retryToSendIntantMessage(values, processThatSendsHttpRequest, e);
 		} catch (CcpHttpClientError e) {

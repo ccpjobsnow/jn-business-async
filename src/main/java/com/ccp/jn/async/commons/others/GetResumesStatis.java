@@ -10,11 +10,11 @@ import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.especifications.db.utils.CcpField;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnEntity;
 import com.jn.commons.entities.fields.A3D_candidate;
 
-public class GetResumesStatis implements CcpProcess {
+public class GetResumesStatis implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 	private final CcpDbQueryExecutor requestExecutor;
 	
@@ -25,7 +25,7 @@ public class GetResumesStatis implements CcpProcess {
 
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		Must must = values.getAsObject("_must");
 		

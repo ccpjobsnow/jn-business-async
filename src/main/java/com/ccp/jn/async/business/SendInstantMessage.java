@@ -8,11 +8,11 @@ import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.TooManyRequests;
-import com.ccp.process.CcpProcess;
+
 import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
 
-public class SendInstantMessage implements CcpProcess{
+public class SendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	@CcpDependencyInject
 	private CcpInstantMessenger instantMessenger;
@@ -23,7 +23,7 @@ public class SendInstantMessage implements CcpProcess{
 	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
 	
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
 		CcpMapDecorator allData = this.dao.getAllData(values, JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
 
@@ -31,7 +31,7 @@ public class SendInstantMessage implements CcpProcess{
 		
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Utils.sleep(3000);
-			CcpMapDecorator execute = this.execute(values);
+			CcpMapDecorator execute = this.apply(values);
 			return execute;
 		}
 
@@ -48,7 +48,7 @@ public class SendInstantMessage implements CcpProcess{
 			return values;
 		} catch (TooManyRequests e) {
 			Utils.sleep(3000);
-			return this.execute(values);
+			return this.apply(values);
 		} catch(ThisBotWasBlockedByThisUser e) {
 			return saveBlockedBot(values);
 		}

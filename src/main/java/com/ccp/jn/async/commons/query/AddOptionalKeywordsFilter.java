@@ -6,12 +6,12 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.Bool;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.especifications.db.query.Should;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.entities.fields.A3D_candidate;
 
-public class AddOptionalKeywordsFilter implements CcpProcess {
+public class AddOptionalKeywordsFilter implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		Must must = values.getAsObject("_must");
 		Bool bool = must.endMustAndBackToBool();
 		

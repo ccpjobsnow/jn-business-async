@@ -1,5 +1,7 @@
 package com.ccp.jn.async;
 
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.business.NotifyContactUs;
@@ -12,7 +14,6 @@ import com.ccp.jn.async.business.SaveResumesQuery;
 import com.ccp.jn.async.business.SendEmail;
 import com.ccp.jn.async.business.SendInstantMessage;
 import com.ccp.jn.async.business.SendUserToken;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
@@ -31,8 +32,8 @@ public class AsyncServices {
 			.put(JnTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
 			;
 	
-	private static CcpProcess getProcess(String processName) {
-		CcpProcess asObject = catalog.getAsObject(processName);
+	private static Function<CcpMapDecorator, CcpMapDecorator> getProcess(String processName) {
+		Function<CcpMapDecorator, CcpMapDecorator> asObject = catalog.getAsObject(processName);
 		if(asObject == null) {
 			throw new RuntimeException("The process '" + processName + "' was not found");
 		}
@@ -55,8 +56,8 @@ public class AsyncServices {
 	}
 
 	public static CcpMapDecorator execute(String processName, CcpMapDecorator values) {
-		CcpProcess process = getProcess(processName);
-		CcpMapDecorator response = process.execute(values);
+		Function<CcpMapDecorator, CcpMapDecorator> process = getProcess(processName);
+		CcpMapDecorator response = process.apply(values);
 		return response;
 	}
 

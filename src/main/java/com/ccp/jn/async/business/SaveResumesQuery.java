@@ -7,13 +7,13 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.jn.async.commons.others.CommitAndAudit;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 import com.jn.commons.entities.fields.A3D_candidate;
 import com.jn.commons.entities.fields.A3D_keywords_unknown;
 
-public class SaveResumesQuery implements CcpProcess{
+public class SaveResumesQuery implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private CcpMapDecorator keywordsentities = new CcpMapDecorator()
 			.put("4", JnEntity.keywords_operational)
@@ -27,7 +27,7 @@ public class SaveResumesQuery implements CcpProcess{
 	private CommitAndAudit commitAndAudit = CcpDependencyInjection.getInjected(CommitAndAudit.class);
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
 		JnEntity.search_resumes_stats.createOrUpdate(values);
 		
@@ -45,7 +45,7 @@ public class SaveResumesQuery implements CcpProcess{
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
 		CcpMapDecorator parameters = JnEntity.messages.getOneById(idToSearch);
 		values = values.putAll(parameters);
-		this.sendInstantMessage.execute(values);
+		this.sendInstantMessage.apply(values);
 		
 		return values;
 	}

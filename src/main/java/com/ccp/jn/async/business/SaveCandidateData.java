@@ -1,12 +1,12 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.process.CcpProcess;
 
-public class SaveCandidateData implements CcpProcess{
+
+public class SaveCandidateData implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		// TODO Auto-generated method stub
 		return null;
 	}

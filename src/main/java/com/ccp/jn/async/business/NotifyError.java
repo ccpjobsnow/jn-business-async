@@ -2,25 +2,25 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
-public class NotifyError implements CcpProcess{
+public class NotifyError implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private final NotifySupport notifySupport = CcpDependencyInjection.getInjected(NotifySupport.class);
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		this.notifySupport.execute(values, JnTopic.notifyError, JnEntity.jobsnow_error);
+		this.notifySupport.apply(values, JnTopic.notifyError, JnEntity.jobsnow_error);
 
 		return values;
 	}
 	
-	public CcpMapDecorator execute(Throwable e) {
+	public CcpMapDecorator apply(Throwable e) {
 		CcpMapDecorator values = new CcpMapDecorator(e);
-		CcpMapDecorator execute = this.execute(values);
+		CcpMapDecorator execute = this.apply(values);
 		return execute;
 	}
 

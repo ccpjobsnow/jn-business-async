@@ -5,12 +5,12 @@ import java.util.List;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.especifications.db.query.Should;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.entities.fields.A3D_candidate;
 
-public class AddRequiredKeywordsFilter implements CcpProcess {
+public class AddRequiredKeywordsFilter implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
 		Must must = values.getAsObject("_must");
 		

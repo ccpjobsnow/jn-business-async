@@ -5,12 +5,12 @@ import java.util.List;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
-import com.ccp.process.CcpProcess;
 
-public class AddSortCriteria implements CcpProcess{
+
+public class AddSortCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		Must must = values.getAsObject("_must");
 		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();

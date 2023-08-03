@@ -2,12 +2,12 @@ package com.ccp.jn.async.business;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.commons.others.MessagesTranslatorAndSender;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnInstantMessageBotType;
 import com.jn.commons.JnTopic;
@@ -29,9 +29,9 @@ public class NotifySupport {
 		}
 	}
 	
-	public CcpMapDecorator execute(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
+	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
 
-		List<CcpProcess> asList = Arrays.asList(this.sendInstantMessage, this.sendEmail);
+		List<Function<CcpMapDecorator, CcpMapDecorator>> asList = Arrays.asList(this.sendInstantMessage, this.sendEmail);
 		
 		CcpMapDecorator put = values.put("botTokenKey", JnInstantMessageBotType.instantMessageBotTokenSupport).put("language", this.supportLanguage);
 		

@@ -1,11 +1,11 @@
 package com.ccp.jn.async.commons.others;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
@@ -14,7 +14,7 @@ public class MessagesTranslatorAndSender {
 	@CcpDependencyInject
 	private CcpDao dao;
 
-	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity entityToSave, List<CcpProcess> processes, String... fields) {
+	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity entityToSave, List<Function<CcpMapDecorator, CcpMapDecorator>> processes, String... fields) {
 	
 		CcpMapDecorator put = values.put("id", templateId.name());
 		
@@ -36,8 +36,8 @@ public class MessagesTranslatorAndSender {
 			CcpMapDecorator translated = messageToSend.putFilledTemplate(field, field);
 			messageToSend = translated.putAll(values).putFilledTemplate(field, field);
 		}
-		for (CcpProcess process : processes) {
-			process.execute(messageToSend);
+		for (Function<CcpMapDecorator, CcpMapDecorator> process : processes) {
+			process.apply(messageToSend);
 		}
 		
 		entityToSave.createOrUpdate(messageToSend);

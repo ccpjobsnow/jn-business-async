@@ -3,13 +3,13 @@ package com.ccp.jn.async.commons.query;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.entities.fields.A3D_candidate;
 
-public class AddGroupByCriteria implements CcpProcess {
+public class AddGroupByCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		Must must = values.getAsObject("_must");
 		

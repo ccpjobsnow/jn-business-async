@@ -10,10 +10,10 @@ import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.jn.async.commons.others.CommitAndAudit;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnEntity;
 
-public class SendEmail implements CcpProcess{
+public class SendEmail implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	@CcpDependencyInject
 	private CcpEmailSender emailSender;
@@ -25,7 +25,7 @@ public class SendEmail implements CcpProcess{
 
 	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
 
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
 		List<String> onlyEmailsNotSentAndNotRepportedAsSpam = this.getOnlyEmailsNotSentAndNotRepportedAsSpam(values);
 		

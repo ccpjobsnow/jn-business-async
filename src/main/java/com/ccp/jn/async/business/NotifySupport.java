@@ -35,7 +35,7 @@ public class NotifySupport {
 		
 		CcpMapDecorator put = values.put("botTokenKey", JnInstantMessageBotType.instantMessageBotTokenSupport).put("language", this.supportLanguage);
 		
-		this.messagesTranslatorAndSender.execute(put, topic, entity, asList, "telegramMessage", "emailMessage", "subject");
+		this.messagesTranslatorAndSender.execute(put.renameKey("message", "msg"), topic, entity, asList, "telegramMessage", "emailMessage", "subject");
 
 		return values;
 	}

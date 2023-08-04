@@ -42,9 +42,10 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 		}
 		
 		try {
-			this.sendHttpRequest.execute(values, x -> this.instantMessenger.sendMessage(x));
+			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(values, x -> this.instantMessenger.sendMessage(x), "subjectType");
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
-			JnEntity.instant_messenger_message_sent.createOrUpdate(values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3));
+			CcpMapDecorator instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
+			JnEntity.instant_messenger_message_sent.createOrUpdate(instantMessageSent);
 			return values;
 		} catch (TooManyRequests e) {
 			Utils.sleep(3000);

@@ -33,7 +33,7 @@ public class SendEmail implements  java.util.function.Function<CcpMapDecorator, 
 		
 		CcpMapDecorator putAll = values.putAll(put);
 
-		this.sendHttpRequest.execute(putAll, x -> this.emailSender.send(x.renameKey("emailMessage", "message")));
+		this.sendHttpRequest.execute(putAll, x -> this.emailSender.send(x.renameKey("emailMessage", "message")), "subjectType");
 		
 		List<String> emails = putAll.getAsStringList("emails");
 		

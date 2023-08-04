@@ -14,9 +14,9 @@ public class MessagesTranslatorAndSender {
 	@CcpDependencyInject
 	private CcpDao dao;
 
-	public void execute(CcpMapDecorator values, JnTopic templateId, JnEntity entityToSave, List<Function<CcpMapDecorator, CcpMapDecorator>> processes, String... fields) {
+	public void execute(CcpMapDecorator externalParameters, JnTopic templateId, JnEntity entityToSave, List<Function<CcpMapDecorator, CcpMapDecorator>> processes, String... fields) {
 	
-		CcpMapDecorator put = values.put("id", templateId.name());
+		CcpMapDecorator put = externalParameters.put("id", templateId.name()).duplicateValueFromKey("id", "subjectType");
 		
 		CcpMapDecorator allData = this.dao.getAllData(put, entityToSave, JnEntity.parameters, JnEntity.messages);
 		
@@ -34,10 +34,10 @@ public class MessagesTranslatorAndSender {
 		
 		for (String field : fields) {
 			CcpMapDecorator translated = messageToSend.putFilledTemplate(field, field);
-			messageToSend = translated.putAll(values).putFilledTemplate(field, field);
+			messageToSend = translated.putAll(externalParameters).putFilledTemplate(field, field);
 		}
 		for (Function<CcpMapDecorator, CcpMapDecorator> process : processes) {
-			process.apply(messageToSend);
+			process.apply(messageToSend.put("subjectType", templateId.name()));
 		}
 		
 		entityToSave.createOrUpdate(messageToSend);

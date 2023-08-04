@@ -19,8 +19,17 @@ public class NotifyError implements  java.util.function.Function<CcpMapDecorator
 	}
 	
 	public CcpMapDecorator apply(Throwable e) {
+		
 		CcpMapDecorator values = new CcpMapDecorator(e);
+		
+		boolean alreadyInserted = JnEntity.support_notification.create(values) == false;
+	
+		if(alreadyInserted) {
+			return values;
+		}
+		
 		CcpMapDecorator execute = this.apply(values);
+		
 		return execute;
 	}
 

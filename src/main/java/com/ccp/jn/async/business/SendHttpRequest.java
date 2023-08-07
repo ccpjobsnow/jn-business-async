@@ -35,14 +35,16 @@ public class SendHttpRequest {
 	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator values,Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, CcpHttpError e, String... keys) {
 		
 		CcpMapDecorator tries = e.entity.put("details", values.getSubMap(keys).asJson());
-		boolean exceededTries = JnEntity.http_api_retry_send_request.exceededTries(tries, "tries", 3);
+		Integer maxTries = values.getAsIntegerNumber("maxTries");
+		boolean exceededTries = JnEntity.http_api_retry_send_request.exceededTries(tries, "tries", maxTries);
 		
 		if(exceededTries) {
 			JnEntity.http_api_error_server.createOrUpdate(e.entity);
 			throw new JnHttpServerError(e);
 		}
 		
-		Utils.sleep(5000);
+		Integer sleep = values.getAsIntegerNumber("sleep");
+		Utils.sleep(sleep);
 		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, keys);
 		this.removeTries.apply(tries, "tries", 3, JnEntity.http_api_retry_send_request);
 		return execute;

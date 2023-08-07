@@ -9,7 +9,6 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.commons.others.MessagesTranslatorAndSender;
 import com.jn.commons.JnEntity;
-import com.jn.commons.JnInstantMessageBotType;
 import com.jn.commons.JnTopic;
 
 public class NotifySupport {
@@ -33,9 +32,7 @@ public class NotifySupport {
 
 		List<Function<CcpMapDecorator, CcpMapDecorator>> asList = Arrays.asList(this.sendInstantMessage, this.sendEmail);
 		
-		CcpMapDecorator put = values.put("botTokenKey", JnInstantMessageBotType.instantMessageBotTokenSupport).put("language", this.supportLanguage);
-		
-		this.messagesTranslatorAndSender.execute(put.renameKey("message", "msg"), topic, entity, asList, "telegramMessage", "emailMessage", "subject");
+		this.messagesTranslatorAndSender.execute(values.renameKey("message", "msg"), topic, entity, asList, "telegramMessage", "emailMessage", "subject");
 
 		return values;
 	}

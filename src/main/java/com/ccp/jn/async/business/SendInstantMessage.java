@@ -25,33 +25,38 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		CcpMapDecorator allData = this.dao.getAllData(values, JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
-
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  allData.containsKey(JnEntity.instant_messenger_message_sent.name());
+		CcpMapDecorator parametersToSendMessage = values.getInternalMap("telegram").renameKey("recipient", "chatId");
 		
+		CcpMapDecorator dataFromThisRecipient = this.dao.getAllData(parametersToSendMessage, JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
+
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(JnEntity.instant_messenger_message_sent.name());
+
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
-			Utils.sleep(3000);
+			Integer sleep = parametersToSendMessage.getAsIntegerNumber("sleep");
+			Utils.sleep(sleep);
 			CcpMapDecorator execute = this.apply(values);
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = allData.containsKey(JnEntity.instant_messenger_bot_locked.name());
+		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(JnEntity.instant_messenger_bot_locked.name());
 		
 		if(thisBotHasBeenBlocked) {
 			return values;
 		}
 		
+		CcpMapDecorator allData = values.putAll(parametersToSendMessage);
+		
 		try {
-			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(values, x -> this.instantMessenger.sendMessage(x), "subjectType");
+			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(allData, x -> this.instantMessenger.sendMessage(x), "subjectType");
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
-			CcpMapDecorator instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
+			CcpMapDecorator instantMessageSent = allData.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			JnEntity.instant_messenger_message_sent.createOrUpdate(instantMessageSent);
 			return values;
 		} catch (TooManyRequests e) {
 			Utils.sleep(3000);
 			return this.apply(values);
 		} catch(ThisBotWasBlockedByThisUser e) {
-			return saveBlockedBot(values);
+			return saveBlockedBot(allData);
 		}
 	}
 

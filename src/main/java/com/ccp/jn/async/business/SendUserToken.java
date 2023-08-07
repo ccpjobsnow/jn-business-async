@@ -21,7 +21,8 @@ public class SendUserToken implements  java.util.function.Function<CcpMapDecorat
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		CcpMapDecorator externalParameters = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN).put("subjectType", JnTopic.sendUserToken.name());
+		CcpMapDecorator externalParameters = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN)
+				.put("subjectType", JnTopic.sendUserToken.name());
 
 		List<Function<CcpMapDecorator, CcpMapDecorator>> processes = Arrays.asList(this.sendEmail);
 		

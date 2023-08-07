@@ -1,32 +1,25 @@
 
 package com.ccp.jn.async.business;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.jn.async.commons.others.MessagesTranslatorAndSender;
-import com.jn.commons.JnConstants;
+import com.ccp.jn.async.commons.others.GetMessage;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class SendUserToken implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 	
-	private final MessagesTranslatorAndSender messagesTranslatorAndSender = CcpDependencyInjection.getInjected(MessagesTranslatorAndSender.class);
+	private final GetMessage getMessage = CcpDependencyInjection.getInjected(GetMessage.class);
 	
 	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		CcpMapDecorator externalParameters = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN)
-				.put("subjectType", JnTopic.sendUserToken.name());
-
-		List<Function<CcpMapDecorator, CcpMapDecorator>> processes = Arrays.asList(this.sendEmail);
-		
-		this.messagesTranslatorAndSender.execute(externalParameters, JnTopic.sendUserToken, JnEntity.login_token, processes, "emailMessage");
+		String language = values.getAsString("language");
+		this.getMessage
+		.addFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
+		.execute(JnTopic.sendUserToken, JnEntity.login_token, values, language);
 		
 		return values;
 	}

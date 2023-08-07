@@ -43,7 +43,7 @@ public class SaveResumesQuery implements  java.util.function.Function<CcpMapDeco
 		}
 		
 		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
-		CcpMapDecorator parameters = JnEntity.messages.getOneById(idToSearch);
+		CcpMapDecorator parameters = new CcpMapDecorator();//TODO
 		values = values.putAll(parameters);
 		this.sendInstantMessage.apply(values);
 		

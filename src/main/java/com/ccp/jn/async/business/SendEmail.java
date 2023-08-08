@@ -38,7 +38,7 @@ public class SendEmail implements  java.util.function.Function<CcpMapDecorator, 
 		}
 		List<String> list = parametersToSendEmail.getAsStringList("emails", "email");
 		
-		this.sendHttpRequest.execute(parametersToSendEmail, x -> this.emailSender.send(parametersToSendEmail));
+		this.sendHttpRequest.execute(parametersToSendEmail, x -> this.emailSender.send(parametersToSendEmail),JnHttpRequestType.email, "subjectType");
 		
 		List<CcpMapDecorator> records = list.stream().map(email -> parametersToSendEmail.put("email", email)).collect(Collectors.toList());
 		

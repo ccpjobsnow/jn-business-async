@@ -46,7 +46,7 @@ public class GetMessage {
 		allEntitiesToSearch.add(entityToSave);
 		
 		JnEntity[] entities = allEntitiesToSearch.toArray(new JnEntity[allEntitiesToSearch.size()]);
-		CcpMapDecorator idToSearch = new CcpMapDecorator().put("language", language).put("id", id.name());
+		CcpMapDecorator idToSearch = new CcpMapDecorator().put("language", language).put("templateId", id.name());
 		CcpMapDecorator allData = this.dao.getAllData(idToSearch, entities);
 		boolean alreadySaved = allData.containsAllKeys(entityToSave.name());
 		
@@ -79,6 +79,7 @@ public class GetMessage {
 			process.apply(messageToSend);
 			k++;
 		}
+		entityToSave.createOrUpdate(values);
 		return values;
 	}
 }

@@ -13,9 +13,10 @@ import com.jn.commons.JnEntity;
 public class SendHttpRequest {
 	private final RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
-	public CcpMapDecorator execute(CcpMapDecorator values, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, String...keys) {
+	public CcpMapDecorator execute(CcpMapDecorator values, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
 		try {
-			CcpMapDecorator apply = processThatSendsHttpRequest.apply(values);
+			CcpMapDecorator valuesWithHttpParameters = JnEntity.http_api_parameters.getOneById(values);
+			CcpMapDecorator apply = processThatSendsHttpRequest.apply(valuesWithHttpParameters);
 			return apply;
 		} catch (CcpHttpError e) {
 			if(e.clientError) {
@@ -24,15 +25,14 @@ public class SendHttpRequest {
 			}
 			
 			if(e.serverError) {
-				return this.retryToSendIntantMessage(values, processThatSendsHttpRequest, e, keys);
+				return this.retryToSendIntantMessage(values, processThatSendsHttpRequest, httpRequestType,  e, keys);
 			}
-			
 			throw e;
 		}
 	}
 
 	
-	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator values,Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, CcpHttpError e, String... keys) {
+	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator values,Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, CcpHttpError e, String... keys) {
 		
 		CcpMapDecorator tries = e.entity.put("details", values.getSubMap(keys).asJson());
 		Integer maxTries = values.getAsIntegerNumber("maxTries");
@@ -45,7 +45,7 @@ public class SendHttpRequest {
 		
 		Integer sleep = values.getAsIntegerNumber("sleep");
 		Utils.sleep(sleep);
-		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, keys);
+		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
 		this.removeTries.apply(tries, "tries", 3, JnEntity.http_api_retry_send_request);
 		return execute;
 	}

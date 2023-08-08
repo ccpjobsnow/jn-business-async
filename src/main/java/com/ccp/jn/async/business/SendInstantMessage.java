@@ -47,7 +47,7 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 		CcpMapDecorator allData = values.putAll(parametersToSendMessage);
 		
 		try {
-			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(allData, x -> this.instantMessenger.sendMessage(x), "subjectType");
+			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(allData, x -> this.instantMessenger.sendMessage(x), JnHttpRequestType.instantMessenger, "subjectType");
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
 			CcpMapDecorator instantMessageSent = allData.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			JnEntity.instant_messenger_message_sent.createOrUpdate(instantMessageSent);

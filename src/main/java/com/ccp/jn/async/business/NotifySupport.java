@@ -4,12 +4,13 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.commons.others.GetMessage;
+import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class NotifySupport {
 	
-	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
+	private final TryToSendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(TryToSendInstantMessage.class);
 
 	private final GetMessage getMessage = CcpDependencyInjection.getInjected(GetMessage.class);
 
@@ -29,8 +30,8 @@ public class NotifySupport {
 	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
 
 		this.getMessage
-		.addFlow(this.sendInstantMessage, JnEntity.instant_messenger_parameters_to_send, JnEntity.instant_messenger_template_message)
-		.addFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
+		.addLenientFlow(this.sendInstantMessage, JnEntity.instant_messenger_parameters_to_send, JnEntity.instant_messenger_template_message)
+		.addLenientFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
 		.execute(topic, entity, values, this.supportLanguage);
 
 		return values;

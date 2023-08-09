@@ -25,26 +25,22 @@ public class SendEmail implements  java.util.function.Function<CcpMapDecorator, 
 
 	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
 
-	public CcpMapDecorator apply(CcpMapDecorator values1) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		CcpMapDecorator emailApiParameters = values1.getInternalMap("_parametersToSendMailMessage");
-		
-		CcpMapDecorator parametersToSendEmail = values1.putAll(emailApiParameters);
-		
-		List<String> onlyEmailsNotSentAndNotRepportedAsSpam = this.getOnlyEmailsNotSentAndNotRepportedAsSpam(parametersToSendEmail);
+		List<String> onlyEmailsNotSentAndNotRepportedAsSpam = this.getOnlyEmailsNotSentAndNotRepportedAsSpam(values);
 		
 		if(onlyEmailsNotSentAndNotRepportedAsSpam.isEmpty()) {
-			return parametersToSendEmail;
+			return values;
 		}
-		List<String> list = parametersToSendEmail.getAsStringList("emails", "email");
+		List<String> list = values.getAsStringList("emails", "email");
 		
-		this.sendHttpRequest.execute(parametersToSendEmail, x -> this.emailSender.send(parametersToSendEmail),JnHttpRequestType.email, "subjectType");
+		this.sendHttpRequest.execute(values, x -> this.emailSender.send(x),JnHttpRequestType.email, "subjectType");
 		
-		List<CcpMapDecorator> records = list.stream().map(email -> parametersToSendEmail.put("email", email)).collect(Collectors.toList());
+		List<CcpMapDecorator> records = list.stream().map(email -> values.put("email", email)).collect(Collectors.toList());
 		
 		this.commitAndAudit.execute(records, CcpOperationType.create, JnEntity.email_message_sent);
 		
-		return parametersToSendEmail;
+		return values;
 	}
 
 	private List<String> getOnlyEmailsNotSentAndNotRepportedAsSpam(CcpMapDecorator values) {

@@ -14,39 +14,46 @@ public class SendHttpRequest {
 	private final RemoveTries removeTries = CcpDependencyInjection.getInjected(RemoveTries.class);
 
 	public CcpMapDecorator execute(CcpMapDecorator values, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
+
+		CcpMapDecorator valuesWithApiName = values.put("apiName", httpRequestType.name());
+		CcpMapDecorator httpApiParameters = JnEntity.http_api_parameters.getOneById(valuesWithApiName);
+		CcpMapDecorator valuesWithHttpApiParameters = values.putAll(httpApiParameters);
+		
 		try {
-			CcpMapDecorator valuesWithHttpParameters = JnEntity.http_api_parameters.getOneById(values);
-			CcpMapDecorator apply = processThatSendsHttpRequest.apply(valuesWithHttpParameters);
+			CcpMapDecorator apply = processThatSendsHttpRequest.apply(valuesWithHttpApiParameters);
 			return apply;
 		} catch (CcpHttpError e) {
+			
+			String details = valuesWithHttpApiParameters.getSubMap(keys).asJson();
+			
+			CcpMapDecorator httpErrorDetails = e.entity.putAll(valuesWithHttpApiParameters).put("details", details);
+			
 			if(e.clientError) {
-				JnEntity.http_api_error_client.createOrUpdate(e.entity.put("details", values.getSubMap(keys).asJson()));
+				JnEntity.http_api_error_client.createOrUpdate(httpErrorDetails);
 				throw new JnHttpClientError(e);
 			}
 			
 			if(e.serverError) {
-				return this.retryToSendIntantMessage(values, processThatSendsHttpRequest, httpRequestType,  e, keys);
+				return this.retryToSendIntantMessage(e, values, httpErrorDetails, processThatSendsHttpRequest, httpRequestType, keys);
 			}
 			throw e;
 		}
 	}
-
 	
-	private CcpMapDecorator retryToSendIntantMessage(CcpMapDecorator values,Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, CcpHttpError e, String... keys) {
+	private CcpMapDecorator retryToSendIntantMessage(CcpHttpError e, CcpMapDecorator values, CcpMapDecorator httpErrorDetails, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String... keys) {
 		
-		CcpMapDecorator tries = e.entity.put("details", values.getSubMap(keys).asJson());
-		Integer maxTries = values.getAsIntegerNumber("maxTries");
-		boolean exceededTries = JnEntity.http_api_retry_send_request.exceededTries(tries, "tries", maxTries);
+		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
+		boolean exceededTries = JnEntity.http_api_retry_send_request.exceededTries(httpErrorDetails, "tries", maxTries);
 		
 		if(exceededTries) {
-			JnEntity.http_api_error_server.createOrUpdate(e.entity);
+			JnEntity.http_api_error_server.createOrUpdate(httpErrorDetails);
 			throw new JnHttpServerError(e);
 		}
 		
-		Integer sleep = values.getAsIntegerNumber("sleep");
+		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
 		Utils.sleep(sleep);
 		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
-		this.removeTries.apply(tries, "tries", 3, JnEntity.http_api_retry_send_request);
+		this.removeTries.apply(httpErrorDetails, "tries", 3, JnEntity.http_api_retry_send_request);
 		return execute;
 	}
 

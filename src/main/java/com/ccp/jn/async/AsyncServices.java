@@ -12,16 +12,16 @@ import com.ccp.jn.async.business.RequestUnlockToken;
 import com.ccp.jn.async.business.SaveCandidateData;
 import com.ccp.jn.async.business.SaveResumesQuery;
 import com.ccp.jn.async.business.SendEmail;
-import com.ccp.jn.async.business.SendInstantMessage;
 import com.ccp.jn.async.business.SendUserToken;
+import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class AsyncServices {
 	
 	private static CcpMapDecorator catalog = new CcpMapDecorator()
+			.put(JnTopic.sendInstantMessage.name(), CcpDependencyInjection.getInjected(TryToSendInstantMessage.class))
 			.put(JnTopic.requestUnlockToken.name(), CcpDependencyInjection.getInjected(RequestUnlockToken.class))
-			.put(JnTopic.sendInstantMessage.name(), CcpDependencyInjection.getInjected(SendInstantMessage.class))
 			.put(JnTopic.saveCandidateData.name(), CcpDependencyInjection.getInjected(SaveCandidateData.class))
 			.put(JnTopic.requestTokenAgain.name(), CcpDependencyInjection.getInjected(RequestTokenAgain.class))
 			.put(JnTopic.saveResumesQuery.name(), CcpDependencyInjection.getInjected(SaveResumesQuery.class))

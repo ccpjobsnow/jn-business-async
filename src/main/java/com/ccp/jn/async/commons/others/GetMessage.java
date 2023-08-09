@@ -38,6 +38,11 @@ public class GetMessage {
 		return getMessage;
 	}
 	
+	public GetMessage addLenientFlow(Function<CcpMapDecorator, CcpMapDecorator> process, JnEntity parameterEntity, JnEntity messageEntity) {
+		LenientProcess lenientProcess = new LenientProcess(process);
+		GetMessage addFlow = this.addFlow(lenientProcess, parameterEntity, messageEntity);
+		return addFlow;
+	}	
 	public CcpMapDecorator execute(JnTopic id, JnEntity entityToSave, CcpMapDecorator values, String language) {
 		
 		List<JnEntity> allEntitiesToSearch = new ArrayList<>();
@@ -46,15 +51,14 @@ public class GetMessage {
 		allEntitiesToSearch.add(entityToSave);
 		
 		JnEntity[] entities = allEntitiesToSearch.toArray(new JnEntity[allEntitiesToSearch.size()]);
-		CcpMapDecorator idToSearch = new CcpMapDecorator().put("language", language).put("templateId", id.name());
+		CcpMapDecorator idToSearch = values.put("language", language)
+				.put("templateId", id.name());
 		CcpMapDecorator allData = this.dao.getAllData(idToSearch, entities);
 		boolean alreadySaved = allData.containsAllKeys(entityToSave.name());
 		
 		if(alreadySaved) {
 			return values;
 		}
-		
-		
 		int k = 0;
 		
 		for (JnEntity messageEntity : this.messageEntities) {
@@ -63,7 +67,7 @@ public class GetMessage {
 			
 			CcpMapDecorator parameterData = allData.getInternalMap(parameterEntity.name());
 			CcpMapDecorator moreParameters = parameterData.getInternalMap("moreParameters");
-			CcpMapDecorator allParameters = parameterData.putAll(moreParameters);
+			CcpMapDecorator allParameters = parameterData.removeKey("moreParameters").putAll(moreParameters);
 			CcpMapDecorator messageData = allData.getInternalMap(messageEntity.name());
 			
 			CcpMapDecorator allDataTogether = messageData.putAll(allParameters).putAll(values);

@@ -7,7 +7,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.jn.async.commons.others.CommitAndAudit;
-
+import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 import com.jn.commons.entities.fields.A3D_candidate;
@@ -22,7 +22,7 @@ public class SaveResumesQuery implements  java.util.function.Function<CcpMapDeco
 			.put("2", JnEntity.keywords_hr)
 			;
 
-	private final SendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(SendInstantMessage.class);
+	private final TryToSendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(TryToSendInstantMessage.class);
 
 	private CommitAndAudit commitAndAudit = CcpDependencyInjection.getInjected(CommitAndAudit.class);
 

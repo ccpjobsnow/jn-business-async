@@ -3,12 +3,10 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.TooManyRequests;
-
 import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
 
@@ -20,19 +18,18 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 	@CcpDependencyInject
 	private CcpDao dao;
 	
-	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
 	
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
+
+		String token = this.instantMessenger.getToken(values);
 		
-		CcpMapDecorator parametersToSendMessage = values.getInternalMap("telegram").renameKey("recipient", "chatId");
-		
-		CcpMapDecorator dataFromThisRecipient = this.dao.getAllData(parametersToSendMessage, JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
+		CcpMapDecorator dataFromThisRecipient = this.dao.getAllData(values.put("token", token), JnEntity.instant_messenger_bot_locked, JnEntity.instant_messenger_message_sent);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(JnEntity.instant_messenger_message_sent.name());
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
-			Integer sleep = parametersToSendMessage.getAsIntegerNumber("sleep");
+			Integer sleep = values.getAsIntegerNumber("sleep");
 			Utils.sleep(sleep);
 			CcpMapDecorator execute = this.apply(values);
 			return execute;
@@ -44,24 +41,42 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 			return values;
 		}
 		
-		CcpMapDecorator allData = values.putAll(parametersToSendMessage);
-		
 		try {
-			CcpMapDecorator instantMessengerData = this.sendHttpRequest.execute(allData, x -> this.instantMessenger.sendMessage(x), JnHttpRequestType.instantMessenger, "subjectType");
+			CcpMapDecorator instantMessengerData = this.instantMessenger.sendMessage(values);
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
-			CcpMapDecorator instantMessageSent = allData.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
+			CcpMapDecorator instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			JnEntity.instant_messenger_message_sent.createOrUpdate(instantMessageSent);
 			return values;
 		} catch (TooManyRequests e) {
-			Utils.sleep(3000);
-			return this.apply(values);
+			
+			return this.retryToSendMessage(values);
+			
 		} catch(ThisBotWasBlockedByThisUser e) {
-			return saveBlockedBot(allData);
+			return saveBlockedBot(values, e.token);
 		}
 	}
 
-	private CcpMapDecorator saveBlockedBot(CcpMapDecorator putAll) {
-		JnEntity.instant_messenger_bot_locked.createOrUpdate(putAll);
+	private CcpMapDecorator retryToSendMessage(CcpMapDecorator values) {
+		
+		Integer maxTriesToSendMessage = values.getAsIntegerNumber("maxTriesToSendMessage");
+		Integer triesToSendMessage = values.getAsIntegerNumber("triesToSendMessage");
+		
+		if(triesToSendMessage == null) {
+			triesToSendMessage = 1;
+		}
+		
+		if(triesToSendMessage >= maxTriesToSendMessage) {
+			throw new RuntimeException("This message couldn't be sent. Details: " + values);
+		}
+		
+		Integer sleepToSendMessage = values.getAsIntegerNumber("sleepToSendMessage");
+		
+		Utils.sleep(sleepToSendMessage);
+		return this.apply(values.put("triesToSendMessage", triesToSendMessage + 1));
+	}
+
+	private CcpMapDecorator saveBlockedBot(CcpMapDecorator putAll, String token) {
+		JnEntity.instant_messenger_bot_locked.createOrUpdate(putAll.put("token", token));
 		return putAll;
 	}
 

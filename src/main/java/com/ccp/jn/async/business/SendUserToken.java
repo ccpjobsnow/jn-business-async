@@ -18,6 +18,7 @@ public class SendUserToken implements  java.util.function.Function<CcpMapDecorat
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		CcpMapDecorator transformed = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
 		String language = values.getAsString("language");
+		
 		this.getMessage
 		.addFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
 		.execute(JnTopic.sendUserToken, JnEntity.login_token, transformed, language);

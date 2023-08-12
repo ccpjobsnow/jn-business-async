@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.query.CcpDbQueryExecutor;
-import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.async.commons.query.AddFilter;
 import com.ccp.jn.async.commons.query.AddGroupByCriteria;
 import com.ccp.jn.async.commons.query.AddOptionalKeywordsFilter;
@@ -21,10 +20,6 @@ public class ListResumes {
 
 	@CcpDependencyInject
 	private CcpDbQueryExecutor requestExecutor;
-
-	
-	@CcpDependencyInject
-	private CcpMensageriaSender mensageriaSender;
 
 	
 	public List<Map<String, Object>> execute(String recruiter, String json){
@@ -42,7 +37,7 @@ public class ListResumes {
 
 	private void sendToTopic(CcpMapDecorator values, List<Map<String, Object>> extractResults, String recruiter) {
 		CcpMapDecorator message = new CcpMapDecorator().put("query",values).put("results", extractResults).put("recruiter", recruiter);
-		this.mensageriaSender.send(message, JnTopic.saveResumesQuery);
+		JnTopic.saveResumesQuery.send(message);
 	}
 
 	private List<Map<String, Object>> extractResults(CcpMapDecorator values) {

@@ -3,11 +3,11 @@ package com.ccp.jn.async.business;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.exceptions.http.CcpHttpError;
 import com.ccp.jn.async.exceptions.JnHttpClientError;
 import com.ccp.jn.async.exceptions.JnHttpServerError;
-import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
 
 public class SendHttpRequest {
@@ -51,7 +51,7 @@ public class SendHttpRequest {
 		}
 		
 		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
-		Utils.sleep(sleep);
+		new CcpTimeDecorator().sleep(sleep);
 		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
 		this.removeTries.apply(httpErrorDetails, "tries", 3, JnEntity.http_api_retry_send_request);
 		return execute;

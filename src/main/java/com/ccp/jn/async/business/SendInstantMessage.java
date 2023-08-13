@@ -7,7 +7,6 @@ import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.TooManyRequests;
-import com.ccp.utils.Utils;
 import com.jn.commons.JnEntity;
 
 public class SendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
@@ -30,7 +29,7 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = values.getAsIntegerNumber("sleep");
-			Utils.sleep(sleep);
+			new CcpTimeDecorator().sleep(sleep);
 			CcpMapDecorator execute = this.apply(values);
 			return execute;
 		}
@@ -71,7 +70,7 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 		
 		Integer sleepToSendMessage = values.getAsIntegerNumber("sleepToSendMessage");
 		
-		Utils.sleep(sleepToSendMessage);
+		new CcpTimeDecorator().sleep(sleepToSendMessage);
 		return this.apply(values.put("triesToSendMessage", triesToSendMessage + 1));
 	}
 

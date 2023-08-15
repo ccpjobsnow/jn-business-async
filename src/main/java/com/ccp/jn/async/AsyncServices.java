@@ -47,10 +47,10 @@ public class AsyncServices {
 		
 		try {
 			CcpMapDecorator response = execute(processName, values);
-			saveProcessResult(asyncTaskDetails, response, true);
+			saveProcessResult(asyncTaskDetails, response,asyncTaskId, true);
 		} catch (Throwable e) {
 			CcpMapDecorator response = new CcpMapDecorator(e);
-			saveProcessResult(asyncTaskDetails, response, false);
+			saveProcessResult(asyncTaskDetails, response, asyncTaskId, false);
 			throw e;
 		}
 	}
@@ -61,9 +61,9 @@ public class AsyncServices {
 		return response;
 	}
 
-	private static void saveProcessResult(CcpMapDecorator messageDetails, CcpMapDecorator response, boolean success) {
+	private static void saveProcessResult(CcpMapDecorator messageDetails, CcpMapDecorator response,String asyncTaskId, boolean success) {
 		Long finished = System.currentTimeMillis();
 		CcpMapDecorator processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
-		JnEntity.async_task.createOrUpdate(processResult);
+		JnEntity.async_task.createOrUpdate(processResult, asyncTaskId);
 	}
 }

@@ -3,7 +3,6 @@ package com.ccp.jn.async;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.business.NotifyContactUs;
 import com.ccp.jn.async.business.NotifyError;
 import com.ccp.jn.async.business.RemoveTries;
@@ -20,16 +19,16 @@ import com.jn.commons.JnTopic;
 public class AsyncServices {
 	
 	private static CcpMapDecorator catalog = new CcpMapDecorator()
-			.put(JnTopic.sendInstantMessage.name(), CcpDependencyInjection.getInjected(TryToSendInstantMessage.class))
-			.put(JnTopic.requestUnlockToken.name(), CcpDependencyInjection.getInjected(RequestUnlockToken.class))
-			.put(JnTopic.saveCandidateData.name(), CcpDependencyInjection.getInjected(SaveCandidateData.class))
-			.put(JnTopic.requestTokenAgain.name(), CcpDependencyInjection.getInjected(RequestTokenAgain.class))
-			.put(JnTopic.saveResumesQuery.name(), CcpDependencyInjection.getInjected(SaveResumesQuery.class))
-			.put(JnTopic.notifyContactUs.name(), CcpDependencyInjection.getInjected(NotifyContactUs.class))
-			.put(JnTopic.sendUserToken.name(), CcpDependencyInjection.getInjected(SendUserToken.class))
-			.put(JnTopic.removeTries.name(), CcpDependencyInjection.getInjected(RemoveTries.class))
-			.put(JnTopic.notifyError.name(), CcpDependencyInjection.getInjected(NotifyError.class))
-			.put(JnTopic.sendEmail.name(), CcpDependencyInjection.getInjected(SendEmail.class))
+			.put(JnTopic.sendInstantMessage.name(),  new TryToSendInstantMessage())
+			.put(JnTopic.requestUnlockToken.name(), new RequestUnlockToken())
+			.put(JnTopic.saveCandidateData.name(), new SaveCandidateData())
+			.put(JnTopic.requestTokenAgain.name(), new RequestTokenAgain())
+			.put(JnTopic.saveResumesQuery.name(), new SaveResumesQuery())
+			.put(JnTopic.notifyContactUs.name(), new NotifyContactUs())
+			.put(JnTopic.sendUserToken.name(), new SendUserToken())
+			.put(JnTopic.removeTries.name(), new RemoveTries())
+			.put(JnTopic.notifyError.name(), new NotifyError())
+			.put(JnTopic.sendEmail.name(), new SendEmail())
 			;
 	
 	private static Function<CcpMapDecorator, CcpMapDecorator> getProcess(String processName) {

@@ -2,7 +2,6 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.commons.others.GetMessage;
 import com.jn.commons.JnConstants;
 import com.jn.commons.JnEntity;
@@ -10,9 +9,9 @@ import com.jn.commons.JnTopic;
 
 public class SendUserToken implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 	
-	private final GetMessage getMessage = CcpDependencyInjection.getInjected(GetMessage.class);
+	private final GetMessage getMessage = new GetMessage();
 	
-	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
+	private final SendEmail sendEmail = new SendEmail();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {

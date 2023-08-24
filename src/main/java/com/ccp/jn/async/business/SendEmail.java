@@ -4,26 +4,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.CcpOperationType;
 import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.jn.async.commons.others.CommitAndAudit;
-
 import com.jn.commons.JnEntity;
 
 public class SendEmail implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	@CcpDependencyInject
-	private CcpEmailSender emailSender;
+	private CcpEmailSender emailSender = CcpInstanceInjection.getInstance(CcpEmailSender.class);
 
-	@CcpDependencyInject
-	private CcpDao dao;
+	private CcpDao dao = CcpInstanceInjection.getInstance(CcpDao.class);
 	
-	private CommitAndAudit commitAndAudit = CcpDependencyInjection.getInjected(CommitAndAudit.class);
+	private CommitAndAudit commitAndAudit = new CommitAndAudit();
 
-	private SendHttpRequest sendHttpRequest = CcpDependencyInjection.getInjected(SendHttpRequest.class);
+	private SendHttpRequest sendHttpRequest = new SendHttpRequest();
 
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		

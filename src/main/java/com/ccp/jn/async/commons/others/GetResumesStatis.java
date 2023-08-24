@@ -5,23 +5,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
 import com.ccp.especifications.db.utils.CcpField;
-
 import com.jn.commons.JnEntity;
 import com.jn.commons.entities.fields.A3D_candidate;
 
 public class GetResumesStatis implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
-	private final CcpDbQueryExecutor requestExecutor;
-	
-	
-	public GetResumesStatis(CcpDbQueryExecutor requestExecutor) {
-		this.requestExecutor = requestExecutor;
-	}
 
 
 	@Override
@@ -31,7 +23,7 @@ public class GetResumesStatis implements  java.util.function.Function<CcpMapDeco
 		
 		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 		
-		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnEntity.candidate.name());
+		CcpQueryExecutorDecorator selectFrom = query.selectFrom(JnEntity.candidate.name());
 		
 		CcpMapDecorator aggregations = selectFrom.getAggregations();
 

@@ -3,24 +3,12 @@ package com.ccp.jn.async.commons.others;
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.query.ElasticQuery;
 import com.ccp.especifications.db.query.Must;
-
 import com.jn.commons.JnEntity;
 
 public class GetResumesList implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
-
-	private final CcpDbQueryExecutor requestExecutor;
-
-	
-	
-	public GetResumesList(CcpDbQueryExecutor requestExecutor) {
-		this.requestExecutor = requestExecutor;
-	}
-
-
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
@@ -29,7 +17,7 @@ public class GetResumesList implements  java.util.function.Function<CcpMapDecora
 		
 		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 
-		CcpQueryExecutorDecorator selectFrom = query.selectFrom(this.requestExecutor, JnEntity.candidate.name());
+		CcpQueryExecutorDecorator selectFrom = query.selectFrom(JnEntity.candidate.name());
 		
 		List<CcpMapDecorator> resultAsList = selectFrom.getResultAsList();
 		

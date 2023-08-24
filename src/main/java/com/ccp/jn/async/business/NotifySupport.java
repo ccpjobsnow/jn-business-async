@@ -2,7 +2,6 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.jn.async.commons.others.GetMessage;
 import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
 import com.jn.commons.JnEntity;
@@ -10,11 +9,11 @@ import com.jn.commons.JnTopic;
 
 public class NotifySupport {
 	
-	private final TryToSendInstantMessage sendInstantMessage = CcpDependencyInjection.getInjected(TryToSendInstantMessage.class);
+	private final TryToSendInstantMessage sendInstantMessage = new TryToSendInstantMessage();
 
-	private final GetMessage getMessage = CcpDependencyInjection.getInjected(GetMessage.class);
+	private final GetMessage getMessage = new GetMessage();
 
-	private final SendEmail sendEmail = CcpDependencyInjection.getInjected(SendEmail.class);
+	private final SendEmail sendEmail = new SendEmail();
 	
 	private final String supportLanguage;
 	

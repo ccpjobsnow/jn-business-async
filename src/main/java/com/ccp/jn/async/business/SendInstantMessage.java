@@ -2,7 +2,7 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
@@ -11,11 +11,9 @@ import com.jn.commons.JnEntity;
 
 public class SendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	@CcpDependencyInject
-	private CcpInstantMessenger instantMessenger;
+	private CcpInstantMessenger instantMessenger = CcpInstanceInjection.getInstance(CcpInstantMessenger.class);
 
-	@CcpDependencyInject
-	private CcpDao dao;
+	private CcpDao dao = CcpInstanceInjection.getInstance(CcpDao.class);
 	
 	
 	@Override

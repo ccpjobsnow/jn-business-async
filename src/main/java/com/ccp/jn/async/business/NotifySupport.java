@@ -28,10 +28,11 @@ public class NotifySupport {
 	
 	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
 
+		CcpMapDecorator renameKey = values.renameKey("message", "msg");
 		this.getMessage
 		.addLenientFlow(this.sendInstantMessage, JnEntity.instant_messenger_parameters_to_send, JnEntity.instant_messenger_template_message)
 		.addLenientFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
-		.execute(topic, entity, values, this.supportLanguage);
+		.execute(topic, entity, renameKey, this.supportLanguage);
 
 		return values;
 	}

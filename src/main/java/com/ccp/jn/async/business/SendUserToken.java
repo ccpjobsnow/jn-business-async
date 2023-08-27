@@ -21,7 +21,6 @@ public class SendUserToken implements  java.util.function.Function<CcpMapDecorat
 		this.getMessage
 		.addFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
 		.execute(JnTopic.sendUserToken, JnEntity.login_token, transformed, language);
-		System.out.println("SUT: " + values);
 		return values;
 	}
 

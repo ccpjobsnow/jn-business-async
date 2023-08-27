@@ -40,9 +40,10 @@ public class AsyncServices {
 	}
 	
 	public static void executeProcess(String processName, CcpMapDecorator values) {
-		String asyncTaskId = values.getAsString("asyncTaskId");
-		CcpMapDecorator asyncTaskDetails = JnEntity.async_task.getOneById(asyncTaskId);	
 		
+		String asyncTaskId = values.getAsString("asyncTaskId");
+		
+		CcpMapDecorator asyncTaskDetails = JnEntity.async_task.getOneById(asyncTaskId);	
 		
 		try {
 			CcpMapDecorator response = execute(processName, values);

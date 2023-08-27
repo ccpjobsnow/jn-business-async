@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
@@ -19,7 +19,7 @@ public class GetMessage {
 	
 	private final List<JnEntity> messageEntities = new ArrayList<>();
 	
-	private CcpDao dao = CcpInstanceInjection.getInstance(CcpDao.class);
+	private CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 
 	public GetMessage addFlow(Function<CcpMapDecorator, CcpMapDecorator> process, JnEntity parameterEntity, JnEntity messageEntity) {
 		

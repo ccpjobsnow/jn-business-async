@@ -3,6 +3,7 @@ package com.ccp.jn.async;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.jn.async.business.BigQueryNoxxon;
 import com.ccp.jn.async.business.NotifyContactUs;
 import com.ccp.jn.async.business.NotifyError;
 import com.ccp.jn.async.business.RemoveTries;
@@ -29,6 +30,7 @@ public class AsyncServices {
 			.put(JnTopic.removeTries.name(), new RemoveTries())
 			.put(JnTopic.notifyError.name(), new NotifyError())
 			.put(JnTopic.sendEmail.name(), new SendEmail())
+			.put("bigquery", new BigQueryNoxxon())
 			;
 	
 	private static Function<CcpMapDecorator, CcpMapDecorator> getProcess(String processName) {
@@ -39,7 +41,7 @@ public class AsyncServices {
 		return asObject;
 	}
 	
-	public static void executeProcess(String processName, CcpMapDecorator values) {
+	public static CcpMapDecorator executeProcess(String processName, CcpMapDecorator values) {
 		
 		String asyncTaskId = values.getAsString("asyncTaskId");
 		
@@ -48,6 +50,7 @@ public class AsyncServices {
 		try {
 			CcpMapDecorator response = execute(processName, values);
 			saveProcessResult(asyncTaskDetails, response,asyncTaskId, true);
+			return response;
 		} catch (Throwable e) {
 			CcpMapDecorator response = new CcpMapDecorator(e);
 			saveProcessResult(asyncTaskDetails, response, asyncTaskId, false);

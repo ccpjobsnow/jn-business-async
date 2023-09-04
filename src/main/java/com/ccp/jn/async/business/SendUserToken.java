@@ -2,7 +2,7 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.jn.async.commons.others.GetMessage;
+import com.jn.commons.GetMessage;
 import com.jn.commons.JnConstants;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;

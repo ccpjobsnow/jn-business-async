@@ -2,8 +2,8 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.jn.async.commons.others.GetMessage;
 import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
+import com.jn.commons.GetMessage;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 

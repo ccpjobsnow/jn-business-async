@@ -19,7 +19,7 @@ public class NotifySupport {
 	
 	public NotifySupport() {
 
-		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFileFromClassLoader().getAsString("supportLanguage");
+		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFileFromFile().getAsString("supportLanguage");
 	
 		if(this.supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");

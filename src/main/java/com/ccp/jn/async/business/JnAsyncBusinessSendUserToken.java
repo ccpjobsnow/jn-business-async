@@ -2,16 +2,16 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.GetMessage;
-import com.jn.commons.JnConstants;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.jn.commons.business.JnCommonsBusinessGetMessage;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnConstants;
+import com.jn.commons.utils.JnTopic;
 
-public class SendUserToken implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessSendUserToken implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 	
-	private final GetMessage getMessage = new GetMessage();
+	private final JnCommonsBusinessGetMessage getMessage = new JnCommonsBusinessGetMessage();
 	
-	private final SendEmail sendEmail = new SendEmail();
+	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {

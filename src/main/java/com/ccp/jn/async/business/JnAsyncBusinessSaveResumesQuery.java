@@ -4,15 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.utils.CcpOperationType;
-import com.ccp.jn.async.commons.others.CommitAndAudit;
-import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.ccp.especifications.db.utils.CcpEntityOperationType;
 import com.jn.commons.entities.fields.A3D_candidate;
 import com.jn.commons.entities.fields.A3D_keywords_unknown;
+import com.jn.commons.entities.JnEntity;
 
-public class SaveResumesQuery implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private CcpMapDecorator keywordsentities = new CcpMapDecorator()
 			.put("4", JnEntity.keywords_operational)
@@ -21,9 +18,9 @@ public class SaveResumesQuery implements  java.util.function.Function<CcpMapDeco
 			.put("2", JnEntity.keywords_hr)
 			;
 
-	private final TryToSendInstantMessage sendInstantMessage = new TryToSendInstantMessage();
+	private final JnAsyncBusinessTryToSendInstantMessage sendInstantMessage = new JnAsyncBusinessTryToSendInstantMessage();
 
-	private CommitAndAudit commitAndAudit = new CommitAndAudit();
+	private JnAsyncBusinessCommitAndAudit commitAndAudit = new JnAsyncBusinessCommitAndAudit();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
@@ -41,7 +38,7 @@ public class SaveResumesQuery implements  java.util.function.Function<CcpMapDeco
 			return values;
 		}
 		
-		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
+//		CcpMapDecorator idToSearch = new CcpMapDecorator().put("name", JnTopic.saveResumesQuery.name());
 		CcpMapDecorator parameters = new CcpMapDecorator();//TODO
 		values = values.putAll(parameters);
 		this.sendInstantMessage.apply(values);
@@ -87,7 +84,7 @@ public class SaveResumesQuery implements  java.util.function.Function<CcpMapDeco
 		}
 		List<CcpMapDecorator> newUnknowKeywordsToSave = newUnknowKeywords.stream().map(x -> x.getInternalMap("_id")).collect(Collectors.toList());
 		
-		this.commitAndAudit.execute(newUnknowKeywordsToSave, CcpOperationType.create, keywordsUnknown);
+		this.commitAndAudit.execute(newUnknowKeywordsToSave, CcpEntityOperationType.create, keywordsUnknown);
 		
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 

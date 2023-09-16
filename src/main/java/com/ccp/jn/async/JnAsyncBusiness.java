@@ -3,34 +3,32 @@ package com.ccp.jn.async;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.jn.async.business.BigQueryNoxxon;
-import com.ccp.jn.async.business.NotifyContactUs;
-import com.ccp.jn.async.business.NotifyError;
-import com.ccp.jn.async.business.RemoveTries;
-import com.ccp.jn.async.business.RequestTokenAgain;
-import com.ccp.jn.async.business.RequestUnlockToken;
-import com.ccp.jn.async.business.SaveCandidateData;
-import com.ccp.jn.async.business.SaveResumesQuery;
-import com.ccp.jn.async.business.SendEmail;
-import com.ccp.jn.async.business.SendUserToken;
-import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.ccp.jn.async.business.JnAsyncBusinessNotifyContactUs;
+import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
+import com.ccp.jn.async.business.JnAsyncBusinessRemoveTries;
+import com.ccp.jn.async.business.JnAsyncBusinessRequestTokenAgain;
+import com.ccp.jn.async.business.JnAsyncBusinessRequestUnlockToken;
+import com.ccp.jn.async.business.JnAsyncBusinessSaveCandidateData;
+import com.ccp.jn.async.business.JnAsyncBusinessSaveResumesQuery;
+import com.ccp.jn.async.business.JnAsyncBusinessSendEmail;
+import com.ccp.jn.async.business.JnAsyncBusinessSendUserToken;
+import com.ccp.jn.async.business.JnAsyncBusinessTryToSendInstantMessage;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
-public class AsyncServices {
+public class JnAsyncBusiness {
 	
 	private static CcpMapDecorator catalog = new CcpMapDecorator()
-			.put(JnTopic.sendInstantMessage.name(),  new TryToSendInstantMessage())
-			.put(JnTopic.requestUnlockToken.name(), new RequestUnlockToken())
-			.put(JnTopic.saveCandidateData.name(), new SaveCandidateData())
-			.put(JnTopic.requestTokenAgain.name(), new RequestTokenAgain())
-			.put(JnTopic.saveResumesQuery.name(), new SaveResumesQuery())
-			.put(JnTopic.notifyContactUs.name(), new NotifyContactUs())
-			.put(JnTopic.sendUserToken.name(), new SendUserToken())
-			.put(JnTopic.removeTries.name(), new RemoveTries())
-			.put(JnTopic.notifyError.name(), new NotifyError())
-			.put(JnTopic.sendEmail.name(), new SendEmail())
-			.put("bigquery", new BigQueryNoxxon())
+			.put(JnTopic.sendInstantMessage.name(),  new JnAsyncBusinessTryToSendInstantMessage())
+			.put(JnTopic.requestUnlockToken.name(), new JnAsyncBusinessRequestUnlockToken())
+			.put(JnTopic.saveCandidateData.name(), new JnAsyncBusinessSaveCandidateData())
+			.put(JnTopic.requestTokenAgain.name(), new JnAsyncBusinessRequestTokenAgain())
+			.put(JnTopic.saveResumesQuery.name(), new JnAsyncBusinessSaveResumesQuery())
+			.put(JnTopic.notifyContactUs.name(), new JnAsyncBusinessNotifyContactUs())
+			.put(JnTopic.sendUserToken.name(), new JnAsyncBusinessSendUserToken())
+			.put(JnTopic.removeTries.name(), new JnAsyncBusinessRemoveTries())
+			.put(JnTopic.notifyError.name(), new JnAsyncBusinessNotifyError())
+			.put(JnTopic.sendEmail.name(), new JnAsyncBusinessSendEmail())
 			;
 	
 	private static Function<CcpMapDecorator, CcpMapDecorator> getProcess(String processName) {

@@ -1,19 +1,19 @@
 package com.ccp.jn.async.commons.query;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.ElasticQuery;
-import com.ccp.especifications.db.query.Must;
+import com.ccp.especifications.db.query.CcpDbQueryOptions;
+import com.ccp.especifications.db.query.CcpDbQueryMust;
 
 import com.jn.commons.entities.fields.A3D_candidate;
 
-public class AddGroupByCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAddGroupByCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 
-		Must must = values.getAsObject("_must");
+		CcpDbQueryMust must = values.getAsObject("_must");
 		
-		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
+		CcpDbQueryOptions query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 
 		query = query.startAggregations()
 					.addAvgAggregation(A3D_candidate.experience.name(), A3D_candidate.experience)

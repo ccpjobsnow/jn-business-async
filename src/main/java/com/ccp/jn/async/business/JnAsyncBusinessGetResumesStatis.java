@@ -1,4 +1,4 @@
-package com.ccp.jn.async.commons.others;
+package com.ccp.jn.async.business;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,22 +6,22 @@ import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
-import com.ccp.especifications.db.query.ElasticQuery;
-import com.ccp.especifications.db.query.Must;
-import com.ccp.especifications.db.utils.CcpField;
-import com.jn.commons.JnEntity;
+import com.ccp.especifications.db.query.CcpDbQueryOptions;
+import com.ccp.especifications.db.query.CcpDbQueryMust;
+import com.ccp.especifications.db.utils.CcpEntityField;
 import com.jn.commons.entities.fields.A3D_candidate;
+import com.jn.commons.entities.JnEntity;
 
-public class GetResumesStatis implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 
-		Must must = values.getAsObject("_must");
+		CcpDbQueryMust must = values.getAsObject("_must");
 		
-		ElasticQuery query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
+		CcpDbQueryOptions query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 		
 		CcpQueryExecutorDecorator selectFrom = query.selectFrom(JnEntity.candidate.name());
 		
@@ -53,14 +53,14 @@ public class GetResumesStatis implements  java.util.function.Function<CcpMapDeco
 	}
 
 	
-	private CcpMapDecorator getMapDecorator(CcpMapDecorator ddd, CcpField... fields) {
+	private CcpMapDecorator getMapDecorator(CcpMapDecorator ddd, CcpEntityField... fields) {
 		
 		CcpMapDecorator values = new CcpMapDecorator()
 				.put("ddd", ddd.getAsIntegerNumber("key"))
 				.put("total", ddd.getAsIntegerNumber("doc_count"))
 				;
 		
-		for (CcpField field : fields) {
+		for (CcpEntityField field : fields) {
 			String fieldName = field.name();
 			CcpMapDecorator internalMap = ddd.getInternalMap(fieldName);
 			Double value = internalMap.getAsDoubleNumber("value");

@@ -7,17 +7,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.ElasticQuery;
-import com.ccp.especifications.db.query.Should;
-import com.ccp.especifications.db.utils.DefaultField;
-import com.jn.commons.JnEntity;
+import com.ccp.especifications.db.query.CcpDbQueryOptions;
+import com.ccp.especifications.db.query.CcpDbQueryShould;
+import com.ccp.especifications.db.utils.CcpEntityDefaultField;
+import com.jn.commons.entities.JnEntity;
 
-public class RemoveTries implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	
 	public CcpMapDecorator apply(CcpMapDecorator object, String fieldName, Integer limit, JnEntity... entities) {
 
-		Should startShould = new ElasticQuery()
+		CcpDbQueryShould startShould = new CcpDbQueryOptions()
 		.startQuery()
 		.startBool()
 		.startShould(1);
@@ -33,7 +33,7 @@ public class RemoveTries implements  java.util.function.Function<CcpMapDecorator
 		}
 		
 		for (String id : ids) {
-			startShould = startShould.term(DefaultField._id, id);
+			startShould = startShould.term(CcpEntityDefaultField._id, id);
 		}
 		
 		String[] array = Arrays.asList(entities).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[entities.length]);

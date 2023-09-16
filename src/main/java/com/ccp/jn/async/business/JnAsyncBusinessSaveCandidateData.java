@@ -3,7 +3,7 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpMapDecorator;
 
 
-public class SaveCandidateData implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessSaveCandidateData implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {

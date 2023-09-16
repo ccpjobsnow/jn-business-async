@@ -5,11 +5,11 @@ import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
-import com.ccp.exceptions.instant.messenger.ThisBotWasBlockedByThisUser;
-import com.ccp.exceptions.instant.messenger.TooManyRequests;
-import com.jn.commons.JnEntity;
+import com.ccp.exceptions.instant.messenger.CcpThisBotWasBlockedByThisUser;
+import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
+import com.jn.commons.entities.JnEntity;
 
-public class SendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 
@@ -40,15 +40,15 @@ public class SendInstantMessage implements  java.util.function.Function<CcpMapDe
 		
 		try {
 			CcpMapDecorator instantMessengerData = this.instantMessenger.sendMessage(values);
-			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getTotalDeSegundosDecorridosDesdeMeiaNoiteDesteDia();
+			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 			CcpMapDecorator instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			JnEntity.instant_messenger_message_sent.createOrUpdate(instantMessageSent);
 			return values;
-		} catch (TooManyRequests e) {
+		} catch (CcpTooManyRequests e) {
 			
 			return this.retryToSendMessage(values);
 			
-		} catch(ThisBotWasBlockedByThisUser e) {
+		} catch(CcpThisBotWasBlockedByThisUser e) {
 			return saveBlockedBot(values, e.token);
 		}
 	}

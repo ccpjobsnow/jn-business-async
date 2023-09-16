@@ -5,12 +5,13 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.exceptions.http.CcpHttpError;
+import com.ccp.jn.async.commons.utils.JnHttpRequestType;
 import com.ccp.jn.async.exceptions.JnHttpClientError;
 import com.ccp.jn.async.exceptions.JnHttpServerError;
-import com.jn.commons.JnEntity;
+import com.jn.commons.entities.JnEntity;
 
-public class SendHttpRequest {
-	private final RemoveTries removeTries = new RemoveTries();
+public class JnAsyncBusinessSendHttpRequest {
+	private final JnAsyncBusinessRemoveTries removeTries = new JnAsyncBusinessRemoveTries();
 
 	public CcpMapDecorator execute(CcpMapDecorator values, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
 

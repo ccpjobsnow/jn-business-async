@@ -2,24 +2,23 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.jn.async.commons.others.TryToSendInstantMessage;
-import com.jn.commons.GetMessage;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.jn.commons.business.JnCommonsBusinessGetMessage;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
-public class NotifySupport {
+public class JnAsyncBusinessNotifySupport {
 	
-	private final TryToSendInstantMessage sendInstantMessage = new TryToSendInstantMessage();
+	private final JnAsyncBusinessTryToSendInstantMessage sendInstantMessage = new JnAsyncBusinessTryToSendInstantMessage();
 
-	private final GetMessage getMessage = new GetMessage();
+	private final JnCommonsBusinessGetMessage getMessage = new JnCommonsBusinessGetMessage();
 
-	private final SendEmail sendEmail = new SendEmail();
+	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
 	
 	private final String supportLanguage;
 	
-	public NotifySupport() {
+	public JnAsyncBusinessNotifySupport() {
 
-		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFileFromFile().getAsString("supportLanguage");
+		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 	
 		if(this.supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");

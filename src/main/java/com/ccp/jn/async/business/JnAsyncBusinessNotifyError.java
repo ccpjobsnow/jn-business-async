@@ -1,12 +1,12 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
-public class NotifyError implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	private final NotifySupport notifySupport = new NotifySupport();
+	private final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {

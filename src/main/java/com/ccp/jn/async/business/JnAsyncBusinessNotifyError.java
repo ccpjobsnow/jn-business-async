@@ -1,7 +1,7 @@
 package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityJobsNowError;
 import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
@@ -11,7 +11,7 @@ public class JnAsyncBusinessNotifyError implements  java.util.function.Function<
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		this.notifySupport.apply(values, JnTopic.notifyError, JnEntity.jobsnow_error);
+		this.notifySupport.apply(values, JnTopic.notifyError, new JnEntityJobsNowError());
 
 		return values;
 	}

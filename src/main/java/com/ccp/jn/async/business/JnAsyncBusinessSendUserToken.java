@@ -3,7 +3,9 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.jn.commons.business.JnCommonsBusinessGetMessage;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityEmailParametersToSend;
+import com.jn.commons.entities.JnEntityEmailTemplateMessage;
+import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.utils.JnConstants;
 import com.jn.commons.utils.JnTopic;
 
@@ -19,8 +21,8 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 		String language = values.getAsString("language");
 		
 		this.getMessage
-		.addFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
-		.execute(JnTopic.sendUserToken, JnEntity.login_token, transformed, language);
+		.addFlow(this.sendEmail, new JnEntityEmailParametersToSend(), new JnEntityEmailTemplateMessage())
+		.execute(JnTopic.sendUserToken, new JnEntityLoginToken(), transformed, language);
 		return values;
 	}
 

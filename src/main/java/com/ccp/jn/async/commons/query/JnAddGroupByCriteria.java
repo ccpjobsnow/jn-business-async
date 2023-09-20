@@ -1,10 +1,9 @@
 package com.ccp.jn.async.commons.query;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
-
-import com.jn.commons.entities.fields.A3D_candidate;
+import com.ccp.especifications.db.query.CcpDbQueryOptions;
+import com.jn.commons.entities.JnEntityCandidate;
 
 public class JnAddGroupByCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
@@ -14,18 +13,18 @@ public class JnAddGroupByCriteria implements  java.util.function.Function<CcpMap
 		CcpDbQueryMust must = values.getAsObject("_must");
 		
 		CcpDbQueryOptions query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
-
+		
 		query = query.startAggregations()
-					.addAvgAggregation(A3D_candidate.experience.name(), A3D_candidate.experience)
-					.addAvgAggregation(A3D_candidate.clt.name(), A3D_candidate.clt)
-					.addAvgAggregation(A3D_candidate.btc.name(), A3D_candidate.btc)
-					.addAvgAggregation(A3D_candidate.pj.name(), A3D_candidate.pj)
-					.startBucket(A3D_candidate.ddd.name(), A3D_candidate.ddd, 6666)
+					.addAvgAggregation(JnEntityCandidate.Fields.experience.name(), JnEntityCandidate.Fields.experience)
+					.addAvgAggregation(JnEntityCandidate.Fields.clt.name(), JnEntityCandidate.Fields.clt)
+					.addAvgAggregation(JnEntityCandidate.Fields.btc.name(), JnEntityCandidate.Fields.btc)
+					.addAvgAggregation(JnEntityCandidate.Fields.pj.name(), JnEntityCandidate.Fields.pj)
+					.startBucket(JnEntityCandidate.Fields.ddd.name(), JnEntityCandidate.Fields.ddd, 6666)
 						.startAggregations()
-							.addAvgAggregation(A3D_candidate.experience.name(), A3D_candidate.experience)
-							.addAvgAggregation(A3D_candidate.clt.name(), A3D_candidate.clt)
-							.addAvgAggregation(A3D_candidate.btc.name(), A3D_candidate.btc)
-							.addAvgAggregation(A3D_candidate.pj.name(), A3D_candidate.pj)
+							.addAvgAggregation(JnEntityCandidate.Fields.experience.name(), JnEntityCandidate.Fields.experience)
+							.addAvgAggregation(JnEntityCandidate.Fields.clt.name(), JnEntityCandidate.Fields.clt)
+							.addAvgAggregation(JnEntityCandidate.Fields.btc.name(), JnEntityCandidate.Fields.btc)
+							.addAvgAggregation(JnEntityCandidate.Fields.pj.name(), JnEntityCandidate.Fields.pj)
 						.endAggregationsAndBackToBucket()
 					.endTermsBuckedAndBackToAggregations()
 				.endAggregationsAndBackToRequest();

@@ -2,8 +2,12 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.business.JnCommonsBusinessGetMessage;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityEmailParametersToSend;
+import com.jn.commons.entities.JnEntityEmailTemplateMessage;
+import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
+import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
 import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncBusinessNotifySupport {
@@ -25,12 +29,12 @@ public class JnAsyncBusinessNotifySupport {
 		}
 	}
 	
-	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, JnEntity entity) {
+	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, CcpEntity entity) {
 
 		CcpMapDecorator renameKey = values.renameKey("message", "msg");
 		this.getMessage
-		.addLenientFlow(this.sendInstantMessage, JnEntity.instant_messenger_parameters_to_send, JnEntity.instant_messenger_template_message)
-		.addLenientFlow(this.sendEmail, JnEntity.email_parameters_to_send, JnEntity.email_template_message)
+		.addLenientFlow(this.sendInstantMessage, new JnEntityInstantMessengerParametersToSend(), new JnEntityInstantMessengerTemplateMessage())
+		.addLenientFlow(this.sendEmail, new JnEntityEmailParametersToSend(), new JnEntityEmailTemplateMessage())
 		.execute(topic, entity, renameKey, this.supportLanguage);
 
 		return values;

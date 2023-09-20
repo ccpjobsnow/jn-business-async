@@ -8,7 +8,10 @@ import com.ccp.exceptions.http.CcpHttpError;
 import com.ccp.jn.async.commons.utils.JnHttpRequestType;
 import com.ccp.jn.async.exceptions.JnHttpClientError;
 import com.ccp.jn.async.exceptions.JnHttpServerError;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityHttpApiErrorClient;
+import com.jn.commons.entities.JnEntityHttpApiErrorServer;
+import com.jn.commons.entities.JnEntityHttpApiParameters;
+import com.jn.commons.entities.JnEntityHttpApiRetrySendRequest;
 
 public class JnAsyncBusinessSendHttpRequest {
 	private final JnAsyncBusinessRemoveTries removeTries = new JnAsyncBusinessRemoveTries();
@@ -16,7 +19,7 @@ public class JnAsyncBusinessSendHttpRequest {
 	public CcpMapDecorator execute(CcpMapDecorator values, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
 
 		CcpMapDecorator valuesWithApiName = values.put("apiName", httpRequestType.name());
-		CcpMapDecorator httpApiParameters = JnEntity.http_api_parameters.getOneById(valuesWithApiName);
+		CcpMapDecorator httpApiParameters = new JnEntityHttpApiParameters().getOneById(valuesWithApiName);
 		CcpMapDecorator valuesWithHttpApiParameters = values.putAll(httpApiParameters);
 		
 		try {
@@ -29,7 +32,7 @@ public class JnAsyncBusinessSendHttpRequest {
 			CcpMapDecorator httpErrorDetails = e.entity.putAll(valuesWithHttpApiParameters).put("details", details);
 			
 			if(e.clientError) {
-				JnEntity.http_api_error_client.createOrUpdate(httpErrorDetails);
+				new JnEntityHttpApiErrorClient().createOrUpdate(httpErrorDetails);
 				throw new JnHttpClientError(e);
 			}
 			
@@ -43,17 +46,17 @@ public class JnAsyncBusinessSendHttpRequest {
 	private CcpMapDecorator retryToSendIntantMessage(CcpHttpError e, CcpMapDecorator values, CcpMapDecorator httpErrorDetails, Function<CcpMapDecorator, CcpMapDecorator> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String... keys) {
 		
 		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
-		boolean exceededTries = JnEntity.http_api_retry_send_request.exceededTries(httpErrorDetails, "tries", maxTries);
+		boolean exceededTries = new JnEntityHttpApiRetrySendRequest().exceededTries(httpErrorDetails, "tries", maxTries);
 		
 		if(exceededTries) {
-			JnEntity.http_api_error_server.createOrUpdate(httpErrorDetails);
+			new JnEntityHttpApiErrorServer().createOrUpdate(httpErrorDetails);
 			throw new JnHttpServerError(e);
 		}
 		
 		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
 		new CcpTimeDecorator().sleep(sleep);
 		CcpMapDecorator execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
-		this.removeTries.apply(httpErrorDetails, "tries", 3, JnEntity.http_api_retry_send_request);
+		this.removeTries.apply(httpErrorDetails, "tries", 3, new JnEntityHttpApiRetrySendRequest());
 		return execute;
 	}
 

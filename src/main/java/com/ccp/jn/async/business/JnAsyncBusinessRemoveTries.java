@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryShould;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityDefaultField;
-import com.jn.commons.entities.JnEntity;
 
 public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	
-	public CcpMapDecorator apply(CcpMapDecorator object, String fieldName, Integer limit, JnEntity... entities) {
+	public CcpMapDecorator apply(CcpMapDecorator object, String fieldName, Integer limit, CcpEntity... entities) {
 
 		CcpDbQueryShould startShould = new CcpDbQueryOptions()
 		.startQuery()
@@ -26,7 +26,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 		
 		for(int k = 1; k <= limit; k++) {
 			CcpMapDecorator put = object.put(fieldName, k);
-			for (JnEntity entity : entities) {
+			for (CcpEntity entity : entities) {
 				String id = entity.getId(put);
 				ids.add(id);
 			}
@@ -52,8 +52,10 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 		String fieldName = values.getAsString("fieldName");
 		Integer limit = values.getAsIntegerNumber("limit");
 		List<String> array = values.getAsStringList("entities");
-		JnEntity[] entities = new JnEntity[array.size()];
-		array.stream().map(x -> JnEntity.valueOf(x)).collect(Collectors.toList()).toArray(entities);
+		CcpEntity[] entities = new CcpEntity[array.size()];
+		array.stream()
+		//.map(x -> JnEntity.valueOf(x))//TODO
+		.collect(Collectors.toList()).toArray(entities);
 		CcpMapDecorator remove = this.apply(values, fieldName, limit, entities);
 		return remove;
 	}

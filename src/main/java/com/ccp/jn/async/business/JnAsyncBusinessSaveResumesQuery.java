@@ -4,18 +4,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityOperationType;
-import com.jn.commons.entities.fields.A3D_candidate;
-import com.jn.commons.entities.fields.A3D_keywords_unknown;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityCandidate;
+import com.jn.commons.entities.JnEntityKeywordsCollege;
+import com.jn.commons.entities.JnEntityKeywordsHr;
+import com.jn.commons.entities.JnEntityKeywordsIt;
+import com.jn.commons.entities.JnEntityKeywordsOperational;
+import com.jn.commons.entities.JnEntityKeywordsUnknow;
+import com.jn.commons.entities.JnEntitySearchResumeStatis;
 
 public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private CcpMapDecorator keywordsentities = new CcpMapDecorator()
-			.put("4", JnEntity.keywords_operational)
-			.put("3", JnEntity.keywords_college)
-			.put("1", JnEntity.keywords_it)
-			.put("2", JnEntity.keywords_hr)
+			.put("4", new JnEntityKeywordsOperational())
+			.put("3", new JnEntityKeywordsCollege())
+			.put("1", new JnEntityKeywordsIt())
+			.put("2", new JnEntityKeywordsHr())
 			;
 
 	private final JnAsyncBusinessTryToSendInstantMessage sendInstantMessage = new JnAsyncBusinessTryToSendInstantMessage();
@@ -25,7 +30,7 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		JnEntity.search_resumes_stats.createOrUpdate(values);
+		new JnEntitySearchResumeStatis().createOrUpdate(values);
 		
 		values = this.getUnknownKeywords(values, "requiredKeywords");
 		values = this.getUnknownKeywords(values, "optionalKeywords");
@@ -48,7 +53,7 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 
 	private CcpMapDecorator getUnknownKeywords(CcpMapDecorator values, String keywordType) {
 		
-		Integer jobType = values.getAsIntegerNumber(A3D_candidate.jobType.name());
+		Integer jobType = values.getAsIntegerNumber(JnEntityCandidate.Fields.jobType.name());
 		
 		if(jobType == null) {
 			return values;
@@ -64,7 +69,7 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 			return values;
 		}
 		
-		JnEntity keywordsEntity = this.keywordsentities.getAsObject(jobType.toString());
+		CcpEntity keywordsEntity = this.keywordsentities.getAsObject(jobType.toString());
 	
 		if(keywordsEntity == null) {
 			return values;
@@ -72,7 +77,7 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 
 		
 		List<String> keywords = values.getAsStringList(keywordType);
-		JnEntity keywordsUnknown = JnEntity.keywords_unknown;
+		CcpEntity keywordsUnknown = new JnEntityKeywordsUnknow();
 	
 		List<CcpMapDecorator> idsToKnownWords = keywords.stream().map(keyword -> this.putKeyword(keyword)).collect(Collectors.toList());
 		List<CcpMapDecorator> unknowKeywords = keywordsEntity.getManyByIds(idsToKnownWords).stream().filter(x -> this.notFound(x)).collect(Collectors.toList());
@@ -89,8 +94,8 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 		List<String> justStrings = newUnknowKeywordsToSave.stream().map(x -> x.getAsString("keyword")).collect(Collectors.toList());
 
 		values = values
-        	  .putSubKey("message", A3D_keywords_unknown.keywordType.name(), keywordType)
-        	  .putSubKey("message", A3D_candidate.jobType.name(), jobType)
+        	  .putSubKey("message", JnEntityKeywordsUnknow.Fields.keywordType.name(), keywordType)
+        	  .putSubKey("message", JnEntityCandidate.Fields.jobType.name(), jobType)
 			  .putSubKey("message", keywordType, justStrings)
 				;
 		return values;
@@ -105,7 +110,7 @@ public class JnAsyncBusinessSaveResumesQuery implements  java.util.function.Func
 	}
 
 	private CcpMapDecorator getUnknownKeyword(String keywordType, Integer jobType) {
-		CcpMapDecorator put = new CcpMapDecorator().renameKey("id", "keyword").put(A3D_keywords_unknown.keywordType.name(), keywordType).put(A3D_candidate.jobType.name(), jobType);
+		CcpMapDecorator put = new CcpMapDecorator().renameKey("id", "keyword").put(JnEntityKeywordsUnknow.Fields.keywordType.name(), keywordType).put(JnEntityCandidate.Fields.jobType.name(), jobType);
 		return put;
 	}
 	

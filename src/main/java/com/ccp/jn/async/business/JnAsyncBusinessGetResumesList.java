@@ -3,10 +3,10 @@ package com.ccp.jn.async.business;
 import java.util.List;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
-import com.jn.commons.entities.JnEntity;
-import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
+import com.ccp.especifications.db.query.CcpDbQueryOptions;
+import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
+import com.jn.commons.entities.JnEntityCandidate;
 
 public class JnAsyncBusinessGetResumesList implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
@@ -17,7 +17,7 @@ public class JnAsyncBusinessGetResumesList implements  java.util.function.Functi
 		
 		CcpDbQueryOptions query = must.endMustAndBackToBool().endBoolAndBackToQuery().endQueryAndBackToRequest();
 
-		CcpQueryExecutorDecorator selectFrom = query.selectFrom(JnEntity.candidate.name());
+		CcpQueryExecutorDecorator selectFrom = query.selectFrom(new JnEntityCandidate().name());
 		
 		List<CcpMapDecorator> resultAsList = selectFrom.getResultAsList();
 		

@@ -11,6 +11,7 @@ import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryShould;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityDefaultField;
+import com.jn.commons.entities.JnBaseEntity;
 
 public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
@@ -49,12 +50,13 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
+
 		String fieldName = values.getAsString("fieldName");
 		Integer limit = values.getAsIntegerNumber("limit");
 		List<String> array = values.getAsStringList("entities");
 		CcpEntity[] entities = new CcpEntity[array.size()];
 		array.stream()
-		//.map(x -> JnEntity.valueOf(x))//TODO
+		.map(x -> JnBaseEntity.valueOf(x))
 		.collect(Collectors.toList()).toArray(entities);
 		CcpMapDecorator remove = this.apply(values, fieldName, limit, entities);
 		return remove;

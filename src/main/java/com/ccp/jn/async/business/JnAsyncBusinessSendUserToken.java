@@ -20,9 +20,12 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 		CcpMapDecorator transformed = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
 		String language = values.getAsString("language");
 		
+		JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
+		JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
+		JnEntityLoginToken entityToSave = new JnEntityLoginToken();
 		this.getMessage
-		.addFlow(this.sendEmail, new JnEntityEmailParametersToSend(), new JnEntityEmailTemplateMessage())
-		.execute(JnTopic.sendUserToken, new JnEntityLoginToken(), transformed, language);
+		.addFlow(this.sendEmail, parameterEntity, messageEntity)
+		.execute(JnTopic.sendUserToken, entityToSave, transformed, language);
 		return values;
 	}
 

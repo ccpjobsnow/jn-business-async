@@ -44,7 +44,9 @@ public class JnAsyncBusinessSendEmail implements  java.util.function.Function<Cc
 		List<String> emails = values.getAsStringList("emails", "email");
 		
 		List<CcpMapDecorator> objects = emails.stream().map(email -> values.put("email", email)).collect(Collectors.toList());
-		List<CcpMapDecorator> manyById = this.dao.getManyById(objects, new JnEntityEmailMessageSent(), new JnEntityEmailReportedAsSpam());
+		JnEntityEmailMessageSent jnEntityEmailMessageSent = new JnEntityEmailMessageSent();
+		JnEntityEmailReportedAsSpam jnEntityEmailReportedAsSpam = new JnEntityEmailReportedAsSpam();
+		List<CcpMapDecorator> manyById = this.dao.getManyById(objects, jnEntityEmailMessageSent, jnEntityEmailReportedAsSpam);
 		List<String> collect = manyById.stream().map(x -> x.getAsString("email")).collect(Collectors.toList());
 		List<String> onlyEmailsNotSentAndNotRepportedAsSpam = emails.stream().filter(x -> collect.contains(x) == false).collect(Collectors.toList());
 		return onlyEmailsNotSentAndNotRepportedAsSpam;

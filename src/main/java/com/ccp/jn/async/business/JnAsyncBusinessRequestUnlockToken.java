@@ -10,7 +10,9 @@ public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Fu
 
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 		
-		this.notifySupport.apply(values, JnTopic.requestUnlockToken, new JnEntityRequestUnlockToken());
+		JnEntityRequestUnlockToken entity = new JnEntityRequestUnlockToken();
+		
+		this.notifySupport.apply(values, JnTopic.requestUnlockToken, entity);
 
 		return values;
 	}

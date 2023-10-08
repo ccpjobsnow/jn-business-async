@@ -32,9 +32,15 @@ public class JnAsyncBusinessNotifySupport {
 	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, CcpEntity entity) {
 
 		CcpMapDecorator renameKey = values.renameKey("message", "msg");
+		
+		JnEntityInstantMessengerParametersToSend instantMessengerParametersToSend = new JnEntityInstantMessengerParametersToSend();
+		JnEntityInstantMessengerTemplateMessage instantMessengerTemplateMessage = new JnEntityInstantMessengerTemplateMessage();
+		JnEntityEmailParametersToSend emailParametersToSend = new JnEntityEmailParametersToSend();
+		JnEntityEmailTemplateMessage emailTemplateMessage = new JnEntityEmailTemplateMessage();
+		
 		this.getMessage
-		.addLenientFlow(this.sendInstantMessage, new JnEntityInstantMessengerParametersToSend(), new JnEntityInstantMessengerTemplateMessage())
-		.addLenientFlow(this.sendEmail, new JnEntityEmailParametersToSend(), new JnEntityEmailTemplateMessage())
+		.addLenientFlow(this.sendInstantMessage, instantMessengerParametersToSend, instantMessengerTemplateMessage)
+		.addLenientFlow(this.sendEmail, emailParametersToSend, emailTemplateMessage)
 		.execute(topic, entity, renameKey, this.supportLanguage);
 
 		return values;

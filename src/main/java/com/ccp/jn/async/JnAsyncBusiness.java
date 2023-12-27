@@ -8,8 +8,6 @@ import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.ccp.jn.async.business.JnAsyncBusinessRemoveTries;
 import com.ccp.jn.async.business.JnAsyncBusinessRequestTokenAgain;
 import com.ccp.jn.async.business.JnAsyncBusinessRequestUnlockToken;
-import com.ccp.jn.async.business.JnAsyncBusinessSaveCandidateData;
-import com.ccp.jn.async.business.JnAsyncBusinessSaveResumesQuery;
 import com.ccp.jn.async.business.JnAsyncBusinessSendEmail;
 import com.ccp.jn.async.business.JnAsyncBusinessSendUserToken;
 import com.ccp.jn.async.business.JnAsyncBusinessTryToSendInstantMessage;
@@ -21,9 +19,7 @@ public class JnAsyncBusiness {
 	private static CcpMapDecorator catalog = new CcpMapDecorator()
 			.put(JnTopic.sendInstantMessage.name(),  new JnAsyncBusinessTryToSendInstantMessage())
 			.put(JnTopic.requestUnlockToken.name(), new JnAsyncBusinessRequestUnlockToken())
-			.put(JnTopic.saveCandidateData.name(), new JnAsyncBusinessSaveCandidateData())
 			.put(JnTopic.requestTokenAgain.name(), new JnAsyncBusinessRequestTokenAgain())
-			.put(JnTopic.saveResumesQuery.name(), new JnAsyncBusinessSaveResumesQuery())
 			.put(JnTopic.notifyContactUs.name(), new JnAsyncBusinessNotifyContactUs())
 			.put(JnTopic.sendUserToken.name(), new JnAsyncBusinessSendUserToken())
 			.put(JnTopic.removeTries.name(), new JnAsyncBusinessRemoveTries())

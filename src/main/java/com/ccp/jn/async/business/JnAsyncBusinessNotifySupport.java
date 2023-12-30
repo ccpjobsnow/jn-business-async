@@ -39,9 +39,9 @@ public class JnAsyncBusinessNotifySupport {
 		JnEntityEmailTemplateMessage emailTemplateMessage = new JnEntityEmailTemplateMessage();
 		
 		this.getMessage
-		.addLenientFlow(this.sendInstantMessage, instantMessengerParametersToSend, instantMessengerTemplateMessage)
-		.addLenientFlow(this.sendEmail, emailParametersToSend, emailTemplateMessage)
-		.execute(topic, entity, renameKey, this.supportLanguage);
+		.addOneLenientStep(this.sendInstantMessage, instantMessengerParametersToSend, instantMessengerTemplateMessage)
+		.addOneLenientStep(this.sendEmail, emailParametersToSend, emailTemplateMessage)
+		.executeAllSteps(topic, entity, renameKey, this.supportLanguage);
 
 		return values;
 	}

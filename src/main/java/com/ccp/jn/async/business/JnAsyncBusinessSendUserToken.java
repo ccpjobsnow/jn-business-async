@@ -13,19 +13,20 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 	
 	private final JnCommonsBusinessGetMessage getMessage = new JnCommonsBusinessGetMessage();
 	
-	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
+	private final JnAsyncBusinessSendEmail stepToSendEmail = new JnAsyncBusinessSendEmail();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
-		CcpMapDecorator transformed = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
+		CcpMapDecorator entityValue = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
 		String language = values.getAsString("language");
 		
-		JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
-		JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
+		JnEntityEmailParametersToSend parametersToSendEmail = new JnEntityEmailParametersToSend();
+		JnEntityEmailTemplateMessage templateToSendEmail = new JnEntityEmailTemplateMessage();
 		JnEntityLoginToken entityToSave = new JnEntityLoginToken();
+		JnTopic entityId = JnTopic.sendUserToken;
 		this.getMessage
-		.addFlow(this.sendEmail, parameterEntity, messageEntity)
-		.execute(JnTopic.sendUserToken, entityToSave, transformed, language);
+		.addOneStep(this.stepToSendEmail, parametersToSendEmail, templateToSendEmail)
+		.executeAllSteps(entityId, entityToSave, entityValue, language);
 		return values;
 	}
 

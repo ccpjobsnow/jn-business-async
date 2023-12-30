@@ -27,7 +27,7 @@ public class JnAsyncBusinessSendHttpRequest {
 			return apply;
 		} catch (CcpHttpError e) {
 			
-			String details = valuesWithHttpApiParameters.getSubMap(keys).asJson();
+			String details = valuesWithHttpApiParameters.getSubMap(keys).asUgglyJson();
 			
 			CcpMapDecorator httpErrorDetails = e.entity.putAll(valuesWithHttpApiParameters).put("details", details);
 			

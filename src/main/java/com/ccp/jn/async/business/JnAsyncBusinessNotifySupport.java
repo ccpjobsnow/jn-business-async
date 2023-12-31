@@ -1,6 +1,6 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.business.JnCommonsBusinessGetMessage;
@@ -29,9 +29,9 @@ public class JnAsyncBusinessNotifySupport {
 		}
 	}
 	
-	public CcpMapDecorator apply(CcpMapDecorator values, JnTopic topic, CcpEntity entity) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values, JnTopic topic, CcpEntity entity) {
 
-		CcpMapDecorator renameKey = values.renameKey("message", "msg");
+		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		
 		JnEntityInstantMessengerParametersToSend instantMessengerParametersToSend = new JnEntityInstantMessengerParametersToSend();
 		JnEntityInstantMessengerTemplateMessage instantMessengerTemplateMessage = new JnEntityInstantMessengerTemplateMessage();

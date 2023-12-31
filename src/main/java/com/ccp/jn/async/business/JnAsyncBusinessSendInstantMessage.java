@@ -1,6 +1,6 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
@@ -10,7 +10,7 @@ import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
-public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	private CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 
@@ -18,20 +18,20 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 	
 	
 	@Override
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
 		String token = this.instantMessenger.getToken(values);
 		
 		JnEntityInstantMessengerBotLocked jnEntityInstantMessengerBotLocked = new JnEntityInstantMessengerBotLocked();
 		JnEntityInstantMessengerMessageSent jnEntityInstantMessengerMessageSent = new JnEntityInstantMessengerMessageSent();
-		CcpMapDecorator dataFromThisRecipient = this.dao.getAllData(values.put("token", token), jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
+		CcpJsonRepresentation dataFromThisRecipient = this.dao.getAllData(values.put("token", token), jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.name());
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = values.getAsIntegerNumber("sleep");
 			new CcpTimeDecorator().sleep(sleep);
-			CcpMapDecorator execute = this.apply(values);
+			CcpJsonRepresentation execute = this.apply(values);
 			return execute;
 		}
 
@@ -42,9 +42,9 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		}
 		
 		try {
-			CcpMapDecorator instantMessengerData = this.instantMessenger.sendMessage(values);
+			CcpJsonRepresentation instantMessengerData = this.instantMessenger.sendMessage(values);
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
-			CcpMapDecorator instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
+			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			new JnEntityInstantMessengerMessageSent().createOrUpdate(instantMessageSent);
 			return values;
 		} catch (CcpTooManyRequests e) {
@@ -56,7 +56,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		}
 	}
 
-	private CcpMapDecorator retryToSendMessage(CcpMapDecorator values) {
+	private CcpJsonRepresentation retryToSendMessage(CcpJsonRepresentation values) {
 		
 		Integer maxTriesToSendMessage = values.getAsIntegerNumber("maxTriesToSendMessage");
 		Integer triesToSendMessage = values.getAsIntegerNumber("triesToSendMessage");
@@ -75,7 +75,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		return this.apply(values.put("triesToSendMessage", triesToSendMessage + 1));
 	}
 
-	private CcpMapDecorator saveBlockedBot(CcpMapDecorator putAll, String token) {
+	private CcpJsonRepresentation saveBlockedBot(CcpJsonRepresentation putAll, String token) {
 		new JnEntityInstantMessengerBotLocked().createOrUpdate(putAll.put("token", token));
 		return putAll;
 	}

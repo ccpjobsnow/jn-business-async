@@ -1,13 +1,13 @@
 package com.ccp.jn.async.commons.query;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
 
 
-public class JnAddSizeInTheQuery implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAddSizeInTheQuery implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		Integer size = values.getAsIntegerNumber("size");
 		if(size == null) {
 			size = 0;

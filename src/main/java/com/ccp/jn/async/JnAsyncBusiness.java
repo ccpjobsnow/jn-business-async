@@ -2,7 +2,8 @@ package com.ccp.jn.async;
 
 import java.util.function.Function;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyContactUs;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.ccp.jn.async.business.JnAsyncBusinessRemoveTries;
@@ -16,7 +17,7 @@ import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncBusiness {
 	
-	private static CcpMapDecorator catalog = new CcpMapDecorator()
+	private static CcpJsonRepresentation catalog = CcpConstants.EMPTY_JSON
 			.put(JnTopic.sendInstantMessage.name(),  new JnAsyncBusinessTryToSendInstantMessage())
 			.put(JnTopic.requestUnlockToken.name(), new JnAsyncBusinessRequestUnlockToken())
 			.put(JnTopic.requestTokenAgain.name(), new JnAsyncBusinessRequestTokenAgain())
@@ -27,40 +28,40 @@ public class JnAsyncBusiness {
 			.put(JnTopic.sendEmail.name(), new JnAsyncBusinessSendEmail())
 			;
 	
-	private static Function<CcpMapDecorator, CcpMapDecorator> getProcess(String processName) {
-		Function<CcpMapDecorator, CcpMapDecorator> asObject = catalog.getAsObject(processName);
+	private static Function<CcpJsonRepresentation, CcpJsonRepresentation> getProcess(String processName) {
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> asObject = catalog.getAsObject(processName);
 		if(asObject == null) {
 			throw new RuntimeException("The process '" + processName + "' was not found");
 		}
 		return asObject;
 	}
 	
-	public static CcpMapDecorator executeProcess(String processName, CcpMapDecorator values) {
+	public static CcpJsonRepresentation executeProcess(String processName, CcpJsonRepresentation values) {
 		
 		String asyncTaskId = values.getAsString("asyncTaskId");
 		
-		CcpMapDecorator asyncTaskDetails = new JnEntityAsyncTask().getOneById(asyncTaskId);	
+		CcpJsonRepresentation asyncTaskDetails = new JnEntityAsyncTask().getOneById(asyncTaskId);	
 		
 		try {
-			CcpMapDecorator response = execute(processName, values);
+			CcpJsonRepresentation response = execute(processName, values);
 			saveProcessResult(asyncTaskDetails, response,asyncTaskId, true);
 			return response;
 		} catch (Throwable e) {
-			CcpMapDecorator response = new CcpMapDecorator(e);
+			CcpJsonRepresentation response = new CcpJsonRepresentation(e);
 			saveProcessResult(asyncTaskDetails, response, asyncTaskId, false);
 			throw e;
 		}
 	}
 
-	public static CcpMapDecorator execute(String processName, CcpMapDecorator values) {
-		Function<CcpMapDecorator, CcpMapDecorator> process = getProcess(processName);
-		CcpMapDecorator response = process.apply(values);
+	public static CcpJsonRepresentation execute(String processName, CcpJsonRepresentation values) {
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> process = getProcess(processName);
+		CcpJsonRepresentation response = process.apply(values);
 		return response;
 	}
 
-	private static void saveProcessResult(CcpMapDecorator messageDetails, CcpMapDecorator response,String asyncTaskId, boolean success) {
+	private static void saveProcessResult(CcpJsonRepresentation messageDetails, CcpJsonRepresentation response,String asyncTaskId, boolean success) {
 		Long finished = System.currentTimeMillis();
-		CcpMapDecorator processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
+		CcpJsonRepresentation processResult = messageDetails.put("response", response).put("finished", finished).put("success", success);
 		new JnEntityAsyncTask().createOrUpdate(processResult, asyncTaskId);
 	}
 }

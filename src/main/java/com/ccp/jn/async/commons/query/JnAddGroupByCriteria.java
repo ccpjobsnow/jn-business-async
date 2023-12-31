@@ -1,14 +1,14 @@
 package com.ccp.jn.async.commons.query;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
 import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.jn.commons.entities.JnEntityCandidate;
 
-public class JnAddGroupByCriteria implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAddGroupByCriteria implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
 	@Override
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
 		CcpDbQueryMust must = values.getAsObject("_must");
 		
@@ -31,7 +31,7 @@ public class JnAddGroupByCriteria implements  java.util.function.Function<CcpMap
 		
 		must = query.startQuery().startBool().startMust();
 		
-		CcpMapDecorator put = values.put("_must", must);
+		CcpJsonRepresentation put = values.put("_must", must);
 		
 		return put;
 	}

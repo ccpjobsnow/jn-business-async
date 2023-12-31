@@ -2,15 +2,15 @@ package com.ccp.jn.async.commons.query;
 
 import java.util.List;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.query.CcpDbQueryBool;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
 import com.ccp.especifications.db.query.CcpDbQueryShould;
 import com.jn.commons.entities.JnEntityCandidate;
 
-public class JnAddOptionalKeywordsFilter implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAddOptionalKeywordsFilter implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		CcpDbQueryMust must = values.getAsObject("_must");
 		CcpDbQueryBool bool = must.endMustAndBackToBool();
 		
@@ -30,7 +30,7 @@ public class JnAddOptionalKeywordsFilter implements  java.util.function.Function
 		
 		must = bool.endBoolAndBackToMust();
 		
-		CcpMapDecorator put = values.put("_must", must);
+		CcpJsonRepresentation put = values.put("_must", must);
 		return put;
 	}
 	

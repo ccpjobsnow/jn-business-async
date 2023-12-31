@@ -1,25 +1,25 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.jn.commons.entities.JnEntityJobsnowError;
 import com.jn.commons.utils.JnTopic;
 
-public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	private final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
 
 	@Override
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
 		this.notifySupport.apply(values, JnTopic.notifyError, new JnEntityJobsnowError());
 
 		return values;
 	}
 	
-	public CcpMapDecorator apply(Throwable e) {
+	public CcpJsonRepresentation apply(Throwable e) {
 		
-		CcpMapDecorator values = new CcpMapDecorator(e);
-		CcpMapDecorator execute = this.apply(values.renameKey("message", "msg"));
+		CcpJsonRepresentation values = new CcpJsonRepresentation(e);
+		CcpJsonRepresentation execute = this.apply(values.renameKey("message", "msg"));
 		return execute;
 	}
 

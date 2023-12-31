@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.query.CcpDbQueryMust;
 import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpQueryExecutorDecorator;
 import com.ccp.especifications.db.utils.CcpEntityField;
 import com.jn.commons.entities.JnEntityCandidate;
 
-public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
 
 
 	@Override
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
 		CcpDbQueryMust must = values.getAsObject("_must");
 		
@@ -24,17 +25,17 @@ public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Func
 		
 		CcpQueryExecutorDecorator selectFrom = query.selectFrom(new JnEntityCandidate().name());
 		
-		CcpMapDecorator aggregations = selectFrom.getAggregations();
+		CcpJsonRepresentation aggregations = selectFrom.getAggregations();
 
-		CcpMapDecorator total = aggregations.getInternalMap("total");
+		CcpJsonRepresentation total = aggregations.getInnerJson("total");
 		
 		Integer doc_count = total.getAsIntegerNumber("doc_count");
 		
-		CcpMapDecorator entireCountry = aggregations.put("doc_count", doc_count).put("key", 0);
+		CcpJsonRepresentation entireCountry = aggregations.put("doc_count", doc_count).put("key", 0);
 		
-		CcpMapDecorator allRegions = aggregations.getInternalMap("ddd");
+		CcpJsonRepresentation allRegions = aggregations.getInnerJson("ddd");
 		
-		List<CcpMapDecorator> eachRegion = allRegions.getAsMapList("buckets")
+		List<CcpJsonRepresentation> eachRegion = allRegions.getJsonList("buckets")
 				.stream().map(ddd ->  this.getMapDecorator(ddd, 
 						JnEntityCandidate.Fields.experience, 
 						JnEntityCandidate.Fields.clt, 
@@ -42,26 +43,26 @@ public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Func
 						JnEntityCandidate.Fields.pj
 						)).collect(Collectors.toList());
 
-		ArrayList<CcpMapDecorator> results = new ArrayList<>(eachRegion);
+		ArrayList<CcpJsonRepresentation> results = new ArrayList<>(eachRegion);
 		 
 		results.add(entireCountry);
 		
-		CcpMapDecorator put = new CcpMapDecorator().put("results", results);
+		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("results", results);
 		
 		return put;
 	}
 
 	
-	private CcpMapDecorator getMapDecorator(CcpMapDecorator ddd, CcpEntityField... fields) {
+	private CcpJsonRepresentation getMapDecorator(CcpJsonRepresentation ddd, CcpEntityField... fields) {
 		
-		CcpMapDecorator values = new CcpMapDecorator()
+		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON
 				.put("ddd", ddd.getAsIntegerNumber("key"))
 				.put("total", ddd.getAsIntegerNumber("doc_count"))
 				;
 		
 		for (CcpEntityField field : fields) {
 			String fieldName = field.name();
-			CcpMapDecorator internalMap = ddd.getInternalMap(fieldName);
+			CcpJsonRepresentation internalMap = ddd.getInnerJson(fieldName);
 			Double value = internalMap.getAsDoubleNumber("value");
 			values = values.put(fieldName, value);
 		}

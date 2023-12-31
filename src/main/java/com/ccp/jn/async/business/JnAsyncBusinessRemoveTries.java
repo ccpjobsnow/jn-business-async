@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryShould;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityDefaultField;
 import com.jn.commons.entities.JnBaseEntity;
 
-public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	
-	public CcpMapDecorator apply(CcpMapDecorator object, String fieldName, Integer limit, CcpEntity... entities) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation object, String fieldName, Integer limit, CcpEntity... entities) {
 
 		CcpDbQueryShould startShould = new CcpDbQueryOptions()
 		.startQuery()
@@ -26,7 +26,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 		Set<String> ids = new HashSet<>();
 		
 		for(int k = 1; k <= limit; k++) {
-			CcpMapDecorator put = object.put(fieldName, k);
+			CcpJsonRepresentation put = object.put(fieldName, k);
 			for (CcpEntity entity : entities) {
 				String id = entity.getId(put);
 				ids.add(id);
@@ -39,7 +39,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 		
 		String[] array = Arrays.asList(entities).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[entities.length]);
 		
-		CcpMapDecorator delete = startShould.endShouldAndBackToBool().endBoolAndBackToQuery()
+		CcpJsonRepresentation delete = startShould.endShouldAndBackToBool().endBoolAndBackToQuery()
 		.endQueryAndBackToRequest()
 		.selectFrom(array)
 		.delete();
@@ -49,7 +49,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 	}
 
 	@Override
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
 		String fieldName = values.getAsString("fieldName");
 		Integer limit = values.getAsIntegerNumber("limit");
@@ -58,7 +58,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 		array.stream()
 		.map(x -> JnBaseEntity.valueOf(x))
 		.collect(Collectors.toList()).toArray(entities);
-		CcpMapDecorator remove = this.apply(values, fieldName, limit, entities);
+		CcpJsonRepresentation remove = this.apply(values, fieldName, limit, entities);
 		return remove;
 	}
 	

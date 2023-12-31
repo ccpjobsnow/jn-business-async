@@ -1,14 +1,14 @@
 package com.ccp.jn.async.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.jn.commons.entities.JnEntityRequestUnlockToken;
 import com.jn.commons.utils.JnTopic;
 
-public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	private final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
 
-	public CcpMapDecorator apply(CcpMapDecorator values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
 		JnEntityRequestUnlockToken entity = new JnEntityRequestUnlockToken();
 		

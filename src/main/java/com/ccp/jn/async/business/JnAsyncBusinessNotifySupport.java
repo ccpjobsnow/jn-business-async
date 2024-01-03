@@ -22,7 +22,7 @@ public class JnAsyncBusinessNotifySupport {
 	
 	public JnAsyncBusinessNotifySupport() {
 
-		this.supportLanguage =  new CcpStringDecorator("application.properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
+		this.supportLanguage =  new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 	
 		if(this.supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");

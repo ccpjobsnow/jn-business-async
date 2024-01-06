@@ -18,14 +18,14 @@ import com.jn.commons.utils.JnTopic;
 public class JnAsyncBusiness {
 	
 	private static CcpJsonRepresentation catalog = CcpConstants.EMPTY_JSON
-			.put(JnTopic.sendInstantMessage.name(),  new JnAsyncBusinessTryToSendInstantMessage())
-			.put(JnTopic.requestUnlockToken.name(), new JnAsyncBusinessRequestUnlockToken())
-			.put(JnTopic.requestTokenAgain.name(), new JnAsyncBusinessRequestTokenAgain())
-			.put(JnTopic.notifyContactUs.name(), new JnAsyncBusinessNotifyContactUs())
-			.put(JnTopic.sendUserToken.name(), new JnAsyncBusinessSendUserToken())
-			.put(JnTopic.removeTries.name(), new JnAsyncBusinessRemoveTries())
-			.put(JnTopic.notifyError.name(), new JnAsyncBusinessNotifyError())
-			.put(JnTopic.sendEmail.name(), new JnAsyncBusinessSendEmail())
+			.put(JnTopic.jnSendInstantMessage.name(),  new JnAsyncBusinessTryToSendInstantMessage())
+			.put(JnTopic.jnRequestUnlockToken.name(), new JnAsyncBusinessRequestUnlockToken())
+			.put(JnTopic.jnRequestTokenAgain.name(), new JnAsyncBusinessRequestTokenAgain())
+			.put(JnTopic.jnNotifyContactUs.name(), new JnAsyncBusinessNotifyContactUs())
+			.put(JnTopic.jnSendUserToken.name(), new JnAsyncBusinessSendUserToken())
+			.put(JnTopic.jnRemoveTries.name(), new JnAsyncBusinessRemoveTries())
+			.put(JnTopic.jnNotifyError.name(), new JnAsyncBusinessNotifyError())
+			.put(JnTopic.jnSendEmail.name(), new JnAsyncBusinessSendEmail())
 			;
 	
 	private static Function<CcpJsonRepresentation, CcpJsonRepresentation> getProcess(String processName) {

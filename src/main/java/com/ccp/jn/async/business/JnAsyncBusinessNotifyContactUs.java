@@ -10,7 +10,7 @@ public class JnAsyncBusinessNotifyContactUs implements  java.util.function.Funct
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
-		this.notifySupport.apply(values, JnTopic.notifyContactUs, new JnEntityContactUs());
+		this.notifySupport.apply(values, JnTopic.jnNotifyContactUs, new JnEntityContactUs());
 		
 		return values;
 	}

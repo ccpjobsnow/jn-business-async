@@ -12,7 +12,7 @@ public class JnAsyncBusinessRequestTokenAgain implements  java.util.function.Fun
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
 		//JnBusinessEntity.login_token.resetData(parameters); o que essa coisa faz aqui?
-		this.notifySupport.apply(values, JnTopic.jnRequestTokenAgain, new JnEntityRequestTokenAgain());
+		this.notifySupport.apply(values, JnTopic.requestTokenAgain, new JnEntityRequestTokenAgain());
 
 		return values;
 	}

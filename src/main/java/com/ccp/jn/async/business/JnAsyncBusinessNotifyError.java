@@ -11,7 +11,7 @@ public class JnAsyncBusinessNotifyError implements  java.util.function.Function<
 	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		this.notifySupport.apply(values, JnTopic.jnNotifyError, new JnEntityJobsnowError());
+		this.notifySupport.apply(values, JnTopic.notifyError, new JnEntityJobsnowError());
 
 		return values;
 	}

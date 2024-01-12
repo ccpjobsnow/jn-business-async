@@ -2,7 +2,7 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.jn.commons.entities.JnEntityRequestUnlockToken;
-import com.jn.commons.utils.JnTopic;
+import com.jn.commons.utils.JnTopics;
 
 public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
@@ -12,7 +12,7 @@ public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Fu
 		
 		JnEntityRequestUnlockToken entity = new JnEntityRequestUnlockToken();
 		
-		this.notifySupport.apply(values, JnTopic.requestUnlockToken, entity);
+		this.notifySupport.apply(values, JnTopics.requestUnlockToken.getTopicName(), entity);
 
 		return values;
 	}

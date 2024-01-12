@@ -2,7 +2,7 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.jn.commons.entities.JnEntityContactUs;
-import com.jn.commons.utils.JnTopic;
+import com.jn.commons.utils.JnTopics;
 
 public class JnAsyncBusinessNotifyContactUs implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
@@ -10,7 +10,7 @@ public class JnAsyncBusinessNotifyContactUs implements  java.util.function.Funct
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
-		this.notifySupport.apply(values, JnTopic.notifyContactUs, new JnEntityContactUs());
+		this.notifySupport.apply(values, JnTopics.notifyContactUs.getTopicName(), new JnEntityContactUs());
 		
 		return values;
 	}

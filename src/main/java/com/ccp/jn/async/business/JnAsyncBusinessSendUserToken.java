@@ -7,7 +7,7 @@ import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.utils.JnConstants;
-import com.jn.commons.utils.JnTopic;
+import com.jn.commons.utils.JnTopics;
 
 public class JnAsyncBusinessSendUserToken implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 	
@@ -23,10 +23,9 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 		JnEntityEmailParametersToSend parametersToSendEmail = new JnEntityEmailParametersToSend();
 		JnEntityEmailTemplateMessage templateToSendEmail = new JnEntityEmailTemplateMessage();
 		JnEntityLoginToken entityToSave = new JnEntityLoginToken();
-		JnTopic entityId = JnTopic.sendUserToken;
 		this.getMessage
 		.addOneStep(this.stepToSendEmail, parametersToSendEmail, templateToSendEmail)
-		.executeAllSteps(entityId, entityToSave, entityValue, language);
+		.executeAllSteps(JnTopics.sendUserToken.getTopicName(), entityToSave, entityValue, language);
 		return values;
 	}
 

@@ -2,7 +2,7 @@ package com.ccp.jn.async.business;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.jn.commons.entities.JnEntityJobsnowError;
-import com.jn.commons.utils.JnTopic;
+import com.jn.commons.utils.JnTopics;
 
 public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
@@ -11,7 +11,7 @@ public class JnAsyncBusinessNotifyError implements  java.util.function.Function<
 	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		this.notifySupport.apply(values, JnTopic.notifyError, new JnEntityJobsnowError());
+		this.notifySupport.apply(values, JnTopics.notifyError.getTopicName(), new JnEntityJobsnowError());
 
 		return values;
 	}

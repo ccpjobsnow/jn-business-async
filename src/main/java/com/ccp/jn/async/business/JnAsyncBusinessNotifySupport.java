@@ -8,7 +8,6 @@ import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
 import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
-import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncBusinessNotifySupport {
 	
@@ -29,7 +28,7 @@ public class JnAsyncBusinessNotifySupport {
 		}
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values, JnTopic topic, CcpEntity entity) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entity) {
 
 		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		

@@ -11,7 +11,7 @@ import com.ccp.especifications.db.query.CcpDbQueryOptions;
 import com.ccp.especifications.db.query.CcpDbQueryShould;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityDefaultField;
-import com.jn.commons.entities.JnBaseEntity;
+import com.jn.commons.entities.base.JnBaseEntity;
 
 public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 

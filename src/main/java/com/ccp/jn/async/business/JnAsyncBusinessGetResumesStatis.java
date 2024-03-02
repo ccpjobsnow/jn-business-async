@@ -35,7 +35,7 @@ public class JnAsyncBusinessGetResumesStatis implements  java.util.function.Func
 		
 		CcpJsonRepresentation allRegions = aggregations.getInnerJson("ddd");
 		
-		List<CcpJsonRepresentation> eachRegion = allRegions.getJsonList("buckets")
+		List<CcpJsonRepresentation> eachRegion = allRegions.getAsJsonList("buckets")
 				.stream().map(ddd ->  this.getMapDecorator(ddd, 
 						JnEntityCandidate.Fields.experience, 
 						JnEntityCandidate.Fields.clt, 

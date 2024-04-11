@@ -12,10 +12,10 @@ import com.jn.commons.entities.JnEntityRecordToReprocess;
 
 public class JnAsyncBusinessCommitAndAudit {
 
-	private CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
-	
 	public void execute(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
-		this.dbBulkExecutor.commitAndAuditAndSaveErrors(records, operation, entity, new JnEntityAudit(), new JnEntityRecordToReprocess());
+		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
+		
+		dbBulkExecutor.commitAndAuditAndSaveErrors(records, operation, entity, new JnEntityAudit(), new JnEntityRecordToReprocess());
 
 	}
 	

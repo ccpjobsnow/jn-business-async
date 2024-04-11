@@ -12,19 +12,19 @@ import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
 public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
-	private CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
-
-	private CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 	
 	
 	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
-		String token = this.instantMessenger.getToken(values);
+		CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
+		
+		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
+		String token = instantMessenger.getToken(values);
 		
 		JnEntityInstantMessengerBotLocked jnEntityInstantMessengerBotLocked = new JnEntityInstantMessengerBotLocked();
 		JnEntityInstantMessengerMessageSent jnEntityInstantMessengerMessageSent = new JnEntityInstantMessengerMessageSent();
-		CcpJsonRepresentation dataFromThisRecipient = this.dao.getAllData(values.put("token", token), jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
+		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values.put("token", token), jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.name());
 
@@ -42,7 +42,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		}
 		
 		try {
-			CcpJsonRepresentation instantMessengerData = this.instantMessenger.sendMessage(values);
+			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(values);
 			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
 			new JnEntityInstantMessengerMessageSent().createOrUpdate(instantMessageSent);

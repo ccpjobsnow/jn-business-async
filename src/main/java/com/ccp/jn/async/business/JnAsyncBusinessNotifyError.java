@@ -6,12 +6,12 @@ import com.jn.commons.utils.JnTopics;
 
 public class JnAsyncBusinessNotifyError implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
-	private final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
-
 	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		this.notifySupport.apply(values, JnTopics.notifyError.getTopicName(), new JnEntityJobsnowError());
+		final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
+		
+		notifySupport.apply(values, JnTopics.notifyError.getTopicName(), new JnEntityJobsnowError());
 
 		return values;
 	}

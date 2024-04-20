@@ -15,8 +15,7 @@ import com.ccp.jn.async.business.JnAsyncBusinessSendUserToken;
 import com.jn.commons.utils.JnTopics;
 
 class JnAsyncBusinessFactory implements CcpAsyncBusinessFactory {
-	
-	
+
 	private Map<String, Function<CcpJsonRepresentation, CcpJsonRepresentation>> map = new HashMap<>();
 	
 	public JnAsyncBusinessFactory() {
@@ -28,16 +27,9 @@ class JnAsyncBusinessFactory implements CcpAsyncBusinessFactory {
 		this.map.put(JnTopics.removeTries.name(), new JnAsyncBusinessRemoveTries());
 	}
 	
-	@Override
-	public Function<CcpJsonRepresentation, CcpJsonRepresentation> getAsyncBusiness(String processName) {
-		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> function = this.map.get(processName);
-		
-		if(function == null) {
-			throw new RuntimeException("The topic '" + processName + "' does not exist");
-		}
-		
-		return function;
+	public Map<String, Function<CcpJsonRepresentation, CcpJsonRepresentation>> getMap() {
+		return this.map;
 	}
+
 
 }

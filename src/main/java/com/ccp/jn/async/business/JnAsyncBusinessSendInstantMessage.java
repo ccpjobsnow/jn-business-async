@@ -12,11 +12,7 @@ import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
 public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
-	
-	
-	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
-
 		CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 		
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
@@ -24,7 +20,9 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		
 		JnEntityInstantMessengerBotLocked jnEntityInstantMessengerBotLocked = new JnEntityInstantMessengerBotLocked();
 		JnEntityInstantMessengerMessageSent jnEntityInstantMessengerMessageSent = new JnEntityInstantMessengerMessageSent();
-		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values.put("token", token), jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
+		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
+		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
+		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values, jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.name());
 
@@ -43,8 +41,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		
 		try {
 			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(values);
-			long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
-			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData).put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3);
+			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData);
 			new JnEntityInstantMessengerMessageSent().createOrUpdate(instantMessageSent);
 			return values;
 		} catch (CcpTooManyRequests e) {

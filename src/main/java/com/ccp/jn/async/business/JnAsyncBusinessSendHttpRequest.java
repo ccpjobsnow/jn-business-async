@@ -32,6 +32,8 @@ public class JnAsyncBusinessSendHttpRequest {
 			CcpJsonRepresentation httpErrorDetails = e.entity.putAll(valuesWithHttpApiParameters).put("details", details);
 			
 			if(e.clientError) {
+				String request = httpErrorDetails.getAsString("request");
+				httpErrorDetails = httpErrorDetails.put("request", request);
 				new JnEntityHttpApiErrorClient().createOrUpdate(httpErrorDetails);
 				throw new JnHttpClientError(e);
 			}

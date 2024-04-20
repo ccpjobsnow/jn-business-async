@@ -25,7 +25,7 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 		JnEntityLoginToken entityToSave = new JnEntityLoginToken();
 		this.getMessage
 		.addOneStep(this.stepToSendEmail, parametersToSendEmail, templateToSendEmail)
-		.executeAllSteps(JnTopics.sendUserToken.getTopicName(), entityToSave, entityValue, language);
+		.executeAllSteps(JnTopics.sendUserToken.name(), entityToSave, entityValue, language);
 		return values;
 	}
 

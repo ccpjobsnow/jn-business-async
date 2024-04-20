@@ -12,7 +12,7 @@ public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Fu
 		
 		JnEntityRequestUnlockToken entity = new JnEntityRequestUnlockToken();
 		
-		this.notifySupport.apply(values, JnTopics.requestUnlockToken.getTopicName(), entity);
+		this.notifySupport.apply(values, JnTopics.requestUnlockToken.name(), entity);
 
 		return values;
 	}

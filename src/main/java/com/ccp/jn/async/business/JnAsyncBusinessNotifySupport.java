@@ -17,18 +17,12 @@ public class JnAsyncBusinessNotifySupport {
 
 	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
 	
-	private final String supportLanguage;
-	
-	public JnAsyncBusinessNotifySupport() {
-
-		this.supportLanguage =  new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
-	
-		if(this.supportLanguage.trim().isEmpty()) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entity) {
+		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
+		
+		if(supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
-	}
-	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entity) {
 
 		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		
@@ -40,7 +34,7 @@ public class JnAsyncBusinessNotifySupport {
 		this.getMessage
 		.addOneLenientStep(this.sendInstantMessage, instantMessengerParametersToSend, instantMessengerTemplateMessage)
 		.addOneLenientStep(this.sendEmail, emailParametersToSend, emailTemplateMessage)
-		.executeAllSteps(topic, entity, renameKey, this.supportLanguage);
+		.executeAllSteps(topic, entity, renameKey, supportLanguage);
 
 		return values;
 	}

@@ -24,7 +24,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
 		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values, jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
 
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.name());
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.getEntityName());
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = values.getAsIntegerNumber("sleep");
@@ -33,7 +33,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(jnEntityInstantMessengerBotLocked.name());
+		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(jnEntityInstantMessengerBotLocked.getEntityName());
 		
 		if(thisBotHasBeenBlocked) {
 			return values;

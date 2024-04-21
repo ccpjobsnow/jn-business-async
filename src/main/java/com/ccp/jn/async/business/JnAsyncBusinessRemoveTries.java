@@ -37,7 +37,7 @@ public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<
 			startShould = startShould.term(CcpEntityDefaultField._id, id);
 		}
 		
-		String[] array = Arrays.asList(entities).stream().map(x -> x.name()).collect(Collectors.toList()).toArray(new String[entities.length]);
+		String[] array = Arrays.asList(entities).stream().map(x -> x.getEntityName()).collect(Collectors.toList()).toArray(new String[entities.length]);
 		
 		CcpJsonRepresentation delete = startShould.endShouldAndBackToBool().endBoolAndBackToQuery()
 		.endQueryAndBackToRequest()

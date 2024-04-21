@@ -2,6 +2,7 @@ package com.ccp.jn.async.business;
 
 import java.util.List;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
@@ -20,7 +21,7 @@ public class JnAsyncBusinessCommitAndAudit {
 		JnEntityAudit auditEntity = new JnEntityAudit();
 		JnEntityRecordToReprocess errorEntity = new JnEntityRecordToReprocess();
 
-		dbBulkExecutor.commitAndAuditLogingErrors(errorEntity, auditEntity);
+		dbBulkExecutor.commitAndAuditLogingErrors(errorEntity, auditEntity, CcpConstants.DO_BY_PASS , CcpConstants.DO_BY_PASS);
 	}
 	
 }

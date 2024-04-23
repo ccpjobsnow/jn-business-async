@@ -3,7 +3,7 @@ package com.ccp.jn.async.business;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.jn.commons.business.JnCommonsBusinessGetMessage;
+import com.jn.commons.business.utils.JnCommonsBusinessUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
@@ -13,7 +13,7 @@ public class JnAsyncBusinessNotifySupport {
 	
 	private final JnAsyncBusinessTryToSendInstantMessage sendInstantMessage = new JnAsyncBusinessTryToSendInstantMessage();
 
-	private final JnCommonsBusinessGetMessage getMessage = new JnCommonsBusinessGetMessage();
+	private final JnCommonsBusinessUtilsGetMessage getMessage = new JnCommonsBusinessUtilsGetMessage();
 
 	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
 	

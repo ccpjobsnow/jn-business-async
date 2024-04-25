@@ -26,14 +26,9 @@ public class JnAsyncBusinessNotifySupport {
 
 		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		
-		JnEntityInstantMessengerParametersToSend instantMessengerParametersToSend = new JnEntityInstantMessengerParametersToSend();
-		JnEntityInstantMessengerTemplateMessage instantMessengerTemplateMessage = new JnEntityInstantMessengerTemplateMessage();
-		JnEntityEmailParametersToSend emailParametersToSend = new JnEntityEmailParametersToSend();
-		JnEntityEmailTemplateMessage emailTemplateMessage = new JnEntityEmailTemplateMessage();
-		
 		this.getMessage
-		.addOneLenientStep(this.sendInstantMessage, instantMessengerParametersToSend, instantMessengerTemplateMessage)
-		.addOneLenientStep(this.sendEmail, emailParametersToSend, emailTemplateMessage)
+		.addOneLenientStep(this.sendInstantMessage, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
+		.addOneLenientStep(this.sendEmail, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(topic, entity, renameKey, supportLanguage);
 
 		return values;

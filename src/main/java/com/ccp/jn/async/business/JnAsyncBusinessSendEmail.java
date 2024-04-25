@@ -33,7 +33,7 @@ public class JnAsyncBusinessSendEmail implements  java.util.function.Function<Cc
 		
 		List<CcpJsonRepresentation> records = list.stream().map(email -> values.put("email", email)).collect(Collectors.toList());
 		
-		this.commitAndAudit.execute(records, CcpEntityOperationType.create, new JnEntityEmailMessageSent());
+		this.commitAndAudit.execute(records, CcpEntityOperationType.create, JnEntityEmailMessageSent.INSTANCE);
 		
 		return values;
 	}
@@ -44,9 +44,7 @@ public class JnAsyncBusinessSendEmail implements  java.util.function.Function<Cc
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		
 		List<CcpJsonRepresentation> objects = emails.stream().map(email -> values.put("email", email)).collect(Collectors.toList());
-		JnEntityEmailMessageSent jnEntityEmailMessageSent = new JnEntityEmailMessageSent();
-		JnEntityEmailReportedAsSpam jnEntityEmailReportedAsSpam = new JnEntityEmailReportedAsSpam();
-		List<CcpJsonRepresentation> manyById = dao.getManyById(objects, jnEntityEmailMessageSent, jnEntityEmailReportedAsSpam);
+		List<CcpJsonRepresentation> manyById = dao.getManyById(objects, JnEntityEmailMessageSent.INSTANCE, JnEntityEmailReportedAsSpam.INSTANCE);
 		List<String> collect = manyById.stream().map(x -> x.getAsString("email")).collect(Collectors.toList());
 		List<String> onlyEmailsNotSentAndNotRepportedAsSpam = emails.stream().filter(x -> collect.contains(x) == false).collect(Collectors.toList());
 		return onlyEmailsNotSentAndNotRepportedAsSpam;

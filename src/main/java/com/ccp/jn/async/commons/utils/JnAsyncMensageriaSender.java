@@ -34,11 +34,10 @@ public class JnAsyncMensageriaSender {
 	
 	public void send(Enum<?> topic,  List<CcpJsonRepresentation> messages) {
 		String topicName = topic.name();
-		JnEntityAsyncTask entity = new JnEntityAsyncTask();
 		int size = messages.size();
 		CcpJsonRepresentation[] a = new CcpJsonRepresentation[size];
 		CcpJsonRepresentation[] array = messages.toArray(a);
-		this.send(topicName, entity, array);
+		this.send(topicName, JnEntityAsyncTask.INSTANCE, array);
 	}
 	
 

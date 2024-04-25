@@ -19,7 +19,7 @@ public class JnAsyncBusinessSendHttpRequest {
 	public CcpJsonRepresentation execute(CcpJsonRepresentation values, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
 
 		CcpJsonRepresentation valuesWithApiName = values.put("apiName", httpRequestType.name());
-		CcpJsonRepresentation httpApiParameters = new JnEntityHttpApiParameters().getOneById(valuesWithApiName);
+		CcpJsonRepresentation httpApiParameters = JnEntityHttpApiParameters.INSTANCE.getOneById(valuesWithApiName);
 		CcpJsonRepresentation valuesWithHttpApiParameters = values.putAll(httpApiParameters);
 		
 		try {
@@ -34,7 +34,7 @@ public class JnAsyncBusinessSendHttpRequest {
 			if(e.clientError) {
 				String request = httpErrorDetails.getAsString("request");
 				httpErrorDetails = httpErrorDetails.put("request", request);
-				new JnEntityHttpApiErrorClient().createOrUpdate(httpErrorDetails);
+				JnEntityHttpApiErrorClient.INSTANCE.createOrUpdate(httpErrorDetails);
 				throw new JnHttpClientError(e);
 			}
 			
@@ -48,17 +48,17 @@ public class JnAsyncBusinessSendHttpRequest {
 	private CcpJsonRepresentation retryToSendIntantMessage(CcpHttpError e, CcpJsonRepresentation values, CcpJsonRepresentation httpErrorDetails, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String... keys) {
 		
 		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
-		boolean exceededTries = new JnEntityHttpApiRetrySendRequest().exceededTries(httpErrorDetails, "tries", maxTries);
+		boolean exceededTries = JnEntityHttpApiRetrySendRequest.INSTANCE.exceededTries(httpErrorDetails, "tries", maxTries);
 		
 		if(exceededTries) {
-			new JnEntityHttpApiErrorServer().createOrUpdate(httpErrorDetails);
+			JnEntityHttpApiErrorServer.INSTANCE.createOrUpdate(httpErrorDetails);
 			throw new JnHttpServerError(e);
 		}
 		
 		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
 		new CcpTimeDecorator().sleep(sleep);
 		CcpJsonRepresentation execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
-		this.removeTries.apply(httpErrorDetails, "tries", 3, new JnEntityHttpApiRetrySendRequest());
+		this.removeTries.apply(httpErrorDetails, "tries", 3, JnEntityHttpApiRetrySendRequest.INSTANCE);
 		return execute;
 	}
 

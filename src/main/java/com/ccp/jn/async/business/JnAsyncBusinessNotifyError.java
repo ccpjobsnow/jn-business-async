@@ -11,9 +11,8 @@ public class JnAsyncBusinessNotifyError implements  java.util.function.Function<
 		
 		final JnAsyncBusinessNotifySupport notifySupport = new JnAsyncBusinessNotifySupport();
 		
-		JnEntityJobsnowError entity = new JnEntityJobsnowError();
 		String name = JnTopics.notifyError.name();
-		notifySupport.apply(values, name, entity);
+		notifySupport.apply(values, name, JnEntityJobsnowError.INSTANCE);
 
 		return values;
 	}

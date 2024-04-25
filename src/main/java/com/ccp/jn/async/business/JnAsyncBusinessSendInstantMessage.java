@@ -18,13 +18,11 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
 		String token = instantMessenger.getToken(values);
 		
-		JnEntityInstantMessengerBotLocked jnEntityInstantMessengerBotLocked = new JnEntityInstantMessengerBotLocked();
-		JnEntityInstantMessengerMessageSent jnEntityInstantMessengerMessageSent = new JnEntityInstantMessengerMessageSent();
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values, jnEntityInstantMessengerBotLocked, jnEntityInstantMessengerMessageSent);
+		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
 
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(jnEntityInstantMessengerMessageSent.getEntityName());
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(JnEntityInstantMessengerMessageSent.INSTANCE.getEntityName());
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = values.getAsIntegerNumber("sleep");
@@ -33,7 +31,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(jnEntityInstantMessengerBotLocked.getEntityName());
+		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(JnEntityInstantMessengerBotLocked.INSTANCE.getEntityName());
 		
 		if(thisBotHasBeenBlocked) {
 			return values;
@@ -42,7 +40,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 		try {
 			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(values);
 			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData);
-			new JnEntityInstantMessengerMessageSent().createOrUpdate(instantMessageSent);
+			JnEntityInstantMessengerMessageSent.INSTANCE.createOrUpdate(instantMessageSent);
 			return values;
 		} catch (CcpTooManyRequests e) {
 			
@@ -73,7 +71,7 @@ public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Fu
 	}
 
 	private CcpJsonRepresentation saveBlockedBot(CcpJsonRepresentation putAll, String token) {
-		new JnEntityInstantMessengerBotLocked().createOrUpdate(putAll.put("token", token));
+		JnEntityInstantMessengerBotLocked.INSTANCE.createOrUpdate(putAll.put("token", token));
 		return putAll;
 	}
 

@@ -10,9 +10,7 @@ public class JnAsyncBusinessRequestUnlockToken implements  java.util.function.Fu
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		JnEntityRequestUnlockToken entity = new JnEntityRequestUnlockToken();
-		
-		this.notifySupport.apply(values, JnTopics.requestUnlockToken.name(), entity);
+		this.notifySupport.apply(values, JnTopics.requestUnlockToken.name(), JnEntityRequestUnlockToken.INSTANCE);
 
 		return values;
 	}

@@ -20,12 +20,9 @@ public class JnAsyncBusinessSendUserToken implements  java.util.function.Functio
 		CcpJsonRepresentation entityValue = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
 		String language = values.getAsString("language");
 		
-		JnEntityEmailParametersToSend parametersToSendEmail = new JnEntityEmailParametersToSend();
-		JnEntityEmailTemplateMessage templateToSendEmail = new JnEntityEmailTemplateMessage();
-		JnEntityLoginToken entityToSave = new JnEntityLoginToken();
 		this.getMessage
-		.addOneStep(this.stepToSendEmail, parametersToSendEmail, templateToSendEmail)
-		.executeAllSteps(JnTopics.sendUserToken.name(), entityToSave, entityValue, language);
+		.addOneStep(this.stepToSendEmail, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
+		.executeAllSteps(JnTopics.sendUserToken.name(), JnEntityLoginToken.INSTANCE, entityValue, language);
 		return values;
 	}
 

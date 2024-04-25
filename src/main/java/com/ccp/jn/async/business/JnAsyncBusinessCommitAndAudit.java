@@ -19,16 +19,9 @@ public class JnAsyncBusinessCommitAndAudit {
 		
 		dbBulkExecutor = dbBulkExecutor.addRecords(records, operation, entity);
 
-		this.execute(dbBulkExecutor);
+		dbBulkExecutor.commitAndAuditLogingErrors(JnEntityRecordToReprocess.INSTANCE, JnEntityAudit.INSTANCE, CcpConstants.DO_BY_PASS , CcpConstants.DO_BY_PASS);
 	}
 
-	private void execute(CcpDbBulkExecutor dbBulkExecutor) {
-
-		JnEntityRecordToReprocess errorEntity = new JnEntityRecordToReprocess();
-		JnEntityAudit auditEntity = new JnEntityAudit();
-
-		dbBulkExecutor.commitAndAuditLogingErrors(errorEntity, auditEntity, CcpConstants.DO_BY_PASS , CcpConstants.DO_BY_PASS);
-	}
 	
 	public void execute(List<CcpBulkItem> items) {
 		
@@ -37,7 +30,7 @@ public class JnAsyncBusinessCommitAndAudit {
 		for (CcpBulkItem item : items) {
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
 		}
-		this.execute(dbBulkExecutor);
+		dbBulkExecutor.commitAndAuditLogingErrors(JnEntityRecordToReprocess.INSTANCE, JnEntityAudit.INSTANCE, CcpConstants.DO_BY_PASS , CcpConstants.DO_BY_PASS);
 	}
 	
 }

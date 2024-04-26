@@ -39,8 +39,12 @@ public class JnAsyncMensageriaSender {
 		CcpJsonRepresentation[] array = messages.toArray(a);
 		this.send(topicName, JnEntityAsyncTask.INSTANCE, array);
 	}
-	
 
+	public void send(Enum<?> topic,  CcpJsonRepresentation... messages) {
+		String topicName = topic.name();
+		this.send(topicName, JnEntityAsyncTask.INSTANCE, messages);
+	}
+	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {
 		String asyncTaskId = entity.getId(msg);
 		CcpBulkItem bulkItem = new CcpBulkItem(msg, CcpEntityOperationType.create, entity, asyncTaskId);

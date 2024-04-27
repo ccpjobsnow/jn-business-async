@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons;
 
 import java.util.List;
 
@@ -14,6 +14,12 @@ import com.jn.commons.entities.JnEntityRecordToReprocess;
 
 public class JnAsyncBusinessCommitAndAudit {
 
+	public static final JnAsyncBusinessCommitAndAudit INSTANCE = new JnAsyncBusinessCommitAndAudit();
+	
+	private JnAsyncBusinessCommitAndAudit() {
+		
+	}
+	
 	public void execute(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
 		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
 		

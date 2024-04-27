@@ -1,4 +1,4 @@
-package com.ccp.jn.async.commons.utils;
+package com.ccp.jn.async.commons;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,22 +13,21 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.async.business.JnAsyncBusinessCommitAndAudit;
 import com.jn.commons.entities.JnEntityAsyncTask;
 
 public class JnAsyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
-	private final JnAsyncBusinessCommitAndAudit bulkExecutor = new JnAsyncBusinessCommitAndAudit();
 	
 	private JnAsyncMensageriaSender() {
 		
 	}
 	
 	public static final JnAsyncMensageriaSender INSTANCE = new JnAsyncMensageriaSender();
+	
 	public void send(String topic, CcpEntity entity, CcpJsonRepresentation... messages) {
 		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(message -> this.getMessageDetails(topic, message)).collect(Collectors.toList());
 		List<CcpBulkItem> bulkItems = msgs.stream().map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
-		this.bulkExecutor.execute(bulkItems);
+		JnAsyncBusinessCommitAndAudit.INSTANCE.execute(bulkItems);
 		this.mensageriaSender.send(topic, msgs);
 	}
 	

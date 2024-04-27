@@ -6,6 +6,6 @@ import com.ccp.especifications.async.business.factory.CcpAsyncBusinessFactory;
 public class CcpJnAsyncBusinessFactory implements CcpInstanceProvider<CcpAsyncBusinessFactory> {
 
 	public CcpAsyncBusinessFactory getInstance() {
-		return new JnAsyncBusinessFactory();
+		return JnAsyncBusinessFactory.INSTANCE;
 	}
 }

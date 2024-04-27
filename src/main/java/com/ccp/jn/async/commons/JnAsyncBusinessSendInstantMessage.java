@@ -1,4 +1,4 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
@@ -10,8 +10,15 @@ import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
-public class JnAsyncBusinessSendInstantMessage implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
+public class JnAsyncBusinessSendInstantMessage {
 
+	
+	public static final JnAsyncBusinessSendInstantMessage INSTANCE = new JnAsyncBusinessSendInstantMessage();
+	
+	private JnAsyncBusinessSendInstantMessage() {
+		
+	}
+	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 		

@@ -1,6 +1,7 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.business.commons;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -8,15 +9,19 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.email.CcpEmailSender;
-import com.ccp.jn.async.commons.utils.JnHttpRequestType;
+import com.ccp.jn.async.commons.JnAsyncBusinessCommitAndAudit;
+import com.ccp.jn.async.commons.JnAsyncBusinessSendHttpRequest;
+import com.ccp.jn.async.commons.JnHttpRequestType;
 import com.jn.commons.entities.JnEntityEmailMessageSent;
 import com.jn.commons.entities.JnEntityEmailReportedAsSpam;
 
-public class JnAsyncBusinessSendEmail implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
+public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
-	private JnAsyncBusinessCommitAndAudit commitAndAudit = new JnAsyncBusinessCommitAndAudit();
-
-	private JnAsyncBusinessSendHttpRequest sendHttpRequest = new JnAsyncBusinessSendHttpRequest();
+	public static final JnAsyncBusinessSendEmailMessage INSTANCE = new JnAsyncBusinessSendEmailMessage();
+	
+	private JnAsyncBusinessSendEmailMessage() {
+		
+	}
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
@@ -29,11 +34,11 @@ public class JnAsyncBusinessSendEmail implements  java.util.function.Function<Cc
 		}
 		List<String> list = values.getAsStringList("emails", "email");
 		
-		this.sendHttpRequest.execute(values, x -> emailSender.send(x),JnHttpRequestType.email, "subjectType");
+		JnAsyncBusinessSendHttpRequest.INSTANCE.execute(values, x -> emailSender.send(x),JnHttpRequestType.email, "subjectType");
 		
 		List<CcpJsonRepresentation> records = list.stream().map(email -> values.put("email", email)).collect(Collectors.toList());
 		
-		this.commitAndAudit.execute(records, CcpEntityOperationType.create, JnEntityEmailMessageSent.INSTANCE);
+		JnAsyncBusinessCommitAndAudit.INSTANCE.execute(records, CcpEntityOperationType.create, JnEntityEmailMessageSent.INSTANCE);
 		
 		return values;
 	}

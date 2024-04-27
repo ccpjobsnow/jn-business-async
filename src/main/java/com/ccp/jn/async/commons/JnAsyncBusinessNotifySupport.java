@@ -1,9 +1,11 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.commons;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.jn.commons.business.utils.JnCommonsBusinessUtilsGetMessage;
+import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
+import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
+import com.jn.commons.business.utils.CommonsBusinessUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
@@ -11,11 +13,12 @@ import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
 
 public class JnAsyncBusinessNotifySupport {
 	
-	private final JnAsyncBusinessTryToSendInstantMessage sendInstantMessage = new JnAsyncBusinessTryToSendInstantMessage();
 
-	private final JnCommonsBusinessUtilsGetMessage getMessage = new JnCommonsBusinessUtilsGetMessage();
-
-	private final JnAsyncBusinessSendEmail sendEmail = new JnAsyncBusinessSendEmail();
+	public static final JnAsyncBusinessNotifySupport INSTANCE = new JnAsyncBusinessNotifySupport();
+	
+	private JnAsyncBusinessNotifySupport() {
+		
+	}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entity) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
@@ -26,9 +29,10 @@ public class JnAsyncBusinessNotifySupport {
 
 		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		
-		this.getMessage
-		.addOneLenientStep(this.sendInstantMessage, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
-		.addOneLenientStep(this.sendEmail, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
+		CommonsBusinessUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new CommonsBusinessUtilsGetMessage();
+		jnCommonsBusinessUtilsGetMessage
+		.addOneLenientStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
+		.addOneLenientStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(topic, entity, renameKey, supportLanguage);
 
 		return values;

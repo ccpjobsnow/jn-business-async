@@ -1,9 +1,10 @@
-package com.ccp.jn.async.business;
+package com.ccp.jn.async.business.commons;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -13,8 +14,14 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityDefaultField;
 import com.jn.commons.entities.base.JnBaseEntity;
 
-public class JnAsyncBusinessRemoveTries implements  java.util.function.Function<CcpJsonRepresentation, CcpJsonRepresentation>{
-
+public class JnAsyncBusinessRemoveTries implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
+	
+	public static JnAsyncBusinessRemoveTries INSTANCE = new JnAsyncBusinessRemoveTries();
+	
+	private JnAsyncBusinessRemoveTries() {
+		
+	}
+			
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation object, String fieldName, Integer limit, CcpEntity... entities) {
 

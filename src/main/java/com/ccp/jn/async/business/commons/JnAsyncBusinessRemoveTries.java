@@ -62,8 +62,7 @@ public class JnAsyncBusinessRemoveTries implements  Function<CcpJsonRepresentati
 		Integer limit = values.getAsIntegerNumber("limit");
 		List<String> array = values.getAsStringList("entities");
 		CcpEntity[] entities = new CcpEntity[array.size()];
-		array.stream()
-		.map(x -> JnBaseEntity.valueOf(x))
+		array.stream().map(x -> JnBaseEntity.valueOf(x))
 		.collect(Collectors.toList()).toArray(entities);
 		CcpJsonRepresentation remove = this.apply(values, fieldName, limit, entities);
 		return remove;

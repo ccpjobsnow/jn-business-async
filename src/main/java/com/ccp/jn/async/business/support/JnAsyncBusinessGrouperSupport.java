@@ -2,6 +2,7 @@ package com.ccp.jn.async.business.support;
 
 import java.util.function.Function;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 public class JnAsyncBusinessGrouperSupport implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
@@ -14,7 +15,7 @@ public class JnAsyncBusinessGrouperSupport implements Function<CcpJsonRepresenta
 			
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation t) {
-		return null;
+		return CcpConstants.EMPTY_JSON;
 	}
 
 }

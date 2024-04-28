@@ -2,6 +2,7 @@ package com.ccp.jn.async.business.balance;
 
 import java.util.function.Function;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 
 public class JnAsyncBusinessGrouperBalance implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
@@ -13,7 +14,7 @@ public class JnAsyncBusinessGrouperBalance implements Function<CcpJsonRepresenta
 	}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation t) {
-		return null;
+		return CcpConstants.EMPTY_JSON;
 	}
 
 }

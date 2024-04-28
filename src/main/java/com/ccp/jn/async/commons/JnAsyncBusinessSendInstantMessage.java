@@ -61,11 +61,7 @@ public class JnAsyncBusinessSendInstantMessage {
 	private CcpJsonRepresentation retryToSendMessage(CcpJsonRepresentation values) {
 		
 		Integer maxTriesToSendMessage = values.getAsIntegerNumber("maxTriesToSendMessage");
-		Integer triesToSendMessage = values.getAsIntegerNumber("triesToSendMessage");
-		
-		if(triesToSendMessage == null) {
-			triesToSendMessage = 1;
-		}
+		Integer triesToSendMessage = values.getOrDefault("triesToSendMessage", 1);
 		
 		if(triesToSendMessage >= maxTriesToSendMessage) {
 			throw new RuntimeException("This message couldn't be sent. Details: " + values);

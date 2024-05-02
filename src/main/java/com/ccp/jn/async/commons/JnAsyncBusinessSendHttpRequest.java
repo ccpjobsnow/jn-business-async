@@ -5,7 +5,6 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.exceptions.http.CcpHttpError;
-import com.ccp.jn.async.business.commons.JnAsyncBusinessRemoveTries;
 import com.ccp.jn.async.exceptions.HttpClientError;
 import com.ccp.jn.async.exceptions.HttpServerError;
 import com.jn.commons.entities.JnEntityHttpApiErrorClient;
@@ -59,7 +58,8 @@ public class JnAsyncBusinessSendHttpRequest {
 		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
 		new CcpTimeDecorator().sleep(sleep);
 		CcpJsonRepresentation execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
-		JnAsyncBusinessRemoveTries.INSTANCE.apply(httpErrorDetails, "tries", 3, JnEntityHttpApiRetrySendRequest.INSTANCE);
+		//TODO O QUE É ISSO AQUI EMBAIXO?
+		//		JnAsyncBusinessRemoveTries.INSTANCE.apply(httpErrorDetails, "tries", 3, JnEntityHttpApiRetrySendRequest.INSTANCE);
 		return execute;
 	}
 

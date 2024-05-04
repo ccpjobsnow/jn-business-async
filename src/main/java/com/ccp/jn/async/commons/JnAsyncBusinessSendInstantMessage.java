@@ -3,7 +3,7 @@ package com.ccp.jn.async.commons;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.CcpThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
@@ -22,12 +22,12 @@ public class JnAsyncBusinessSendInstantMessage {
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 		
-		CcpDao dao = CcpDependencyInjection.getDependency(CcpDao.class);
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		String token = instantMessenger.getToken(values);
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpJsonRepresentation dataFromThisRecipient = dao.getAllData(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
+		CcpJsonRepresentation dataFromThisRecipient = crud.getAllData(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(JnEntityInstantMessengerMessageSent.INSTANCE.getEntityName());
 

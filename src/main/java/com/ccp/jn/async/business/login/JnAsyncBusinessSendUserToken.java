@@ -14,7 +14,7 @@ import com.jn.commons.utils.JnAsyncBusiness;
 
 public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 	
-	public static JnAsyncBusinessSendUserToken INSTANCE = new JnAsyncBusinessSendUserToken();
+	public static final JnAsyncBusinessSendUserToken INSTANCE = new JnAsyncBusinessSendUserToken();
 	
 	private JnAsyncBusinessSendUserToken() {
 		

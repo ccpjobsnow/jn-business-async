@@ -13,7 +13,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
-import com.ccp.especifications.db.crud.CcpDaoUnionAll;
+import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
@@ -63,7 +63,7 @@ public class JnAsyncBusinessCommitAndAudit {
 		Set<CcpEntityIdGenerator> collect = Arrays.asList(handlers).stream().map(x -> x.getEntity()).collect(Collectors.toSet());
 		CcpEntityIdGenerator[] array = collect.toArray(new CcpEntityIdGenerator[collect.size()]);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpDaoUnionAll unionAll = crud.unionAll(Arrays.asList(values), array);
+		CcpSelectUnionAll unionAll = crud.unionAll(Arrays.asList(values), array);
 		
 		List<CcpBulkItem> all = new ArrayList<CcpBulkItem>();
 		

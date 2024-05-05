@@ -1,5 +1,5 @@
 package com.ccp.jn.async.commons;
 
-public enum JnHttpRequestType {
+public enum JnAsyncHttpRequestType {
 	instantMessenger, email
 }

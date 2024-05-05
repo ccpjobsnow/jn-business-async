@@ -8,7 +8,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.entities.JnEntityLogin;
 import com.jn.commons.entities.JnEntityLoginLogout;
 
@@ -21,7 +21,7 @@ public class ExecuteLogout implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 	
 	public static final ExecuteLogout INSTANCE = new ExecuteLogout();
 	
-	public List<CcpBulkItem> whenRecordIsFound(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
 		CcpBulkItem logout = new CcpBulkItem(recordFound, CcpEntityOperationType.create, JnEntityLoginLogout.INSTANCE);
 		CcpBulkItem oldLogin = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, JnEntityLogin.INSTANCE);
@@ -29,11 +29,11 @@ public class ExecuteLogout implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordIsNotFound(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordDoesNotExist(CcpJsonRepresentation values) {
 		return new ArrayList<>();
 	}
 
-	public CcpEntityIdGenerator getEntity() {
+	public CcpEntity getEntity() {
 		return JnEntityLogin.INSTANCE;
 	}
 

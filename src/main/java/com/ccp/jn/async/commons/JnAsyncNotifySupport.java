@@ -5,18 +5,17 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
-import com.jn.commons.business.utils.CommonsBusinessUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
 import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
 
-public class JnAsyncBusinessNotifySupport {
+public class JnAsyncNotifySupport {
 	
 
-	public static final JnAsyncBusinessNotifySupport INSTANCE = new JnAsyncBusinessNotifySupport();
+	public static final JnAsyncNotifySupport INSTANCE = new JnAsyncNotifySupport();
 	
-	private JnAsyncBusinessNotifySupport() {
+	private JnAsyncNotifySupport() {
 		
 	}
 	
@@ -29,7 +28,7 @@ public class JnAsyncBusinessNotifySupport {
 
 		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
 		
-		CommonsBusinessUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new CommonsBusinessUtilsGetMessage();
+		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();
 		jnCommonsBusinessUtilsGetMessage
 		.addOneLenientStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
 		.addOneLenientStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)

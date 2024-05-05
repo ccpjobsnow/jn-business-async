@@ -7,7 +7,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.actions.ExecuteUnlock;
 import com.ccp.jn.async.actions.RegisterLogin;
 import com.ccp.jn.async.actions.RemoveAttempts;
-import com.ccp.jn.async.commons.JnAsyncBusinessCommitAndAudit;
+import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginLockedPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginUnlockedPassword;
@@ -28,7 +28,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 		JnEntityLoginPasswordAttempts entityAttempts = JnEntityLoginPasswordAttempts.INSTANCE;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 
-		JnAsyncBusinessCommitAndAudit.INSTANCE.
+		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				values 
 				, executeUnlock

@@ -12,11 +12,11 @@ import com.jn.commons.entities.JnEntityHttpApiErrorServer;
 import com.jn.commons.entities.JnEntityHttpApiParameters;
 import com.jn.commons.entities.JnEntityHttpApiRetrySendRequest;
 
-public class JnAsyncBusinessSendHttpRequest {
+public class JnAsyncSendHttpRequest {
 
-	public static final JnAsyncBusinessSendHttpRequest INSTANCE = new JnAsyncBusinessSendHttpRequest();
-	private JnAsyncBusinessSendHttpRequest() {}
-	public CcpJsonRepresentation execute(CcpJsonRepresentation values, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String...keys) {
+	public static final JnAsyncSendHttpRequest INSTANCE = new JnAsyncSendHttpRequest();
+	private JnAsyncSendHttpRequest() {}
+	public CcpJsonRepresentation execute(CcpJsonRepresentation values, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnAsyncHttpRequestType httpRequestType, String...keys) {
 
 		CcpJsonRepresentation valuesWithApiName = values.put("apiName", httpRequestType.name());
 		CcpJsonRepresentation httpApiParameters = JnEntityHttpApiParameters.INSTANCE.getOneById(valuesWithApiName);
@@ -45,7 +45,7 @@ public class JnAsyncBusinessSendHttpRequest {
 		}
 	}
 	
-	private CcpJsonRepresentation retryToSendIntantMessage(CcpHttpError e, CcpJsonRepresentation values, CcpJsonRepresentation httpErrorDetails, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnHttpRequestType httpRequestType, String... keys) {
+	private CcpJsonRepresentation retryToSendIntantMessage(CcpHttpError e, CcpJsonRepresentation values, CcpJsonRepresentation httpErrorDetails, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnAsyncHttpRequestType httpRequestType, String... keys) {
 		
 		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
 		boolean exceededTries = JnEntityHttpApiRetrySendRequest.INSTANCE.exceededTries(httpErrorDetails, "tries", maxTries);

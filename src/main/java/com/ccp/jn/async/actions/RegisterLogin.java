@@ -7,8 +7,9 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.entities.JnEntityLogin;
+import com.jn.commons.entities.JnEntityLoginSession;
 
 public class RegisterLogin implements WhenRecordIsFoundInUnionAll<List<CcpBulkItem>>{
 
@@ -19,19 +20,20 @@ public class RegisterLogin implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 	
 	public static final RegisterLogin INSTANCE = new RegisterLogin();
 	
-	public List<CcpBulkItem> whenRecordIsFound(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 
-		List<CcpBulkItem> whenRecordIsNotFound = this.whenRecordIsNotFound(values);
+		List<CcpBulkItem> whenRecordIsNotFound = this.whenRecordDoesNotExist(values);
 		return whenRecordIsNotFound;
 	}
 
-	public List<CcpBulkItem> whenRecordIsNotFound(CcpJsonRepresentation values) {
-		CcpBulkItem itemNewLogin = new CcpBulkItem(values, CcpEntityOperationType.create, JnEntityLogin.INSTANCE);
-		List<CcpBulkItem> asList = Arrays.asList(itemNewLogin);
+	public List<CcpBulkItem> whenRecordDoesNotExist(CcpJsonRepresentation values) {
+		CcpBulkItem newSession = new CcpBulkItem(values, CcpEntityOperationType.create, JnEntityLoginSession.INSTANCE);
+		CcpBulkItem newLogin = new CcpBulkItem(values, CcpEntityOperationType.create, JnEntityLogin.INSTANCE);
+		List<CcpBulkItem> asList = Arrays.asList(newLogin, newSession);
 		return asList;
 	}
 
-	public CcpEntityIdGenerator getEntity() {
+	public CcpEntity getEntity() {
 		return JnEntityLogin.INSTANCE;
 	}
 

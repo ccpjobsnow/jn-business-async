@@ -1,21 +1,23 @@
 package com.ccp.jn.async.commons;
 
+
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.crud.CcpCrud;
+import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.CcpThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
-public class JnAsyncBusinessSendInstantMessage {
+public class JnAsyncSendInstantMessage {
 
 	
-	public static final JnAsyncBusinessSendInstantMessage INSTANCE = new JnAsyncBusinessSendInstantMessage();
+	public static final JnAsyncSendInstantMessage INSTANCE = new JnAsyncSendInstantMessage();
 	
-	private JnAsyncBusinessSendInstantMessage() {
+	private JnAsyncSendInstantMessage() {
 		
 	}
 	
@@ -27,9 +29,9 @@ public class JnAsyncBusinessSendInstantMessage {
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpJsonRepresentation dataFromThisRecipient = crud.getAllData(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
+		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
 
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.containsKey(JnEntityInstantMessengerMessageSent.INSTANCE.getEntityName());
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.isPresent(JnEntityInstantMessengerMessageSent.INSTANCE, values);
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = values.getAsIntegerNumber("sleep");
@@ -38,7 +40,7 @@ public class JnAsyncBusinessSendInstantMessage {
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = dataFromThisRecipient.containsKey(JnEntityInstantMessengerBotLocked.INSTANCE.getEntityName());
+		boolean thisBotHasBeenBlocked = dataFromThisRecipient.isPresent(JnEntityInstantMessengerBotLocked.INSTANCE, values);
 		
 		if(thisBotHasBeenBlocked) {
 			return values;

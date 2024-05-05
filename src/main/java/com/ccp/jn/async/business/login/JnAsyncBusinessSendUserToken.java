@@ -5,12 +5,12 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
-import com.jn.commons.business.utils.CommonsBusinessUtilsGetMessage;
+import com.ccp.jn.async.commons.JnAsyncUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityLoginToken;
-import com.jn.commons.utils.JnConstants;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.commons.utils.JnGenerateRandomTokenWithHash;
 
 public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 	
@@ -21,10 +21,11 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 	}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
-		CcpJsonRepresentation entityValue = values.getTransformed(JnConstants.PUT_EMAIL_TOKEN);
+		JnGenerateRandomTokenWithHash transformer = new JnGenerateRandomTokenWithHash(8, "token", "tokenHash");
+		CcpJsonRepresentation entityValue = values.getTransformed(transformer);
 		String language = values.getAsString("language");
 		
-		CommonsBusinessUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new CommonsBusinessUtilsGetMessage();
+		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();
 		jnCommonsBusinessUtilsGetMessage
 		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(JnAsyncBusiness.sendUserToken.name(), JnEntityLoginToken.INSTANCE, entityValue, language);

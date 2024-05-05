@@ -16,15 +16,14 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
 import com.jn.commons.entities.JnEntityAudit;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
 
-public class JnAsyncBusinessCommitAndAudit {
+public class JnAsyncCommitAndAudit {
 
-	public static final JnAsyncBusinessCommitAndAudit INSTANCE = new JnAsyncBusinessCommitAndAudit();
+	public static final JnAsyncCommitAndAudit INSTANCE = new JnAsyncCommitAndAudit();
 	
-	private JnAsyncBusinessCommitAndAudit() {
+	private JnAsyncCommitAndAudit() {
 		
 	}
 	
@@ -60,10 +59,10 @@ public class JnAsyncBusinessCommitAndAudit {
 	
 	@SuppressWarnings("unchecked")
 	public void executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation values,  WhenRecordIsFoundInUnionAll<List<CcpBulkItem>> ... handlers) {
-		Set<CcpEntityIdGenerator> collect = Arrays.asList(handlers).stream().map(x -> x.getEntity()).collect(Collectors.toSet());
-		CcpEntityIdGenerator[] array = collect.toArray(new CcpEntityIdGenerator[collect.size()]);
+		Set<CcpEntity> collect = Arrays.asList(handlers).stream().map(x -> x.getEntity()).collect(Collectors.toSet());
+		CcpEntity[] array = collect.toArray(new CcpEntity[collect.size()]);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpSelectUnionAll unionAll = crud.unionAll(Arrays.asList(values), array);
+		CcpSelectUnionAll unionAll = crud.unionAll(values, array);
 		
 		List<CcpBulkItem> all = new ArrayList<CcpBulkItem>();
 		

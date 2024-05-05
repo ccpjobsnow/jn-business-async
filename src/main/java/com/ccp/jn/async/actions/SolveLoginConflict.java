@@ -9,7 +9,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.entities.JnEntityLogin;
 import com.jn.commons.entities.JnEntityLoginConflict;
 
@@ -21,7 +21,7 @@ public class SolveLoginConflict implements WhenRecordIsFoundInUnionAll<List<CcpB
 	
 	public static final SolveLoginConflict INSTANCE = new SolveLoginConflict();
 	
-	public List<CcpBulkItem> whenRecordIsFound(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
 		String email = recordFound.getAsString("email");
 		CcpJsonRepresentation newLogin = JnEntityLogin.INSTANCE.getOnlyExistingFields(values);
@@ -32,11 +32,11 @@ public class SolveLoginConflict implements WhenRecordIsFoundInUnionAll<List<CcpB
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordIsNotFound(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordDoesNotExist(CcpJsonRepresentation values) {
 		return new ArrayList<>();
 	}
 
-	public CcpEntityIdGenerator getEntity() {
+	public CcpEntity getEntity() {
 		return JnEntityLogin.INSTANCE;
 	}
 

@@ -3,7 +3,7 @@ package com.ccp.jn.async.business.support;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.async.commons.JnAsyncBusinessNotifySupport;
+import com.ccp.jn.async.commons.JnAsyncNotifySupport;
 import com.jn.commons.entities.JnEntityJobsnowError;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -19,7 +19,7 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 		
 		
 		String name = JnAsyncBusiness.notifyError.name();
-		JnAsyncBusinessNotifySupport.INSTANCE.apply(values, name, JnEntityJobsnowError.INSTANCE);
+		JnAsyncNotifySupport.INSTANCE.apply(values, name, JnEntityJobsnowError.INSTANCE);
 
 		return values;
 	}

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
@@ -14,6 +13,7 @@ import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.jn.commons.entities.JnEntityAsyncTask;
+import com.jn.commons.utils.JnGenerateRandomToken;
 
 public class JnAsyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
@@ -27,7 +27,7 @@ public class JnAsyncMensageriaSender {
 	public void send(String topic, CcpEntity entity, CcpJsonRepresentation... messages) {
 		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(message -> this.getMessageDetails(topic, message)).collect(Collectors.toList());
 		List<CcpBulkItem> bulkItems = msgs.stream().map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
-		JnAsyncBusinessCommitAndAudit.INSTANCE.execute(bulkItems);
+		JnAsyncCommitAndAudit.INSTANCE.execute(bulkItems);
 		this.mensageriaSender.send(topic, msgs);
 	}
 	
@@ -51,17 +51,17 @@ public class JnAsyncMensageriaSender {
 	}
 	
 	private CcpJsonRepresentation getMessageDetails(String topic, CcpJsonRepresentation values) {
-		String token = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(20).content;
 		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedCurrentDateTime("dd/MM/yyyy HH:mm:ss");
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("started", System.currentTimeMillis())
 				.put("data", formattedCurrentDateTime)
 				.put("request", values)
 				.put("topic", topic)
-				.put("id", token)
 				.putAll(values)
 				;
-		return messageDetails;
+		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "id");
+		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
+		return transformed;
 	}
 
 }

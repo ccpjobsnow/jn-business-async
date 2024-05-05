@@ -9,7 +9,6 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.especifications.db.utils.CcpEntityIdGenerator;
 
 public class ExecuteUnlock implements WhenRecordIsFoundInUnionAll<List<CcpBulkItem>>{
 
@@ -25,7 +24,7 @@ public class ExecuteUnlock implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 		this.entityLock = entityLock;
 	}
 
-	public List<CcpBulkItem> whenRecordIsFound(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
 		CcpBulkItem unlock = new CcpBulkItem(recordFound, CcpEntityOperationType.create, this.entityUnlock);
 		CcpBulkItem lock = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, this.entityLock);
@@ -33,11 +32,11 @@ public class ExecuteUnlock implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordIsNotFound(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordDoesNotExist(CcpJsonRepresentation values) {
 		return new ArrayList<>();
 	}
 
-	public CcpEntityIdGenerator getEntity() {
+	public CcpEntity getEntity() {
 		return this.entityLock;
 	}
 

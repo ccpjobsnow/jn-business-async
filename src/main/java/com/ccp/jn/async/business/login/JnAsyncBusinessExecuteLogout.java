@@ -5,7 +5,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.actions.ExecuteLogout;
-import com.ccp.jn.async.commons.JnAsyncBusinessCommitAndAudit;
+import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 
 public class JnAsyncBusinessExecuteLogout implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -19,7 +19,7 @@ public class JnAsyncBusinessExecuteLogout implements Function<CcpJsonRepresentat
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
-		JnAsyncBusinessCommitAndAudit.INSTANCE.
+		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				values 
 				, ExecuteLogout.INSTANCE

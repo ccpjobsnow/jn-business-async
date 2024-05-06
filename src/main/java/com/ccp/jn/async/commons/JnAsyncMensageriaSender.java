@@ -51,7 +51,7 @@ public class JnAsyncMensageriaSender {
 	}
 	
 	private CcpJsonRepresentation getMessageDetails(String topic, CcpJsonRepresentation values) {
-		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedCurrentDateTime("dd/MM/yyyy HH:mm:ss");
+		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("started", System.currentTimeMillis())
 				.put("data", formattedCurrentDateTime)

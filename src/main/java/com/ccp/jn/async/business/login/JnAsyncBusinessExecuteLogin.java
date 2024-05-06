@@ -8,9 +8,9 @@ import com.ccp.jn.async.actions.ExecuteUnlock;
 import com.ccp.jn.async.actions.RegisterLogin;
 import com.ccp.jn.async.actions.RemoveAttempts;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
-import com.jn.commons.entities.JnEntityLoginLockedPassword;
+import com.jn.commons.entities.JnEntityLoginPasswordLocked;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
-import com.jn.commons.entities.JnEntityLoginUnlockedPassword;
+import com.jn.commons.entities.JnEntityLoginPasswordUnlocked;
 
 public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -24,7 +24,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		ExecuteUnlock executeUnlock = new ExecuteUnlock(JnEntityLoginLockedPassword.INSTANCE, JnEntityLoginUnlockedPassword.INSTANCE);
+		ExecuteUnlock executeUnlock = new ExecuteUnlock(JnEntityLoginPasswordLocked.INSTANCE, JnEntityLoginPasswordUnlocked.INSTANCE);
 		JnEntityLoginPasswordAttempts entityAttempts = JnEntityLoginPasswordAttempts.INSTANCE;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 

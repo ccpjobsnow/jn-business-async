@@ -9,7 +9,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.jn.commons.entities.JnEntityLogin;
+import com.jn.commons.entities.JnEntityLoginSessionCurrent;
 import com.jn.commons.entities.JnEntityLoginLogout;
 
 public class ExecuteLogout implements WhenRecordIsFoundInUnionAll<List<CcpBulkItem>>{
@@ -24,7 +24,7 @@ public class ExecuteLogout implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
 		CcpBulkItem logout = new CcpBulkItem(recordFound, CcpEntityOperationType.create, JnEntityLoginLogout.INSTANCE);
-		CcpBulkItem oldLogin = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, JnEntityLogin.INSTANCE);
+		CcpBulkItem oldLogin = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, JnEntityLoginSessionCurrent.INSTANCE);
 		List<CcpBulkItem> asList = Arrays.asList(oldLogin, logout);
 		return asList;
 	}
@@ -34,7 +34,7 @@ public class ExecuteLogout implements WhenRecordIsFoundInUnionAll<List<CcpBulkIt
 	}
 
 	public CcpEntity getEntity() {
-		return JnEntityLogin.INSTANCE;
+		return JnEntityLoginSessionCurrent.INSTANCE;
 	}
 
 }

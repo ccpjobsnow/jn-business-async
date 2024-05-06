@@ -7,10 +7,10 @@ import java.util.List;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
-import com.ccp.especifications.db.crud.WhenRecordIsFoundInUnionAll;
+import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public class RemoveAttempts implements WhenRecordIsFoundInUnionAll<List<CcpBulkItem>>{
+public class RemoveAttempts implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 	
 	private final CcpEntity entityAttempts;
 
@@ -20,18 +20,18 @@ public class RemoveAttempts implements WhenRecordIsFoundInUnionAll<List<CcpBulkI
 		this.entityAttempts = entityAttempts;
 	}
 
-	public List<CcpBulkItem> whenRecordExists(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
 		CcpBulkItem attempts = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, this.entityAttempts);
 		List<CcpBulkItem> asList = Arrays.asList(attempts);
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordDoesNotExist(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation values) {
 		return new ArrayList<>();
 	}
 
-	public CcpEntity getEntity() {
+	public CcpEntity getEntityToSearch() {
 		return this.entityAttempts;
 	}
 

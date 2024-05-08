@@ -46,7 +46,7 @@ public class JnAsyncSendHttpRequest {
 	}
 	
 	private CcpJsonRepresentation retryToSendIntantMessage(CcpHttpError e, CcpJsonRepresentation values, CcpJsonRepresentation httpErrorDetails, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnAsyncHttpRequestType httpRequestType, String... keys) {
-		
+		//TODO RENOMEAR ENTIDADES E CAMPOS
 		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
 		boolean exceededTries = JnEntityHttpApiRetrySendRequest.INSTANCE.exceededTries(httpErrorDetails, "tries", maxTries);
 		
@@ -58,7 +58,7 @@ public class JnAsyncSendHttpRequest {
 		Integer sleep = httpErrorDetails.getAsIntegerNumber("sleep");
 		new CcpTimeDecorator().sleep(sleep);
 		CcpJsonRepresentation execute = this.execute(values, processThatSendsHttpRequest, httpRequestType, keys);
-		//TODO O QUE É ISSO AQUI EMBAIXO?
+		//TODO REMOVER TENTATIVAS
 		//		JnAsyncBusinessRemoveTries.INSTANCE.apply(httpErrorDetails, "tries", 3, JnEntityHttpApiRetrySendRequest.INSTANCE);
 		return execute;
 	}

@@ -27,7 +27,7 @@ public class JnAsyncMensageriaSender {
 	public void send(String topic, CcpEntity entity, CcpJsonRepresentation... messages) {
 		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(message -> this.getMessageDetails(topic, message)).collect(Collectors.toList());
 		List<CcpBulkItem> bulkItems = msgs.stream().map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
-		JnAsyncCommitAndAudit.INSTANCE.execute(bulkItems);
+		JnAsyncCommitAndAudit.INSTANCE.execute1(bulkItems);
 		this.mensageriaSender.send(topic, msgs);
 	}
 	

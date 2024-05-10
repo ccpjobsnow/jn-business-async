@@ -20,7 +20,6 @@ import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
-import com.jn.commons.entities.base.JnIncopiableEntity;
 
 public class JnAsyncCommitAndAudit {
 
@@ -56,17 +55,10 @@ public class JnAsyncCommitAndAudit {
 			
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
 			
-			boolean incopiableEntity = this.isIncopiableEntity(item);
-	
-			if(incopiableEntity) {
+			boolean canNotSaveCopy = item.entity.canSaveCopy() == false;
+			if(canNotSaveCopy) {
 				continue;
 			}
-			boolean isJustLogEntity = item.entity.getPrimaryKeyNames().size() == item.entity.getFields().length;
-			
-			if(isJustLogEntity) {
-				continue;
-			}
-
 			try {
 				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
 				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
@@ -77,14 +69,6 @@ public class JnAsyncCommitAndAudit {
 
 		this.commitAndSaveErrors(dbBulkExecutor);
 	}
-	
-	private boolean isIncopiableEntity(CcpBulkItem bulkItem) {
-		Class<? extends CcpEntity> clazz = bulkItem.entity.getClass();
-		boolean annotationPresent = clazz.isAnnotationPresent(JnIncopiableEntity.class);
-		return annotationPresent;
-		
-	}
-	
 	
 	private void commitAndSaveErrors(CcpDbBulkExecutor dbBulkExecutor) {
 

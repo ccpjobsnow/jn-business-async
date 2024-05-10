@@ -41,9 +41,8 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 			return values;
 		}
 		
-		
 		JnAsyncSendHttpRequest.INSTANCE.execute(values, x -> emailSender.send(x),JnAsyncHttpRequestType.email, "subjectType");
-		
+		JnEntityEmailMessageSent.INSTANCE.createOrUpdate(values);
 		return values;
 	}
 

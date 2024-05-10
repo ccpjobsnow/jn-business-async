@@ -57,15 +57,20 @@ public class JnAsyncCommitAndAudit {
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
 			
 			boolean incopiableEntity = this.isIncopiableEntity(item);
-			
+	
 			if(incopiableEntity) {
 				continue;
 			}
+			boolean isJustLogEntity = item.entity.getPrimaryKeyNames().size() == item.entity.getFields().length;
 			
+			if(isJustLogEntity) {
+				continue;
+			}
+
 			try {
 				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
 				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
-			} catch (CcpEntityRecordNotFound | UnsupportedOperationException e) {
+			} catch (CcpEntityRecordNotFound e) {
 
 			}
 		}

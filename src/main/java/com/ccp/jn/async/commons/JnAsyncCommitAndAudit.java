@@ -65,7 +65,7 @@ public class JnAsyncCommitAndAudit {
 			try {
 				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
 				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
-			} catch (CcpEntityRecordNotFound e) {
+			} catch (CcpEntityRecordNotFound | UnsupportedOperationException e) {
 
 			}
 		}

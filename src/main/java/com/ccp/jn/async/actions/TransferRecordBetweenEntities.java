@@ -13,23 +13,23 @@ public class TransferRecordBetweenEntities implements HandleWithSearchResultsInT
 
 	private final CcpEntity from; 
 
-	private final CcpEntity to; 
 	
-	public TransferRecordBetweenEntities(CcpEntity from, CcpEntity to) {
+	public TransferRecordBetweenEntities(CcpEntity from) {
 		this.from = from;
-		this.to = to;
 	}
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
 	
-		CcpBulkItem itemTo = new CcpBulkItem(recordFound, CcpEntityOperationType.create, this.to);
+		CcpEntity mirrorEntity = this.from.getMirrorEntity();
+		CcpBulkItem itemTo = new CcpBulkItem(recordFound, CcpEntityOperationType.create, mirrorEntity);
 		CcpBulkItem itemFrom = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, this.from);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo, itemFrom);
 		return asList;
 	}
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation values) {
-		CcpBulkItem itemTo = new CcpBulkItem(values, CcpEntityOperationType.create, this.to);
+		CcpEntity mirrorEntity = this.from.getMirrorEntity();
+		CcpBulkItem itemTo = new CcpBulkItem(values, CcpEntityOperationType.create, mirrorEntity);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo);
 		return asList;
 	}

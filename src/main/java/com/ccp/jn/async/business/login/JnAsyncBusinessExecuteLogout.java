@@ -4,8 +4,9 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.async.actions.ExecuteLogout;
+import com.ccp.jn.async.actions.TransferRecordBetweenEntities;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
+import com.jn.commons.entities.JnEntityLoginSessionCurrent;
 
 public class JnAsyncBusinessExecuteLogout implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -18,11 +19,12 @@ public class JnAsyncBusinessExecuteLogout implements Function<CcpJsonRepresentat
 	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+		TransferRecordBetweenEntities executeLogout = new TransferRecordBetweenEntities(JnEntityLoginSessionCurrent.INSTANCE);
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				values 
-				, ExecuteLogout.INSTANCE
+				, executeLogout
 				);
 		
 		return CcpConstants.EMPTY_JSON;

@@ -1,7 +1,8 @@
 package com.ccp.jn.async.commons;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -42,7 +43,7 @@ public class JnAsyncCommitAndAudit {
 		this.commitAndSaveErrors(dbBulkExecutor);
 	}
 	
-	public void execute1(List<CcpBulkItem> items) {
+	public void execute1(Collection<CcpBulkItem> items) {
 		
 		boolean emptyItems = items.isEmpty();
 		if(emptyItems) {
@@ -99,7 +100,7 @@ public class JnAsyncCommitAndAudit {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		CcpSelectUnionAll unionAll = crud.unionAll(values, array);
 		
-		List<CcpBulkItem> all = new ArrayList<CcpBulkItem>();
+		Set<CcpBulkItem> all = new HashSet<>();
 		
 		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
 			List<CcpBulkItem> list =  unionAll.whenRecordIsFoundInUnionAll(values, handler);

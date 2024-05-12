@@ -6,8 +6,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.actions.TransferRecordBetweenEntities;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
-import com.jn.commons.entities.JnEntityLoginTokenLocked;
-import com.jn.commons.entities.JnEntityLoginTokenUnlocked;
+import com.jn.commons.entities.JnEntityLoginToken;
 
 public class JnAsyncBusinessLockToken implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -21,7 +20,7 @@ public class JnAsyncBusinessLockToken implements Function<CcpJsonRepresentation,
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		TransferRecordBetweenEntities registerLock = new TransferRecordBetweenEntities(JnEntityLoginTokenUnlocked.INSTANCE, JnEntityLoginTokenLocked.INSTANCE);
+		TransferRecordBetweenEntities registerLock = new TransferRecordBetweenEntities(JnEntityLoginToken.INSTANCE);
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(

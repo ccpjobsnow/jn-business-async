@@ -12,6 +12,8 @@ import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
 import com.ccp.jn.async.business.login.JnAsyncBusinessExecuteLogin;
 import com.ccp.jn.async.business.login.JnAsyncBusinessExecuteLogout;
 import com.ccp.jn.async.business.login.JnAsyncBusinessGrouperLogin;
+import com.ccp.jn.async.business.login.JnAsyncBusinessLockPassword;
+import com.ccp.jn.async.business.login.JnAsyncBusinessLockToken;
 import com.ccp.jn.async.business.login.JnAsyncBusinessSendUserToken;
 import com.ccp.jn.async.business.login.JnAsyncBusinessUpdatePassword;
 import com.ccp.jn.async.business.support.JnAsyncBusinessGrouperSupport;
@@ -36,7 +38,10 @@ class JnAsyncBusinessFactory implements CcpAsyncBusinessFactory {
 		this.map.put(JnAsyncBusiness.executeLogout.name(), JnAsyncBusinessExecuteLogout.INSTANCE);
 		this.map.put(JnAsyncBusiness.grouperLogin.name(), JnAsyncBusinessGrouperLogin.INSTANCE);
 		this.map.put(JnAsyncBusiness.executeLogin.name(), JnAsyncBusinessExecuteLogin.INSTANCE);
+		this.map.put(JnAsyncBusiness.lockPassword.name(), JnAsyncBusinessLockPassword.INSTANCE);
 		this.map.put(JnAsyncBusiness.notifyError.name(), JnAsyncBusinessNotifyError.INSTANCE);
+		this.map.put(JnAsyncBusiness.lockToken.name(), JnAsyncBusinessLockToken.INSTANCE);
+
 
 	}
 	

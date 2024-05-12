@@ -10,7 +10,6 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.jn.commons.business.CommonsBusinessLenientProcess;
 
 public class JnAsyncUtilsGetMessage {
 
@@ -35,11 +34,6 @@ public class JnAsyncUtilsGetMessage {
 		return getMessage;
 	}
 	
-	public JnAsyncUtilsGetMessage addOneLenientStep(Function<CcpJsonRepresentation, CcpJsonRepresentation> step, CcpEntity parameterEntity, CcpEntity messageEntity) {
-		CommonsBusinessLenientProcess lenientProcess = new CommonsBusinessLenientProcess(step);
-		JnAsyncUtilsGetMessage addFlow = this.addOneStep(lenientProcess, parameterEntity, messageEntity);
-		return addFlow;
-	}	
 	public CcpJsonRepresentation executeAllSteps(String entityId, CcpEntity entityToSave, CcpJsonRepresentation entityValues, String language) {
 		
 		List<CcpEntity> allEntitiesToSearch = new ArrayList<>();

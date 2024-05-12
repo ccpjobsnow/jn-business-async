@@ -4,6 +4,8 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.commons.JnAsyncNotifySupport;
+import com.ccp.jn.async.commons.JnAsyncUtilsGetMessage;
+import com.ccp.jn.async.commons.JnAsyncUtilsLenientGetMessage;
 import com.jn.commons.entities.JnEntityJobsnowError;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -19,7 +21,8 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 		
 		
 		String name = JnAsyncBusiness.notifyError.name();
-		JnAsyncNotifySupport.INSTANCE.apply(values, name, JnEntityJobsnowError.INSTANCE);
+		JnAsyncUtilsGetMessage x = new JnAsyncUtilsLenientGetMessage();
+		JnAsyncNotifySupport.INSTANCE.apply(values, name, JnEntityJobsnowError.INSTANCE, x);
 
 		return values;
 	}

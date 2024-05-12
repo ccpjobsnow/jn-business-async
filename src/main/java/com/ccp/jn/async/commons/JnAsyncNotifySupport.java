@@ -19,20 +19,19 @@ public class JnAsyncNotifySupport {
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entity) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entityToSaveError, JnAsyncUtilsGetMessage getMessage) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 		
 		if(supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 
-		CcpJsonRepresentation renameKey = values.renameKey("message", "msg");
+		CcpJsonRepresentation renameKey = values.duplicateValueFromKey("message", "msg");
 		
-		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();
-		jnCommonsBusinessUtilsGetMessage
-		.addOneLenientStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
-		.addOneLenientStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
-		.executeAllSteps(topic, entity, renameKey, supportLanguage);
+		getMessage
+		.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
+		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
+		.executeAllSteps(topic, entityToSaveError, renameKey, supportLanguage);
 
 		return values;
 	}

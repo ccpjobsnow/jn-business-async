@@ -28,7 +28,7 @@ public class JnAsyncCommitAndAudit {
 	
 	private JnAsyncCommitAndAudit() {}
 	
-	public void execute1(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
+	public void executeBulk(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
 		
 		boolean emptyRecords = records.isEmpty();
 		
@@ -43,9 +43,22 @@ public class JnAsyncCommitAndAudit {
 		this.commitAndSaveErrors(dbBulkExecutor);
 	}
 	
-	public void execute1(Collection<CcpBulkItem> items) {
+	public void executeBulk(CcpJsonRepresentation values, CcpEntity entity, CcpEntityOperationType operation) {
+		CcpBulkItem bulkItem = entity.toBulkItem(values, operation);
+		CcpEntity mirrorEntity = entity.getMirrorEntity();
+		CcpBulkItem bulkItem2 = mirrorEntity.toBulkItem(values, operation);
+		this.executeBulk(bulkItem, bulkItem2);
+	}
+	
+	public void executeBulk(CcpBulkItem... items) {
+		List<CcpBulkItem> asList = Arrays.asList(items);
+		this.executeBulk(asList);
+	}
+	
+	public void executeBulk(Collection<CcpBulkItem> items) {
 		
 		boolean emptyItems = items.isEmpty();
+		
 		if(emptyItems) {
 			return;
 		}
@@ -76,7 +89,7 @@ public class JnAsyncCommitAndAudit {
 		List<CcpBulkOperationResult> bulkOperationResult = dbBulkExecutor.getBulkOperationResult();
 		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
 		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.INSTANCE)).collect(Collectors.toList());
-		this.execute1(collect);
+		this.executeBulk(collect);
 		
 	}
 	private Function<CcpBulkOperationResult, CcpJsonRepresentation> getReprocessJsonMapper() {
@@ -106,7 +119,7 @@ public class JnAsyncCommitAndAudit {
 			List<CcpBulkItem> list =  unionAll.whenRecordIsFoundInUnionAll(values, handler);
 			all.addAll(list);
 		}
-		this.execute1(all);
+		this.executeBulk(all);
 	}
 
 }

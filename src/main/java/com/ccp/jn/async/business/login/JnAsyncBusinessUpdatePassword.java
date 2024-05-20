@@ -11,9 +11,9 @@ import com.ccp.jn.async.actions.SolveLoginConflict;
 import com.ccp.jn.async.actions.TransferRecordBetweenEntities;
 import com.ccp.jn.async.actions.UpdatePassword;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
+import com.jn.commons.entities.JnEntityLoginPassword;
+import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginSessionCurrent;
-import com.jn.commons.entities.JnEntityLoginToken;
-import com.jn.commons.entities.JnEntityLoginTokenAttempts;
 
 public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -29,18 +29,18 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 
 		TransferRecordBetweenEntities executeLogout = new TransferRecordBetweenEntities(JnEntityLoginSessionCurrent.INSTANCE);
 		
-		CcpEntity mirrorEntity = JnEntityLoginToken.INSTANCE.getMirrorEntity();
+		CcpEntity mirrorEntity = JnEntityLoginPassword.INSTANCE.getMirrorEntity();
 		TransferRecordBetweenEntities registerUnlock = new TransferRecordBetweenEntities(mirrorEntity);
-		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginTokenAttempts.INSTANCE);
+		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginPasswordAttempts.INSTANCE);
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				values 
+				, UpdatePassword.INSTANCE
 				, registerUnlock
 				, removeAttempts
 				, executeLogout
 				, RegisterLogin.INSTANCE
-				, UpdatePassword.INSTANCE
 				, SolveLoginConflict.INSTANCE
 				);
 		

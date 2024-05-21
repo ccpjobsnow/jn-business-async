@@ -5,7 +5,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.jn.async.actions.TransferRecordBetweenEntities;
+import com.ccp.jn.async.actions.TransferRecordToReverseEntity;
 import com.ccp.jn.async.actions.RegisterLogin;
 import com.ccp.jn.async.actions.RemoveAttempts;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
@@ -25,7 +25,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
 		CcpEntity mirrorEntity = JnEntityLoginPassword.INSTANCE.getMirrorEntity();
-		TransferRecordBetweenEntities executeUnlock = new TransferRecordBetweenEntities(mirrorEntity);
+		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(mirrorEntity);
 		JnEntityLoginPasswordAttempts entityAttempts = JnEntityLoginPasswordAttempts.INSTANCE;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 

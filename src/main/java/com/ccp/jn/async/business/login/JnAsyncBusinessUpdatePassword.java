@@ -8,7 +8,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.actions.RegisterLogin;
 import com.ccp.jn.async.actions.RemoveAttempts;
 import com.ccp.jn.async.actions.SolveLoginConflict;
-import com.ccp.jn.async.actions.TransferRecordBetweenEntities;
+import com.ccp.jn.async.actions.TransferRecordToReverseEntity;
 import com.ccp.jn.async.actions.UpdatePassword;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginPassword;
@@ -27,10 +27,10 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 
-		TransferRecordBetweenEntities executeLogout = new TransferRecordBetweenEntities(JnEntityLoginSessionCurrent.INSTANCE);
+		TransferRecordToReverseEntity executeLogout = new TransferRecordToReverseEntity(JnEntityLoginSessionCurrent.INSTANCE);
 		
 		CcpEntity mirrorEntity = JnEntityLoginPassword.INSTANCE.getMirrorEntity();
-		TransferRecordBetweenEntities registerUnlock = new TransferRecordBetweenEntities(mirrorEntity);
+		TransferRecordToReverseEntity registerUnlock = new TransferRecordToReverseEntity(mirrorEntity);
 		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginPasswordAttempts.INSTANCE);
 
 		JnAsyncCommitAndAudit.INSTANCE.

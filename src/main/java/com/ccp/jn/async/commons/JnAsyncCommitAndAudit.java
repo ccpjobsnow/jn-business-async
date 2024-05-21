@@ -20,6 +20,8 @@ import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
+import com.ccp.jn.async.actions.SaveMainEntity;
+import com.ccp.jn.async.actions.SaveSupportEntity;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
 
 public class JnAsyncCommitAndAudit {
@@ -120,6 +122,18 @@ public class JnAsyncCommitAndAudit {
 			all.addAll(list);
 		}
 		this.executeBulk(all);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void executeSelectUnionAllThenSaveInTheMainAndMirrorEntities(CcpJsonRepresentation values, CcpEntity mainEntity) {
+		CcpEntity supportEntity = mainEntity.getMirrorEntity();
+		SaveMainEntity saveMainEntity = new SaveMainEntity(mainEntity);
+		SaveSupportEntity saveSupportEntity = new SaveSupportEntity(supportEntity);
+		HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>[] array = new HandleWithSearchResultsInTheEntity[]{
+				saveMainEntity,
+				saveSupportEntity
+		};
+		this.executeSelectUnionAllThenExecuteBulkOperation(values,array);
 	}
 
 }

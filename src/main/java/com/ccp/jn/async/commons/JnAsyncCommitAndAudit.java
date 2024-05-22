@@ -118,7 +118,7 @@ public class JnAsyncCommitAndAudit {
 		Set<CcpBulkItem> all = new HashSet<>();
 		
 		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
-			List<CcpBulkItem> list =  unionAll.whenRecordIsFoundInUnionAll(values, handler);
+			List<CcpBulkItem> list =  unionAll.handleRecordInUnionAll(values, handler);
 			all.addAll(list);
 		}
 		this.executeBulk(all);

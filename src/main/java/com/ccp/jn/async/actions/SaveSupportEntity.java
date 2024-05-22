@@ -12,18 +12,18 @@ import com.ccp.especifications.db.utils.CcpEntity;
 
 public class SaveSupportEntity implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
-	private final CcpEntity entity;
+	private final CcpEntity supportEntity;
 	
-	public SaveSupportEntity(CcpEntity entity) {
-		this.entity = entity;
+	public SaveSupportEntity(CcpEntity supportEntity) {
+		this.supportEntity = supportEntity;
 	}
 	
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation searchParameter,	CcpJsonRepresentation recordFound) {
-		CcpEntity mirrorEntity = this.entity.getMirrorEntity();
-		CcpBulkItem bulkItem = this.entity.toBulkItem(searchParameter, CcpEntityOperationType.update);
-		CcpBulkItem deleteFromMainEntity = mirrorEntity.toBulkItem(searchParameter, CcpEntityOperationType.delete);
-		List<CcpBulkItem> asList = Arrays.asList(bulkItem, deleteFromMainEntity);
+		CcpEntity mainEntity = this.supportEntity.getMirrorEntity();
+		CcpBulkItem updateIntoSupportEntity = this.supportEntity.toBulkItem(searchParameter, CcpEntityOperationType.update);
+		CcpBulkItem deleteFromMainEntity = mainEntity.toBulkItem(searchParameter, CcpEntityOperationType.delete);
+		List<CcpBulkItem> asList = Arrays.asList(updateIntoSupportEntity, deleteFromMainEntity);
 		return asList;
 	}
 
@@ -32,7 +32,7 @@ public class SaveSupportEntity implements HandleWithSearchResultsInTheEntity<Lis
 	}
 
 	public CcpEntity getEntityToSearch() {
-		return this.entity;
+		return this.supportEntity;
 	}
 
 }

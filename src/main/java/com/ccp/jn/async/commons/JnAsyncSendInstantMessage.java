@@ -21,42 +21,42 @@ public class JnAsyncSendInstantMessage {
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		CcpInstantMessenger instantMessenger = CcpDependencyInjection.getDependency(CcpInstantMessenger.class);
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		String token = instantMessenger.getToken(values);
+		String token = instantMessenger.getToken(json);
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
-		values = values.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(values, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
+		json = json.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
+		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
 
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  dataFromThisRecipient.isPresent(JnEntityInstantMessengerMessageSent.INSTANCE, values);
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  JnEntityInstantMessengerMessageSent.INSTANCE.isPresentInThisUnionAll(dataFromThisRecipient , json);
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
-			Integer sleep = values.getAsIntegerNumber("sleep");
+			Integer sleep = json.getAsIntegerNumber("sleep");
 			new CcpTimeDecorator().sleep(sleep);
-			CcpJsonRepresentation execute = this.apply(values);
+			CcpJsonRepresentation execute = this.apply(json);
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = dataFromThisRecipient.isPresent(JnEntityInstantMessengerBotLocked.INSTANCE, values);
+		boolean thisBotHasBeenBlocked = JnEntityInstantMessengerBotLocked.INSTANCE.isPresentInThisUnionAll(dataFromThisRecipient, json);
 		
 		if(thisBotHasBeenBlocked) {
-			return values;
+			return json;
 		}
 		
 		try {
-			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(values);
-			CcpJsonRepresentation instantMessageSent = values.putAll(instantMessengerData);
+			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(json);
+			CcpJsonRepresentation instantMessageSent = json.putAll(instantMessengerData);
 			JnEntityInstantMessengerMessageSent.INSTANCE.createOrUpdate(instantMessageSent);
-			return values;
+			return json;
 		} catch (CcpTooManyRequests e) {
 			
-			return this.retryToSendMessage(values);
+			return this.retryToSendMessage(json);
 			
 		} catch(CcpThisBotWasBlockedByThisUser e) {
-			return saveBlockedBot(values, e.token);
+			return saveBlockedBot(json, e.token);
 		}
 	}
 

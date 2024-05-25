@@ -48,7 +48,7 @@ public class JnAsyncUtilsGetMessage {
 		
 		CcpSelectUnionAll unionAll = crud.unionAll(idToSearch, entities);
 		
-		boolean alreadySaved = unionAll.isPresent(entityToSave, idToSearch);
+		boolean alreadySaved = entityToSave.isPresentInThisUnionAll(unionAll, idToSearch);
 		
 		if(alreadySaved) {
 			return entityValues;

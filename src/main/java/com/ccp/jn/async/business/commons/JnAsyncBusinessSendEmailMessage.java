@@ -20,30 +20,30 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 		
 	}
 
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
 		CcpEmailSender emailSender = CcpDependencyInjection.getDependency(CcpEmailSender.class);
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll unionAll = crud.unionAll(values, JnEntityEmailMessageSent.INSTANCE, JnEntityEmailReportedAsSpam.INSTANCE);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, JnEntityEmailMessageSent.INSTANCE, JnEntityEmailReportedAsSpam.INSTANCE);
 		
-		boolean emailAlreadySent = unionAll.isPresent(JnEntityEmailMessageSent.INSTANCE, values);
+		boolean emailAlreadySent = JnEntityEmailMessageSent.INSTANCE.isPresentInThisUnionAll(unionAll, json);
 		
 		if(emailAlreadySent) {
-			return values;
+			return json;
 		}
 
-		boolean emailReportedAsSpam = unionAll.isPresent(JnEntityEmailReportedAsSpam.INSTANCE, values);
+		boolean emailReportedAsSpam = JnEntityEmailReportedAsSpam.INSTANCE.isPresentInThisUnionAll(unionAll, json);
 		
 		if(emailReportedAsSpam) {
 			//TODO alerta de envio de e-mail pra alguem que reportou como spam
-			return values;
+			return json;
 		}
 		
-		JnAsyncSendHttpRequest.INSTANCE.execute(values, x -> emailSender.send(x),JnAsyncHttpRequestType.email, "subjectType");
-		JnEntityEmailMessageSent.INSTANCE.createOrUpdate(values);
-		return values;
+		JnAsyncSendHttpRequest.INSTANCE.execute(json, x -> emailSender.send(x),JnAsyncHttpRequestType.email, "subjectType");
+		JnEntityEmailMessageSent.INSTANCE.createOrUpdate(json);
+		return json;
 	}
 
 }

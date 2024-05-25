@@ -126,7 +126,7 @@ public class JnAsyncCommitAndAudit {
 	}
 
 	@SuppressWarnings("unchecked")
-	public CcpJsonRepresentation executeSelectUnionAllThenSaveInTheMainAndMirrorEntities(CcpJsonRepresentation values, 
+	public CcpJsonRepresentation executeSelectUnionAllThenSaveInTheMainAndMirrorEntities(CcpJsonRepresentation json, 
 			CcpEntity mainEntity, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenPresentInMainEntity) {
 		CcpEntity supportEntity = mainEntity.getMirrorEntity();
 		SaveMainEntity saveMainEntity = new SaveMainEntity(mainEntity);
@@ -135,16 +135,16 @@ public class JnAsyncCommitAndAudit {
 				saveMainEntity,
 				saveSupportEntity
 		};
-		CcpSelectUnionAll result = this.executeSelectUnionAllThenExecuteBulkOperation(values, array);
+		CcpSelectUnionAll result = this.executeSelectUnionAllThenExecuteBulkOperation(json, array);
 		
-		boolean isPresentInMainEntity = result.isPresent(mainEntity, values);
+		boolean isPresentInMainEntity = mainEntity.isPresentInThisUnionAll(result, json);
 		
 		if(isPresentInMainEntity) {
-			CcpJsonRepresentation apply = whenPresentInMainEntity.apply(values);
+			CcpJsonRepresentation apply = whenPresentInMainEntity.apply(json);
 			return apply;
 		}
 		
-		return values;
+		return json;
 	}
 
 }

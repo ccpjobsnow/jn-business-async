@@ -2,6 +2,7 @@ package com.ccp.jn.async.commons;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ccp.constantes.CcpConstants;
@@ -12,15 +13,14 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
+import com.ccp.exceptions.process.CcpAsyncTask;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnGenerateRandomToken;
 
 public class JnAsyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
 	
-	private JnAsyncMensageriaSender() {
-		
-	}
+	private JnAsyncMensageriaSender() {}
 	
 	public static final JnAsyncMensageriaSender INSTANCE = new JnAsyncMensageriaSender();
 	
@@ -62,6 +62,45 @@ public class JnAsyncMensageriaSender {
 		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "id");
 		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
 		return transformed;
+	}
+	private void saveResult(
+			CcpEntity entity, 
+			CcpJsonRepresentation messageDetails, 
+			Throwable e,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError
+			) {
+		CcpJsonRepresentation response = new CcpJsonRepresentation(e);
+		this.saveResult(entity, messageDetails, response, false);
+		
+	}
+
+	private void saveResult(CcpEntity entity, CcpJsonRepresentation messageDetails, CcpJsonRepresentation response) {
+		this.saveResult(entity, messageDetails, response, true);
+	}
+	
+	public void executeProcesss(
+			CcpEntity entity,
+			String processName, 
+			CcpJsonRepresentation messageDetails,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> jnAsyncBusinessNotifyError
+			) {
+		try {
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> process = CcpAsyncTask.getProcess(processName);
+			CcpJsonRepresentation response = process.apply(messageDetails);
+			this.saveResult(entity, messageDetails, response);
+		} catch (Throwable e) {
+			this.saveResult(entity, messageDetails, e, jnAsyncBusinessNotifyError);
+		}
+
+	}
+	
+	private void saveResult(CcpEntity entity, CcpJsonRepresentation messageDetails, CcpJsonRepresentation response, boolean success) {
+		Long finished = System.currentTimeMillis();
+		CcpJsonRepresentation oneById = entity.getOneById(messageDetails);
+		Long started = oneById.getAsLongNumber("started");
+		Long enlapsedTime = finished - started;
+		CcpJsonRepresentation processResult = messageDetails.put("enlapsedTime", enlapsedTime).put("response", response).put("finished", finished).put("success", success);
+		entity.createOrUpdate(processResult);
 	}
 
 }

@@ -20,14 +20,14 @@ public class RemoveAttempts implements HandleWithSearchResultsInTheEntity<List<C
 		this.entityAttempts = entityAttempts;
 	}
 
-	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 	
 		CcpBulkItem attempts = new CcpBulkItem(recordFound, CcpEntityOperationType.delete, this.entityAttempts);
 		List<CcpBulkItem> asList = Arrays.asList(attempts);
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 		return new ArrayList<>();
 	}
 

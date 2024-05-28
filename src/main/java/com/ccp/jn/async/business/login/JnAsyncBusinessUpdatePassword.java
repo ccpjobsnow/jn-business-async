@@ -25,7 +25,7 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 	}
 
 	@SuppressWarnings("unchecked")
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 
 		TransferRecordToReverseEntity executeLogout = new TransferRecordToReverseEntity(JnEntityLoginSessionCurrent.INSTANCE);
 		
@@ -35,7 +35,7 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
-				values 
+				json 
 				, UpdatePassword.INSTANCE
 				, registerUnlock
 				, removeAttempts

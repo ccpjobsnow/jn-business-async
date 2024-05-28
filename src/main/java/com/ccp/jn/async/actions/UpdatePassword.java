@@ -20,21 +20,21 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 	
 	public static final UpdatePassword INSTANCE = new UpdatePassword();
 	
-	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 
-		List<CcpBulkItem> asList = this.savePassword(values, CcpEntityOperationType.update);
+		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityOperationType.update);
 		
 		return asList;
 	}
 
-	private List<CcpBulkItem> savePassword(CcpJsonRepresentation values, CcpEntityOperationType operation) {
-		String password = values.getAsString("password");
+	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+		String password = json.getAsString("password");
 		
 		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 		
 		String passwordHash = dependency.getHash(password);
 		
-		CcpJsonRepresentation jsonPassword = values.put("password", passwordHash); 
+		CcpJsonRepresentation jsonPassword = json.put("password", passwordHash); 
 		
 		CcpBulkItem itemPassword = new CcpBulkItem(jsonPassword, operation, JnEntityLoginPassword.INSTANCE);
 		
@@ -42,9 +42,9 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 		return asList;
 	}
 
-	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation values) {
+	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 
-		List<CcpBulkItem> asList = this.savePassword(values, CcpEntityOperationType.create);
+		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityOperationType.create);
 		return asList;
 	}
 

@@ -18,12 +18,12 @@ public class JnAsyncBusinessExecuteLogout implements Function<CcpJsonRepresentat
 	}
 	
 	@SuppressWarnings("unchecked")
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		TransferRecordToReverseEntity executeLogout = new TransferRecordToReverseEntity(JnEntityLoginSessionCurrent.INSTANCE);
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
-				values 
+				json 
 				, executeLogout
 				);
 		

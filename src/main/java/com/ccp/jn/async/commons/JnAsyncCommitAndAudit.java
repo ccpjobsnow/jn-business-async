@@ -45,10 +45,10 @@ public class JnAsyncCommitAndAudit {
 		this.commitAndSaveErrors(dbBulkExecutor);
 	}
 	
-	public void executeBulk(CcpJsonRepresentation values, CcpEntity entity, CcpEntityOperationType operation) {
-		CcpBulkItem bulkItem = entity.toBulkItem(values, operation);
+	public void executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
 		CcpEntity mirrorEntity = entity.getMirrorEntity();
-		CcpBulkItem bulkItem2 = mirrorEntity.toBulkItem(values, operation);
+		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
+		CcpBulkItem bulkItem2 = mirrorEntity.toBulkItem(json, operation);
 		this.executeBulk(bulkItem, bulkItem2);
 	}
 	
@@ -109,16 +109,16 @@ public class JnAsyncCommitAndAudit {
 		};
 	}
 	@SuppressWarnings("unchecked")
-	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation values,  HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
+	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation json,  HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
 		Set<CcpEntity> collect = Arrays.asList(handlers).stream().map(x -> x.getEntityToSearch()).collect(Collectors.toSet());
 		CcpEntity[] array = collect.toArray(new CcpEntity[collect.size()]);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpSelectUnionAll unionAll = crud.unionAll(values, array);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, array);
 		
 		Set<CcpBulkItem> all = new HashSet<>();
 		
 		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
-			List<CcpBulkItem> list =  unionAll.handleRecordInUnionAll(values, handler);
+			List<CcpBulkItem> list =  unionAll.handleRecordInUnionAll(json, handler);
 			all.addAll(list);
 		}
 		this.executeBulk(all);

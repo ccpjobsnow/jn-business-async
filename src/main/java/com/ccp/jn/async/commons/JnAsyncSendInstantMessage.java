@@ -60,19 +60,21 @@ public class JnAsyncSendInstantMessage {
 		}
 	}
 
-	private CcpJsonRepresentation retryToSendMessage(CcpJsonRepresentation values) {
+	private CcpJsonRepresentation retryToSendMessage(CcpJsonRepresentation json) {
 		
-		Integer maxTriesToSendMessage = values.getAsIntegerNumber("maxTriesToSendMessage");
-		Integer triesToSendMessage = values.getOrDefault("triesToSendMessage", 1);
+		Integer maxTriesToSendMessage = json.getAsIntegerNumber("maxTriesToSendMessage");
+		Integer triesToSendMessage = json.getOrDefault("triesToSendMessage", 1);
 		
 		if(triesToSendMessage >= maxTriesToSendMessage) {
-			throw new RuntimeException("This message couldn't be sent. Details: " + values);
+			throw new RuntimeException("This message couldn't be sent. Details: " + json);
 		}
 		
-		Integer sleepToSendMessage = values.getAsIntegerNumber("sleepToSendMessage");
+		Integer sleepToSendMessage = json.getAsIntegerNumber("sleepToSendMessage");
 		
 		new CcpTimeDecorator().sleep(sleepToSendMessage);
-		return this.apply(values.put("triesToSendMessage", triesToSendMessage + 1));
+		CcpJsonRepresentation put = json.put("triesToSendMessage", triesToSendMessage + 1);
+		CcpJsonRepresentation apply = this.apply(put);
+		return apply;
 	}
 
 	private CcpJsonRepresentation saveBlockedBot(CcpJsonRepresentation putAll, String token) {

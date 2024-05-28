@@ -20,15 +20,15 @@ public class RegisterLogin implements HandleWithSearchResultsInTheEntity<List<Cc
 	
 	public static final RegisterLogin INSTANCE = new RegisterLogin();
 	
-	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation values, CcpJsonRepresentation recordFound) {
+	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 
-		List<CcpBulkItem> whenRecordIsNotFound = this.whenRecordWasNotFoundInTheEntitySearch(values);
+		List<CcpBulkItem> whenRecordIsNotFound = this.whenRecordWasNotFoundInTheEntitySearch(json);
 		return whenRecordIsNotFound;
 	}
 
-	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation values) {
-		CcpBulkItem newSession = new CcpBulkItem(values, CcpEntityOperationType.create, JnEntityLoginSessionToken.INSTANCE);
-		CcpBulkItem newLogin = new CcpBulkItem(values, CcpEntityOperationType.create, JnEntityLoginSessionCurrent.INSTANCE);
+	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
+		CcpBulkItem newSession = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionToken.INSTANCE);
+		CcpBulkItem newLogin = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionCurrent.INSTANCE);
 		List<CcpBulkItem> asList = Arrays.asList(newLogin, newSession);
 		return asList;
 	}

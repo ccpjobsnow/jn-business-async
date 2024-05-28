@@ -19,21 +19,21 @@ public class JnAsyncNotifySupport {
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values, String topic, CcpEntity entityToSaveError, JnAsyncUtilsGetMessage getMessage) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncUtilsGetMessage getMessage) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 		
 		if(supportLanguage.trim().isEmpty()) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 
-		CcpJsonRepresentation renameKey = values.duplicateValueFromKey("message", "msg");
+		CcpJsonRepresentation renameKey = json.duplicateValueFromKey("message", "msg");
 		
 		getMessage
 		.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
 		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(topic, entityToSaveError, renameKey, supportLanguage);
 
-		return values;
+		return json;
 	}
 
 }

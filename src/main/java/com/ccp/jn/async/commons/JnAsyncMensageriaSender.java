@@ -45,19 +45,19 @@ public class JnAsyncMensageriaSender {
 	}
 	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {
-		String asyncTaskId = entity.getId(msg);
+		String asyncTaskId = entity.calculateId(msg);
 		CcpBulkItem bulkItem = new CcpBulkItem(msg, CcpEntityOperationType.create, entity, asyncTaskId);
 		return bulkItem;
 	}
 	
-	private CcpJsonRepresentation getMessageDetails(String topic, CcpJsonRepresentation values) {
+	private CcpJsonRepresentation getMessageDetails(String topic, CcpJsonRepresentation json) {
 		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("started", System.currentTimeMillis())
 				.put("data", formattedCurrentDateTime)
-				.put("request", values)
+				.put("request", json)
 				.put("topic", topic)
-				.putAll(values)
+				.putAll(json)
 				;
 		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "id");
 		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);

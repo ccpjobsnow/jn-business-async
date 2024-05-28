@@ -17,20 +17,20 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
-		
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
 		String name = JnAsyncBusiness.notifyError.name();
 		JnAsyncUtilsGetMessage x = new JnAsyncUtilsLenientGetMessage();
-		JnAsyncNotifySupport.INSTANCE.apply(values, name, JnEntityJobsnowError.INSTANCE, x);
+		JnAsyncNotifySupport.INSTANCE.apply(json, name, JnEntityJobsnowError.INSTANCE, x);
 
-		return values;
+		return json;
 	}
 	
 	public CcpJsonRepresentation apply(Throwable e) {
 		
-		CcpJsonRepresentation values = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation execute = this.apply(values.renameKey("message", "msg"));
+		CcpJsonRepresentation json = new CcpJsonRepresentation(e);
+		CcpJsonRepresentation renameKey = json.renameKey("message", "msg");
+		CcpJsonRepresentation execute = this.apply(renameKey);
 		return execute;
 	}
 

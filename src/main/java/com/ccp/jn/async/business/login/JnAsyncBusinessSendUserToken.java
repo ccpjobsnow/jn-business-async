@@ -20,17 +20,17 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		JnGenerateRandomTokenWithHash transformer = new JnGenerateRandomTokenWithHash(8, "token", "tokenHash");
-		CcpJsonRepresentation entityValue = values.getTransformed(transformer);
-		String language = values.getAsString("language");
+		CcpJsonRepresentation entityValue = json.getTransformed(transformer);
+		String language = json.getAsString("language");
 		
 		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();
 		String name = JnAsyncBusiness.sendUserToken.name();
 		jnCommonsBusinessUtilsGetMessage
 		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(name, JnEntityLoginToken.INSTANCE, entityValue, language);
-		return values;
+		return json;
 	}
 
 }

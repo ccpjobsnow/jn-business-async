@@ -14,9 +14,7 @@ import com.jn.commons.entities.JnEntityLoginSessionToken;
 public class RegisterLogin implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
 	
-	private RegisterLogin() {
-		
-	}
+	private RegisterLogin() {}
 	
 	public static final RegisterLogin INSTANCE = new RegisterLogin();
 	

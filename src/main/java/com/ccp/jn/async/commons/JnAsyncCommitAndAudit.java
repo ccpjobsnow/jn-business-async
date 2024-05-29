@@ -38,11 +38,9 @@ public class JnAsyncCommitAndAudit {
 			return;
 		}
 		
-		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
+		List<CcpBulkItem> collect = records.stream().map(json -> new CcpBulkItem(json, operation, entity)).collect(Collectors.toList());
 		
-		dbBulkExecutor = dbBulkExecutor.addRecords(records, operation, entity);
-		
-		this.commitAndSaveErrors(dbBulkExecutor);
+		this.executeBulk(collect);
 	}
 	
 	public void executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {

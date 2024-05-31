@@ -120,6 +120,24 @@ public class JnAsyncCommitAndAudit {
 			all.addAll(list);
 		}
 		this.executeBulk(all);
+
+		CcpJsonRepresentation data = json;
+	
+		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
+			
+			CcpEntity entityToSearch = handler.getEntityToSearch();
+			
+			boolean presentInThisUnionAll = entityToSearch.isPresentInThisUnionAll(unionAll, data);
+			
+			if(presentInThisUnionAll) {
+				Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsFound = handler.doAfterSavingIfRecordIsFound();
+				data = doAfterSavingIfRecordIsFound.apply(data);
+				continue;
+			}
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound = handler.doAfterSavingIfRecordIsNotFound();
+			data = doAfterSavingIfRecordIsNotFound.apply(data);
+		}
+		
 		return unionAll;
 	}
 

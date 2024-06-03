@@ -29,7 +29,7 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 	public CcpJsonRepresentation apply(Throwable e) {
 		
 		CcpJsonRepresentation json = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation renameKey = json.renameKey("message", "msg");
+		CcpJsonRepresentation renameKey = json.renameField("message", "msg");
 		CcpJsonRepresentation execute = this.apply(renameKey);
 		return execute;
 	}

@@ -101,7 +101,7 @@ public class JnAsyncCommitAndAudit {
 			CcpJsonRepresentation putAll = put.putAll(bulkItem.json);
 			CcpJsonRepresentation errorDetails = result.getErrorDetails();
 			CcpJsonRepresentation putAll2 = putAll.putAll(errorDetails);
-			CcpJsonRepresentation renameKey = putAll2.renameKey("type", "errorType");
+			CcpJsonRepresentation renameKey = putAll2.renameField("type", "errorType");
 			CcpJsonRepresentation jsonPiece = renameKey.getJsonPiece("errorType", "reason");
 			return jsonPiece;
 		};

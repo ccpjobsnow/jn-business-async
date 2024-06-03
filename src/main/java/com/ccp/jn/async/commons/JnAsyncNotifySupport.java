@@ -26,7 +26,7 @@ public class JnAsyncNotifySupport {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 
-		CcpJsonRepresentation renameKey = json.duplicateValueFromKey("message", "msg");
+		CcpJsonRepresentation renameKey = json.duplicateValueFromField("message", "msg");
 		
 		getMessage
 		.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)

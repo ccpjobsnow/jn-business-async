@@ -62,12 +62,12 @@ public class JnAsyncUtilsGetMessage {
 			
 			CcpJsonRepresentation parameterData = parameterEntity.getRequiredEntityRow(unionAll, idToSearch);
 			CcpJsonRepresentation moreParameters = parameterData.getInnerJson("moreParameters");
-			CcpJsonRepresentation allParameters = parameterData.removeKey("moreParameters").putAll(moreParameters);
+			CcpJsonRepresentation allParameters = parameterData.removeField("moreParameters").putAll(moreParameters);
 			CcpJsonRepresentation messageData = messageEntity.getRequiredEntityRow(unionAll, idToSearch);
 			
 			CcpJsonRepresentation allDataTogether = messageData.putAll(allParameters).putAll(entityValues);
 			
- 			Set<String> keySet = messageData.keySet();
+ 			Set<String> keySet = messageData.fieldSet();
 			
 			CcpJsonRepresentation messageToSend = allDataTogether;
 			

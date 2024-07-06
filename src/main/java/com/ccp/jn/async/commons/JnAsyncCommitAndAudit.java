@@ -86,8 +86,8 @@ public class JnAsyncCommitAndAudit {
 	
 	private void commitAndSaveErrors(CcpDbBulkExecutor dbBulkExecutor) {
 
-		List<CcpBulkOperationResult> bulkOperationResult = dbBulkExecutor.getBulkOperationResult();
 		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
+		List<CcpBulkOperationResult> bulkOperationResult = dbBulkExecutor.getBulkOperationResult().stream().filter(x -> x.hasError()).collect(Collectors.toList());
 		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.INSTANCE)).collect(Collectors.toList());
 		this.executeBulk(collect);
 		

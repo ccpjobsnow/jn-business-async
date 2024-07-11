@@ -1,5 +1,6 @@
 package com.ccp.jn.async.commons;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -174,4 +175,16 @@ public class JnAsyncCommitAndAudit {
 		return json;
 	}
 
+	
+	public void executeBulk(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity...entities) {
+		
+		List<CcpBulkItem> items = new ArrayList<>();
+ 		
+		for (CcpEntity entity : entities) {
+			CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
+			items.add(bulkItem);
+		}
+		
+		this.executeBulk(items);
+	}
 }

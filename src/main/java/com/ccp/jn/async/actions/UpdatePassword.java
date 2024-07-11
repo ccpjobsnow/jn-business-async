@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.especifications.password.CcpPasswordHandler;
+import com.ccp.json.transformers.CcpJsonTransformerPutPasswordField;
 import com.jn.commons.entities.JnEntityLoginPassword;
 
 public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
@@ -27,18 +26,17 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 		return asList;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityOperationType operation) {
-		String password = json.getAsString("password");
+
+		var transformer = new CcpJsonTransformerPutPasswordField("password");
 		
-		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
-		
-		String passwordHash = dependency.getHash(password);
-		
-		CcpJsonRepresentation jsonPassword = json.put("password", passwordHash); 
+		CcpJsonRepresentation jsonPassword = json.getTransformedJson(transformer);
 		
 		CcpBulkItem itemPassword = new CcpBulkItem(jsonPassword, operation, JnEntityLoginPassword.INSTANCE);
 		
 		List<CcpBulkItem> asList = Arrays.asList(itemPassword);
+		
 		return asList;
 	}
 

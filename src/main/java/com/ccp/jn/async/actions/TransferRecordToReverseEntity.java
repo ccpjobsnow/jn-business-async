@@ -15,16 +15,23 @@ public class TransferRecordToReverseEntity implements HandleWithSearchResultsInT
 	private final CcpEntity from; 
 	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsFound;
 	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound;
+	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound;
+	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound;
 	
 
 	
+
 	public TransferRecordToReverseEntity(CcpEntity from,
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsFound,
-			Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound) {
-
-		this.doAfterSavingIfRecordIsNotFound = doAfterSavingIfRecordIsNotFound;
-		this.doAfterSavingIfRecordIsFound = doAfterSavingIfRecordIsFound;
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound,
+			Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound) {
+		super();
 		this.from = from;
+		this.doAfterSavingIfRecordIsFound = doAfterSavingIfRecordIsFound;
+		this.doAfterSavingIfRecordIsNotFound = doAfterSavingIfRecordIsNotFound;
+		this.doBeforeSavingIfRecordIsFound = doBeforeSavingIfRecordIsFound;
+		this.doBeforeSavingIfRecordIsNotFound = doBeforeSavingIfRecordIsNotFound;
 	}
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
@@ -54,5 +61,13 @@ public class TransferRecordToReverseEntity implements HandleWithSearchResultsInT
 
 	public Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsNotFound() {
 		return this.doAfterSavingIfRecordIsNotFound;
+	}
+	
+	public Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsFound() {
+		return this.doBeforeSavingIfRecordIsFound;
+	}
+
+	public Function<CcpJsonRepresentation, CcpJsonRepresentation> doBeforeSavingIfRecordIsNotFound() {
+		return this.doBeforeSavingIfRecordIsNotFound;
 	}
 }

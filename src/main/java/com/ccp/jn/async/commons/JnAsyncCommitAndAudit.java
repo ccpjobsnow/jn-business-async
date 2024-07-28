@@ -65,7 +65,6 @@ public class JnAsyncCommitAndAudit {
 		}
 
 		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
-
 		for (CcpBulkItem item : items) {
 			
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
@@ -88,7 +87,8 @@ public class JnAsyncCommitAndAudit {
 	private void commitAndSaveErrors(CcpDbBulkExecutor dbBulkExecutor) {
 
 		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
-		List<CcpBulkOperationResult> bulkOperationResult = dbBulkExecutor.getBulkOperationResult().stream().filter(x -> x.hasError()).collect(Collectors.toList());
+		List<CcpBulkOperationResult> bulkOperationResult2 = dbBulkExecutor.getBulkOperationResult();
+		List<CcpBulkOperationResult> bulkOperationResult = bulkOperationResult2.stream().filter(x -> x.hasError()).collect(Collectors.toList());
 		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.INSTANCE)).collect(Collectors.toList());
 		this.executeBulk(collect);
 		
@@ -107,6 +107,21 @@ public class JnAsyncCommitAndAudit {
 			return jsonPiece;
 		};
 	}
+	
+	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {
+		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
+		CcpEntity mirrorEntity = entity.getMirrorEntity();
+		CcpEntity[] array = new CcpEntity[] {entity, mirrorEntity};
+		CcpSelectUnionAll unionAll = crud.unionAll(json, array);
+		CcpBulkItem mirror = new CcpBulkItem(json, unionAll, mirrorEntity);
+		CcpBulkItem main = new CcpBulkItem(json, unionAll, entity);
+		
+		this.executeBulk(main, mirror);
+		return unionAll;
+	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation json,  HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
 		Set<CcpEntity> collect = Arrays.asList(handlers).stream().map(x -> x.getEntityToSearch()).collect(Collectors.toSet());
@@ -156,6 +171,7 @@ public class JnAsyncCommitAndAudit {
 				saveMainEntity,
 				saveSupportEntity
 		};
+		
 		CcpSelectUnionAll result = this.executeSelectUnionAllThenExecuteBulkOperation(json, array);
 		
 		boolean isPresentInMainEntity = mainEntity.isPresentInThisUnionAll(result, json);

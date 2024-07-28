@@ -14,7 +14,6 @@ import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.exceptions.process.CcpAsyncTask;
-import com.ccp.json.transformers.CcpJsonTransformerGenerateRandomToken;
 import com.jn.commons.entities.JnEntityAsyncTask;
 
 public class JnAsyncMensageriaSender {
@@ -59,8 +58,7 @@ public class JnAsyncMensageriaSender {
 				.put("topic", topic)
 				.putAll(json)
 				;
-		CcpJsonTransformerGenerateRandomToken transformer = new CcpJsonTransformerGenerateRandomToken(20, "id");
-		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
+		CcpJsonRepresentation transformed = messageDetails.putRandomToken(20, "id");
 		return transformed;
 	}
 	private void saveResult(

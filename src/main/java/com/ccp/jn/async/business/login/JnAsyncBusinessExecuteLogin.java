@@ -25,7 +25,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
 		CcpEntity mirrorEntity = JnEntityLoginPassword.INSTANCE.getMirrorEntity();
-		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(mirrorEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
+		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(mirrorEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
 		JnEntityLoginPasswordAttempts entityAttempts = JnEntityLoginPasswordAttempts.INSTANCE;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 

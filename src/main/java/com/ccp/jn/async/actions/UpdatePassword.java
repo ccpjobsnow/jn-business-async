@@ -8,7 +8,6 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.json.transformers.CcpJsonTransformerPutPasswordField;
 import com.jn.commons.entities.JnEntityLoginPassword;
 
 public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
@@ -26,12 +25,9 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 		return asList;
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityOperationType operation) {
 
-		var transformer = new CcpJsonTransformerPutPasswordField("password");
-		
-		CcpJsonRepresentation jsonPassword = json.getTransformedJson(transformer);
+		CcpJsonRepresentation jsonPassword = json.putPasswordHash("password");
 		
 		CcpBulkItem itemPassword = new CcpBulkItem(jsonPassword, operation, JnEntityLoginPassword.INSTANCE);
 		

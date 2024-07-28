@@ -6,7 +6,6 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
 import com.ccp.jn.async.commons.JnAsyncUtilsGetMessage;
-import com.ccp.json.transformers.CcpJsonTransformerGenerateRandomTokenWithHash;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityLoginToken;
@@ -21,8 +20,7 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 	}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
-		CcpJsonTransformerGenerateRandomTokenWithHash transformer = new CcpJsonTransformerGenerateRandomTokenWithHash(8, "token", "tokenHash");
-		CcpJsonRepresentation entityValue = json.getTransformed(transformer).renameField("originalEmail", "email");
+		CcpJsonRepresentation entityValue = json.putRandomPassword(8, "token", "tokenHash").renameField("originalEmail", "email");
 		String language = json.getAsString("language");
 		
 		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();

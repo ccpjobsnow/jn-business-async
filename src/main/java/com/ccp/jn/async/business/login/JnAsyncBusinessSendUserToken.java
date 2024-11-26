@@ -25,8 +25,7 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		
 		JnAsyncUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new JnAsyncUtilsGetMessage();
 		String name = JnAsyncBusiness.sendUserToken.name();
-		jnCommonsBusinessUtilsGetMessage
-		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
+		jnCommonsBusinessUtilsGetMessage.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 		.executeAllSteps(name, JnEntityLoginToken.INSTANCE, entityValue, language);
 		return json;
 	}

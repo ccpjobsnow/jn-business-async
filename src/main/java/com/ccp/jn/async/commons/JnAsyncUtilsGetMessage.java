@@ -34,7 +34,7 @@ public class JnAsyncUtilsGetMessage {
 		return getMessage;
 	}
 	
-	public CcpJsonRepresentation executeAllSteps(String entityId, CcpEntity entityToSave, CcpJsonRepresentation entityValues, String language) {
+	public CcpJsonRepresentation executeAllSteps(String templateId, CcpEntity entityToSave, CcpJsonRepresentation entityValues, String languageToUseInErrorCases) {
 		
 		List<CcpEntity> allEntitiesToSearch = new ArrayList<>();
 		allEntitiesToSearch.addAll(this.parameterEntities);
@@ -42,8 +42,8 @@ public class JnAsyncUtilsGetMessage {
 		allEntitiesToSearch.add(entityToSave);
 		
 		CcpEntity[] entities = allEntitiesToSearch.toArray(new CcpEntity[allEntitiesToSearch.size()]);
-		CcpJsonRepresentation idToSearch = entityValues.put("language", language)
-				.put("templateId", entityId);
+		CcpJsonRepresentation idToSearch = entityValues.put("language", languageToUseInErrorCases)
+				.put("templateId", templateId);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
 		CcpSelectUnionAll unionAll = crud.unionAll(idToSearch, entities);

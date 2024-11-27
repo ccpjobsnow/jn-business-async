@@ -8,8 +8,7 @@ public class AndWithEntityToSave {
 	
 	final CcpEntity entityToSave;
 
-	public AndWithEntityToSave(WithTemplateId withTemplateId, CcpEntity entityToSave) {
-		super();
+	AndWithEntityToSave(WithTemplateId withTemplateId, CcpEntity entityToSave) {
 		this.withTemplateId = withTemplateId;
 		this.entityToSave = entityToSave;
 	}

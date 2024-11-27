@@ -6,7 +6,7 @@ public class AndWithSupportLanguage {
 	
 	final String supportLanguage;
 
-	public AndWithSupportLanguage(AndWithJsonValues andWithJsonValues, String supportLanguage) {
+	AndWithSupportLanguage(AndWithJsonValues andWithJsonValues, String supportLanguage) {
 		this.andWithJsonValues = andWithJsonValues;
 		this.supportLanguage = supportLanguage;
 	}

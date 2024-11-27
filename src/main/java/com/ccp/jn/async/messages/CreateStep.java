@@ -8,7 +8,7 @@ public class CreateStep {
 
 	final JnAsyncUtilsGetMessage getMessage;
 
-	public CreateStep(JnAsyncUtilsGetMessage getMessage) {
+	CreateStep(JnAsyncUtilsGetMessage getMessage) {
 		this.getMessage = getMessage;
 	}
 	

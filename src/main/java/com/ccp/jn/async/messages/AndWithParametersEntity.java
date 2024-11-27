@@ -8,8 +8,7 @@ public class AndWithParametersEntity {
 
 	final CcpEntity parametersEntity;
 
-	public AndWithParametersEntity(WithProcess withProcess, CcpEntity parametersEntity) {
-		super();
+	AndWithParametersEntity(WithProcess withProcess, CcpEntity parametersEntity) {
 		this.withProcess = withProcess;
 		this.parametersEntity = parametersEntity;
 	}

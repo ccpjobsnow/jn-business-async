@@ -8,7 +8,7 @@ public class WithTemplateId {
 	
 	final String templateId;
 
-	public WithTemplateId(SoWithAllAddedStepsAnd soExecuteAllAddedSteps, String templateId) {
+	WithTemplateId(SoWithAllAddedStepsAnd soExecuteAllAddedSteps, String templateId) {
 		this.soExecuteAllAddedSteps = soExecuteAllAddedSteps;
 		this.templateId = templateId;
 	}

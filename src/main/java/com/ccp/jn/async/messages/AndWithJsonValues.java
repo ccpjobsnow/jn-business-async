@@ -8,8 +8,7 @@ public class AndWithJsonValues {
 	
 	final CcpJsonRepresentation jsonValues;
 
-	public AndWithJsonValues(AndWithEntityToSave andWithEntityToSave, CcpJsonRepresentation jsonValues) {
-		super();
+	AndWithJsonValues(AndWithEntityToSave andWithEntityToSave, CcpJsonRepresentation jsonValues) {
 		this.andWithEntityToSave = andWithEntityToSave;
 		this.jsonValues = jsonValues;
 	}

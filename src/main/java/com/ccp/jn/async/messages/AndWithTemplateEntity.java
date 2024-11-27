@@ -8,7 +8,7 @@ public class AndWithTemplateEntity {
 	
 	final CcpEntity templateEntity;
 
-	public AndWithTemplateEntity(AndWithParametersEntity andWithParametersEntity, CcpEntity templateEntity) {
+	AndWithTemplateEntity(AndWithParametersEntity andWithParametersEntity, CcpEntity templateEntity) {
 		this.andWithParametersEntity = andWithParametersEntity;
 		this.templateEntity = templateEntity;
 	}

@@ -4,7 +4,7 @@ public class SoWithAllAddedStepsAnd {
 
 	final JnAsyncUtilsGetMessage getMessage;
 
-	public SoWithAllAddedStepsAnd(JnAsyncUtilsGetMessage getMessage) {
+	SoWithAllAddedStepsAnd(JnAsyncUtilsGetMessage getMessage) {
 		this.getMessage = getMessage;
 	}
 	

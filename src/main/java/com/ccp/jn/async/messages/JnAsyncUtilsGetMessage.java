@@ -10,6 +10,12 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
+import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
+import com.jn.commons.entities.JnEntityEmailParametersToSend;
+import com.jn.commons.entities.JnEntityEmailTemplateMessage;
+import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
+import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
 
 public class JnAsyncUtilsGetMessage {
 
@@ -21,6 +27,17 @@ public class JnAsyncUtilsGetMessage {
 	
 	public CreateStep createStep() {
 		return new CreateStep(this);
+	}
+	
+	public AddDefaultStep createDefaultEmailStep() {
+		this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE);
+		return new AddDefaultStep(this);
+	}
+
+	
+	public AddDefaultStep createDefaultTelegramStep() {
+		this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE);
+		return new AddDefaultStep(this);
 	}
 	
 	JnAsyncUtilsGetMessage addOneStep(Function<CcpJsonRepresentation, CcpJsonRepresentation> process, CcpEntity parameterEntity, CcpEntity messageEntity) {

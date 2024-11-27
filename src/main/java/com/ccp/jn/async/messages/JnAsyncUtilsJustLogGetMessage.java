@@ -1,4 +1,4 @@
-package com.ccp.jn.async.commons;
+package com.ccp.jn.async.messages;
 
 import java.util.function.Function;
 

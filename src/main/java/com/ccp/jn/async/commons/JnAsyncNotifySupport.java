@@ -5,6 +5,8 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
+import com.ccp.jn.async.messages.JnAsyncUtilsGetMessage;
+import com.jn.commons.entities.JnEntityEmailMessageSent;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
@@ -27,11 +29,23 @@ public class JnAsyncNotifySupport {
 		}
 
 		CcpJsonRepresentation renameKey = json.duplicateValueFromField("message", "msg");
-		
 		getMessage
-		.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE)
-		.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
-		.executeAllSteps(topic, entityToSaveError, renameKey, supportLanguage);
+		.createStep()
+		.withProcess(JnAsyncBusinessSendEmailMessage.INSTANCE)
+		.andWithParametersEntity(JnEntityEmailParametersToSend.INSTANCE)
+		.andWithTemplateEntity(JnEntityEmailTemplateMessage.INSTANCE)
+		.andCreateAnotherStep()
+		.withProcess(JnAsyncBusinessTryToSendInstantMessage.INSTANCE)
+		.andWithParametersEntity(JnEntityInstantMessengerParametersToSend.INSTANCE)
+		.andWithTemplateEntity(JnEntityInstantMessengerTemplateMessage.INSTANCE)
+		.soWithAllAddedStepsAnd()
+		.withTemplateEntity(topic)
+		.andWithEntityToSave(JnEntityEmailMessageSent.INSTANCE)
+		.andWithJsonValues(renameKey)
+		.andWithSupportLanguage(supportLanguage)
+		.executeAllAddedSteps()
+		;
+		
 
 		return json;
 	}

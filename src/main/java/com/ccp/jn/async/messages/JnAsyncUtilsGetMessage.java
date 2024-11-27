@@ -1,4 +1,4 @@
-package com.ccp.jn.async.commons;
+package com.ccp.jn.async.messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,11 @@ public class JnAsyncUtilsGetMessage {
 	
 	private final List<CcpEntity> messageEntities = new ArrayList<>();
 	
-	public JnAsyncUtilsGetMessage addOneStep(Function<CcpJsonRepresentation, CcpJsonRepresentation> process, CcpEntity parameterEntity, CcpEntity messageEntity) {
+	public CreateStep createStep() {
+		return new CreateStep(this);
+	}
+	
+	JnAsyncUtilsGetMessage addOneStep(Function<CcpJsonRepresentation, CcpJsonRepresentation> process, CcpEntity parameterEntity, CcpEntity messageEntity) {
 		
 		JnAsyncUtilsGetMessage getMessage = new JnAsyncUtilsGetMessage();
 		
@@ -34,7 +38,7 @@ public class JnAsyncUtilsGetMessage {
 		return getMessage;
 	}
 	
-	public CcpJsonRepresentation executeAllSteps(String templateId, CcpEntity entityToSave, CcpJsonRepresentation entityValues, String languageToUseInErrorCases) {
+	CcpJsonRepresentation executeAllSteps(String templateId, CcpEntity entityToSave, CcpJsonRepresentation entityValues, String languageToUseInErrorCases) {
 		
 		List<CcpEntity> allEntitiesToSearch = new ArrayList<>();
 		allEntitiesToSearch.addAll(this.parameterEntities);

@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.commons.JnAsyncNotifySupport;
-import com.ccp.jn.async.commons.JnAsyncUtilsGetMessage;
+import com.ccp.jn.async.messages.JnAsyncUtilsGetMessage;
 import com.jn.commons.entities.JnEntityContactUs;
 import com.jn.commons.utils.JnAsyncBusiness;
 

@@ -6,13 +6,13 @@ import com.ccp.decorators.CcpJsonRepresentation;
 
 public class CreateStep {
 
-	final JnAsyncUtilsGetMessage getMessage;
+	final JnAsyncSendMessage getMessage;
 
-	CreateStep(JnAsyncUtilsGetMessage getMessage) {
+	CreateStep(JnAsyncSendMessage getMessage) {
 		this.getMessage = getMessage;
 	}
 	
-	public WithProcess withProcess(Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
-		return new WithProcess(this, process);
+	public WithTheProcess withTheProcess(Function<CcpJsonRepresentation, CcpJsonRepresentation> process) {
+		return new WithTheProcess(this, process);
 	}
 }

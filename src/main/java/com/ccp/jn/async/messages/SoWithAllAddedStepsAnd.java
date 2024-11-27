@@ -2,14 +2,14 @@ package com.ccp.jn.async.messages;
 
 public class SoWithAllAddedStepsAnd {
 
-	final JnAsyncUtilsGetMessage getMessage;
+	final JnAsyncSendMessage getMessage;
 
-	SoWithAllAddedStepsAnd(JnAsyncUtilsGetMessage getMessage) {
+	SoWithAllAddedStepsAnd(JnAsyncSendMessage getMessage) {
 		this.getMessage = getMessage;
 	}
 	
-	public WithTemplateId withTemplateEntity(String templateId) {
-		return new WithTemplateId(this, templateId);
+	public WithTheTemplateId withTheTemplateEntity(String templateId) {
+		return new WithTheTemplateId(this, templateId);
 	}
 	
 }

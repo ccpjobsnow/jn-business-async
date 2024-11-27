@@ -4,7 +4,7 @@ package com.ccp.jn.async.business.login;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.async.messages.JnAsyncUtilsGetMessage;
+import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityEmailMessageSent;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -21,16 +21,16 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		String language = json.getAsString("language");
 		
 		String topic = JnAsyncBusiness.sendUserToken.name();
-		JnAsyncUtilsGetMessage getMessage = new JnAsyncUtilsGetMessage();
+		JnAsyncSendMessage getMessage = new JnAsyncSendMessage();
 		
 		getMessage
 		.createDefaultEmailStep()
 		.soWithAllAddedStepsAnd()
-		.withTemplateEntity(topic)
-		.andWithEntityToSave(JnEntityEmailMessageSent.INSTANCE)
-		.andWithJsonValues(entityValue)
-		.andWithSupportLanguage(language)
-		.executeAllAddedSteps()
+		.withTheTemplateEntity(topic)
+		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.INSTANCE)
+		.andWithTheMessageValuesFromJson(entityValue)
+		.andWithTheSupportLanguage(language)
+		.sendAllMessages()
 		;
 
 		return json;

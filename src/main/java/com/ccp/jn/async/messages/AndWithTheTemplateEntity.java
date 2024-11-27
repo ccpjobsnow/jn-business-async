@@ -2,13 +2,13 @@ package com.ccp.jn.async.messages;
 
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public class AndWithTemplateEntity {
+public class AndWithTheTemplateEntity {
 	
-	final AndWithParametersEntity andWithParametersEntity;
+	final AndWithTheParametersEntity andWithParametersEntity;
 	
 	final CcpEntity templateEntity;
 
-	AndWithTemplateEntity(AndWithParametersEntity andWithParametersEntity, CcpEntity templateEntity) {
+	AndWithTheTemplateEntity(AndWithTheParametersEntity andWithParametersEntity, CcpEntity templateEntity) {
 		this.andWithParametersEntity = andWithParametersEntity;
 		this.templateEntity = templateEntity;
 	}

@@ -2,9 +2,9 @@ package com.ccp.jn.async.messages;
 
 public class AddDefaultStep {
 
-	final JnAsyncUtilsGetMessage getMessage;
+	final JnAsyncSendMessage getMessage;
 
-	AddDefaultStep(JnAsyncUtilsGetMessage getMessage) {
+	AddDefaultStep(JnAsyncSendMessage getMessage) {
 		this.getMessage = getMessage;
 	}
 
@@ -16,7 +16,7 @@ public class AddDefaultStep {
 		return new SoWithAllAddedStepsAnd(this.getMessage);
 	}
 
-	public JnAsyncUtilsGetMessage and() {
+	public JnAsyncSendMessage and() {
 		return this.getMessage;
 	}
 }

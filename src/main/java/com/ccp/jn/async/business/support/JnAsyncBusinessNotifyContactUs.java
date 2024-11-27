@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.commons.JnAsyncNotifySupport;
-import com.ccp.jn.async.messages.JnAsyncUtilsGetMessage;
+import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityContactUs;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -18,7 +18,7 @@ public class JnAsyncBusinessNotifyContactUs implements  Function<CcpJsonRepresen
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 
-		JnAsyncUtilsGetMessage x = new JnAsyncUtilsGetMessage();
+		JnAsyncSendMessage x = new JnAsyncSendMessage();
 		JnAsyncNotifySupport.INSTANCE.apply(json, JnAsyncBusiness.notifyContactUs.name(), JnEntityContactUs.INSTANCE, x);
 		
 		return json;

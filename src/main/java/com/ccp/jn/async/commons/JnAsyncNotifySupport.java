@@ -15,7 +15,7 @@ public class JnAsyncNotifySupport {
 		
 	}
 	
-	public CcpJsonRepresentation apply(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncSendMessage getMessage) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncSendMessage sender) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 		
 		if(supportLanguage.trim().isEmpty()) {
@@ -23,11 +23,22 @@ public class JnAsyncNotifySupport {
 		}
 
 		CcpJsonRepresentation renameKey = json.duplicateValueFromField("message", "msg");
-		getMessage
-		.createDefaultEmailStep()
+		
+		sender
+		.createStep()
+		.withTheProcess(null)
+		.andWithTheParametersEntity(null)
+		.andWithTheTemplateEntity(null)
+		
+		
+		;
+		
+		
+		sender
+		.addDefaultProcessForEmailSending()
 		.and()
-		.createDefaultTelegramStep()
-		.soWithAllAddedStepsAnd()
+		.addDefaultStepForTelegramSending()
+		.soWithAllAddedProcessAnd()
 		.withTheTemplateEntity(topic)
 		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.INSTANCE)
 		.andWithTheMessageValuesFromJson(renameKey)

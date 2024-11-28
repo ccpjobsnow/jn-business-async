@@ -29,13 +29,13 @@ public class JnAsyncSendMessage {
 		return new CreateStep(this);
 	}
 	
-	public AddDefaultStep createDefaultEmailStep() {
+	public AddDefaultStep addDefaultProcessForEmailSending() {
 		this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE);
 		return new AddDefaultStep(this);
 	}
 
 	
-	public AddDefaultStep createDefaultTelegramStep() {
+	public AddDefaultStep addDefaultStepForTelegramSending() {
 		this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE);
 		return new AddDefaultStep(this);
 	}

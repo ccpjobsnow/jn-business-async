@@ -12,7 +12,7 @@ public class AddDefaultStep {
 		return new CreateStep(this.getMessage);
 	}
 
-	public SoWithAllAddedStepsAnd soWithAllAddedStepsAnd() {
+	public SoWithAllAddedStepsAnd soWithAllAddedProcessAnd() {
 		return new SoWithAllAddedStepsAnd(this.getMessage);
 	}
 

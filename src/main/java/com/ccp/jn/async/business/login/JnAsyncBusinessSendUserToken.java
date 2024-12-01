@@ -27,7 +27,7 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		.addDefaultProcessForEmailSending()
 		.soWithAllAddedProcessAnd()
 		.withTheTemplateEntity(topic)
-		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.INSTANCE)
+		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.ENTITY)
 		.andWithTheMessageValuesFromJson(entityValue)
 		.andWithTheSupportLanguage(language)
 		.sendAllMessages()

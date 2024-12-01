@@ -16,7 +16,7 @@ public class JnAsyncSendMessageAndJustErrors extends JnAsyncSendMessage{
 				return apply;
 			} catch (Exception e) {
 				CcpJsonRepresentation errorDetails = new CcpJsonRepresentation(e);
-				JnEntityJobsnowWarning.INSTANCE.createOrUpdate(errorDetails);
+				JnEntityJobsnowWarning.ENTITY.createOrUpdate(errorDetails);
 				e.printStackTrace();
 				return values;
 			}

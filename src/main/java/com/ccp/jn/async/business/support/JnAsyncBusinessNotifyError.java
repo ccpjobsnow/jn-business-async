@@ -21,7 +21,7 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 		
 		String name = JnAsyncBusiness.notifyError.name();
 		JnAsyncSendMessage x = new JnAsyncSendMessageIgnoringProcessErrors();
-		JnAsyncNotifySupport.INSTANCE.apply(json, name, JnEntityJobsnowError.INSTANCE, x);
+		JnAsyncNotifySupport.INSTANCE.apply(json, name, JnEntityJobsnowError.ENTITY, x);
 
 		return json;
 	}

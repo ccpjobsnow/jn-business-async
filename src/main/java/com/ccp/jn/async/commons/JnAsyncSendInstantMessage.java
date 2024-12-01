@@ -29,9 +29,9 @@ public class JnAsyncSendInstantMessage {
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 		json = json.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnEntityInstantMessengerBotLocked.INSTANCE, JnEntityInstantMessengerMessageSent.INSTANCE);
+		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnEntityInstantMessengerBotLocked.ENTITY, JnEntityInstantMessengerMessageSent.ENTITY);
 
-		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  JnEntityInstantMessengerMessageSent.INSTANCE.isPresentInThisUnionAll(dataFromThisRecipient , json);
+		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  JnEntityInstantMessengerMessageSent.ENTITY.isPresentInThisUnionAll(dataFromThisRecipient , json);
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
 			Integer sleep = json.getAsIntegerNumber("sleep");
@@ -40,7 +40,7 @@ public class JnAsyncSendInstantMessage {
 			return execute;
 		}
 
-		boolean thisBotHasBeenBlocked = JnEntityInstantMessengerBotLocked.INSTANCE.isPresentInThisUnionAll(dataFromThisRecipient, json);
+		boolean thisBotHasBeenBlocked = JnEntityInstantMessengerBotLocked.ENTITY.isPresentInThisUnionAll(dataFromThisRecipient, json);
 		
 		if(thisBotHasBeenBlocked) {
 			return json;
@@ -49,7 +49,7 @@ public class JnAsyncSendInstantMessage {
 		try {
 			CcpJsonRepresentation instantMessengerData = instantMessenger.sendMessage(json);
 			CcpJsonRepresentation instantMessageSent = json.putAll(instantMessengerData);
-			JnEntityInstantMessengerMessageSent.INSTANCE.createOrUpdate(instantMessageSent);
+			JnEntityInstantMessengerMessageSent.ENTITY.createOrUpdate(instantMessageSent);
 			return json;
 		} catch (CcpTooManyRequests e) {
 			
@@ -78,7 +78,7 @@ public class JnAsyncSendInstantMessage {
 	}
 
 	private CcpJsonRepresentation saveBlockedBot(CcpJsonRepresentation putAll, String token) {
-		JnEntityInstantMessengerBotLocked.INSTANCE.createOrUpdate(putAll.put("token", token));
+		JnEntityInstantMessengerBotLocked.ENTITY.createOrUpdate(putAll.put("token", token));
 		return putAll;
 	}
 

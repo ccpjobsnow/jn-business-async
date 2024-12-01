@@ -19,7 +19,7 @@ public class JnAsyncSendHttpRequest {
 	public CcpJsonRepresentation execute(CcpJsonRepresentation json, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnAsyncHttpRequestType httpRequestType, String...keys) {
 
 		CcpJsonRepresentation jsonWithApiName = json.put("apiName", httpRequestType.name());
-		CcpJsonRepresentation httpApiParameters = JnEntityHttpApiParameters.INSTANCE.getOneById(jsonWithApiName);
+		CcpJsonRepresentation httpApiParameters = JnEntityHttpApiParameters.ENTITY.getOneById(jsonWithApiName);
 		CcpJsonRepresentation jsonWithHttpApiParameters = json.putAll(httpApiParameters);
 		
 		try {
@@ -34,7 +34,7 @@ public class JnAsyncSendHttpRequest {
 			if(e.clientError) {
 				String request = httpErrorDetails.getAsString("request");
 				httpErrorDetails = httpErrorDetails.put("request", request);
-				JnEntityHttpApiErrorClient.INSTANCE.createOrUpdate(httpErrorDetails);
+				JnEntityHttpApiErrorClient.ENTITY.createOrUpdate(httpErrorDetails);
 				throw new HttpClientError(e);
 			}
 			
@@ -48,10 +48,10 @@ public class JnAsyncSendHttpRequest {
 	private CcpJsonRepresentation retryToSendIntantMessage(CcpHttpError e, CcpJsonRepresentation json, CcpJsonRepresentation httpErrorDetails, Function<CcpJsonRepresentation, CcpJsonRepresentation> processThatSendsHttpRequest, JnAsyncHttpRequestType httpRequestType, String... keys) {
 		//TODO RENOMEAR ENTIDADES E CAMPOS
 		Integer maxTries = httpErrorDetails.getAsIntegerNumber("maxTries");
-		boolean exceededTries = JnEntityHttpApiRetrySendRequest.INSTANCE.exceededTries(httpErrorDetails, "tries", maxTries);
+		boolean exceededTries = JnEntityHttpApiRetrySendRequest.exceededTries(httpErrorDetails, "tries", maxTries);
 		
 		if(exceededTries) {
-			JnEntityHttpApiErrorServer.INSTANCE.createOrUpdate(httpErrorDetails);
+			JnEntityHttpApiErrorServer.ENTITY.createOrUpdate(httpErrorDetails);
 			throw new HttpServerError(e);
 		}
 		

@@ -40,7 +40,7 @@ public class JnAsyncNotifySupport {
 		.addDefaultStepForTelegramSending()
 		.soWithAllAddedProcessAnd()
 		.withTheTemplateEntity(topic)
-		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.INSTANCE)
+		.andWithTheEntityToBlockMessageResend(JnEntityEmailMessageSent.ENTITY)
 		.andWithTheMessageValuesFromJson(renameKey)
 		.andWithTheSupportLanguage(supportLanguage)
 		.sendAllMessages()

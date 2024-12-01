@@ -26,15 +26,15 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll unionAll = crud.unionAll(json, JnEntityEmailMessageSent.INSTANCE, JnEntityEmailReportedAsSpam.INSTANCE);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, JnEntityEmailMessageSent.ENTITY, JnEntityEmailReportedAsSpam.ENTITY);
 		
-		boolean emailAlreadySent = JnEntityEmailMessageSent.INSTANCE.isPresentInThisUnionAll(unionAll, json);
+		boolean emailAlreadySent = JnEntityEmailMessageSent.ENTITY.isPresentInThisUnionAll(unionAll, json);
 		
 		if(emailAlreadySent) {
 			return json;
 		}
 
-		boolean emailReportedAsSpam = JnEntityEmailReportedAsSpam.INSTANCE.isPresentInThisUnionAll(unionAll, json);
+		boolean emailReportedAsSpam = JnEntityEmailReportedAsSpam.ENTITY.isPresentInThisUnionAll(unionAll, json);
 		
 		if(emailReportedAsSpam) {
 			//TODO alerta de envio de e-mail pra alguem que reportou como spam
@@ -42,7 +42,7 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 		}
 		
 		JnAsyncSendHttpRequest.INSTANCE.execute(json, x -> emailSender.send(x),JnAsyncHttpRequestType.email, "subjectType");
-		JnEntityEmailMessageSent.INSTANCE.createOrUpdate(json);
+		JnEntityEmailMessageSent.ENTITY.createOrUpdate(json);
 		return json;
 	}
 

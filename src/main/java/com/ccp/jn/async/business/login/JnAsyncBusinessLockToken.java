@@ -20,7 +20,7 @@ public class JnAsyncBusinessLockToken implements Function<CcpJsonRepresentation,
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
-		TransferRecordToReverseEntity registerLock = new TransferRecordToReverseEntity(JnEntityLoginToken.INSTANCE, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
+		TransferRecordToReverseEntity registerLock = new TransferRecordToReverseEntity(JnEntityLoginToken.ENTITY, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(

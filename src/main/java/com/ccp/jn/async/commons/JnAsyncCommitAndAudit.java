@@ -45,7 +45,7 @@ public class JnAsyncCommitAndAudit {
 	}
 	
 	public void executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
-		CcpEntity mirrorEntity = entity.getMirrorEntity();
+		CcpEntity mirrorEntity = entity.getTwinEntity();
 		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
 		CcpBulkItem bulkItem2 = mirrorEntity.toBulkItem(json, operation);
 		this.executeBulk(bulkItem, bulkItem2);
@@ -69,14 +69,14 @@ public class JnAsyncCommitAndAudit {
 			
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
 			
-			boolean canNotSaveCopy = item.entity.canSaveCopy() == false;
+			boolean canNotSaveCopy = item.entity.isCopyableEntity() == false;
 			if(canNotSaveCopy) {
 				continue;
 			}
 			try {
 				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
 				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
-			} catch (CcpEntityRecordNotFound e) {
+			} catch (CcpEntityRecordNotFound | UnsupportedOperationException e) {
 
 			}
 		}
@@ -89,7 +89,7 @@ public class JnAsyncCommitAndAudit {
 		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
 		List<CcpBulkOperationResult> bulkOperationResult2 = dbBulkExecutor.getBulkOperationResult();
 		List<CcpBulkOperationResult> bulkOperationResult = bulkOperationResult2.stream().filter(x -> x.hasError()).collect(Collectors.toList());
-		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.INSTANCE)).collect(Collectors.toList());
+		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
 		this.executeBulk(collect);
 		
 	}
@@ -110,7 +110,7 @@ public class JnAsyncCommitAndAudit {
 	
 	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpEntity mirrorEntity = entity.getMirrorEntity();
+		CcpEntity mirrorEntity = entity.getTwinEntity();
 		CcpEntity[] array = new CcpEntity[] {entity, mirrorEntity};
 		CcpSelectUnionAll unionAll = crud.unionAll(json, array);
 		CcpBulkItem mirror = new CcpBulkItem(json, unionAll, mirrorEntity);
@@ -161,7 +161,7 @@ public class JnAsyncCommitAndAudit {
 	public CcpJsonRepresentation executeSelectUnionAllThenSaveInTheMainAndMirrorEntities(CcpJsonRepresentation json, 
 			CcpEntity mainEntity, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenPresentInMainEntityOrIsNewRecord) {
 		
-		CcpEntity supportEntity = mainEntity.getMirrorEntity();
+		CcpEntity supportEntity = mainEntity.getTwinEntity();
 		
 		SaveMainEntity saveMainEntity = new SaveMainEntity(mainEntity);
 		

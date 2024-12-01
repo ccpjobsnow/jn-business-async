@@ -30,13 +30,13 @@ public class JnAsyncSendMessage {
 	}
 	
 	public AddDefaultStep addDefaultProcessForEmailSending() {
-		this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE);
+		this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.ENTITY, JnEntityEmailTemplateMessage.ENTITY);
 		return new AddDefaultStep(this);
 	}
 
 	
 	public AddDefaultStep addDefaultStepForTelegramSending() {
-		this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.INSTANCE, JnEntityInstantMessengerTemplateMessage.INSTANCE);
+		this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.ENTITY, JnEntityInstantMessengerTemplateMessage.ENTITY);
 		return new AddDefaultStep(this);
 	}
 	

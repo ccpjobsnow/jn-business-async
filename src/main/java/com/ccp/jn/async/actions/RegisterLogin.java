@@ -25,14 +25,14 @@ public class RegisterLogin implements HandleWithSearchResultsInTheEntity<List<Cc
 	}
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
-		CcpBulkItem newSession = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionToken.INSTANCE);
-		CcpBulkItem newLogin = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionCurrent.INSTANCE);
+		CcpBulkItem newSession = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionToken.ENTITY);
+		CcpBulkItem newLogin = new CcpBulkItem(json, CcpEntityOperationType.create, JnEntityLoginSessionCurrent.ENTITY);
 		List<CcpBulkItem> asList = Arrays.asList(newLogin, newSession);
 		return asList;
 	}
 
 	public CcpEntity getEntityToSearch() {
-		return JnEntityLoginSessionCurrent.INSTANCE;
+		return JnEntityLoginSessionCurrent.ENTITY;
 	}
 
 }

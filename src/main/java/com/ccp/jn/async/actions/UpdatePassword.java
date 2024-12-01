@@ -29,7 +29,7 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 
 		CcpJsonRepresentation jsonPassword = json.putPasswordHash("password");
 		
-		CcpBulkItem itemPassword = new CcpBulkItem(jsonPassword, operation, JnEntityLoginPassword.INSTANCE);
+		CcpBulkItem itemPassword = new CcpBulkItem(jsonPassword, operation, JnEntityLoginPassword.ENTITY);
 		
 		List<CcpBulkItem> asList = Arrays.asList(itemPassword);
 		
@@ -43,7 +43,7 @@ public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<C
 	}
 
 	public CcpEntity getEntityToSearch() {
-		return JnEntityLoginPassword.INSTANCE;
+		return JnEntityLoginPassword.ENTITY;
 	}
 
 }

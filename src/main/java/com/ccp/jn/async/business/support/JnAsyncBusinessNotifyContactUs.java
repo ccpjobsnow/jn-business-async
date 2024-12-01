@@ -19,7 +19,7 @@ public class JnAsyncBusinessNotifyContactUs implements  Function<CcpJsonRepresen
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 
 		JnAsyncSendMessage x = new JnAsyncSendMessage();
-		JnAsyncNotifySupport.INSTANCE.apply(json, JnAsyncBusiness.notifyContactUs.name(), JnEntityContactUs.INSTANCE, x);
+		JnAsyncNotifySupport.INSTANCE.apply(json, JnAsyncBusiness.notifyContactUs.name(), JnEntityContactUs.ENTITY, x);
 		
 		return json;
 	}

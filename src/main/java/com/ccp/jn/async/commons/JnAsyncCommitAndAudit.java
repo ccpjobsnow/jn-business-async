@@ -24,6 +24,7 @@ import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.jn.async.actions.SaveMainEntity;
 import com.ccp.jn.async.actions.SaveSupportEntity;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
+import com.jn.commons.utils.JnAsyncBusiness;
 
 public class JnAsyncCommitAndAudit {
 
@@ -65,14 +66,17 @@ public class JnAsyncCommitAndAudit {
 		}
 
 		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
+		
 		for (CcpBulkItem item : items) {
 			
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
 			
 			boolean canNotSaveCopy = item.entity.isCopyableEntity() == false;
+			
 			if(canNotSaveCopy) {
 				continue;
 			}
+			
 			try {
 				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
 				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
@@ -80,18 +84,25 @@ public class JnAsyncCommitAndAudit {
 
 			}
 		}
-
-		this.commitAndSaveErrors(dbBulkExecutor);
+		this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
 	}
 	
-	private void commitAndSaveErrors(CcpDbBulkExecutor dbBulkExecutor) {
+	private void commitAndSaveErrorsAndDeleteRecordsFromCache(CcpDbBulkExecutor dbBulkExecutor) {
 
 		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
-		List<CcpBulkOperationResult> bulkOperationResult2 = dbBulkExecutor.getBulkOperationResult();
-		List<CcpBulkOperationResult> bulkOperationResult = bulkOperationResult2.stream().filter(x -> x.hasError()).collect(Collectors.toList());
-		List<CcpBulkItem> collect = bulkOperationResult.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
+		List<CcpBulkOperationResult> allResults = dbBulkExecutor.getBulkOperationResult();
+		List<CcpBulkOperationResult> errors = allResults.stream().filter(x -> x.hasError()).collect(Collectors.toList());
+		List<CcpBulkItem> collect = errors.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
 		this.executeBulk(collect);
-		
+		this.deleteKeysFromCache(allResults);
+	}
+
+	private void deleteKeysFromCache(List<CcpBulkOperationResult> allResults) {
+		List<String> keysToDeleteInCache = new ArrayList<>(allResults).stream()
+		.filter(x -> x.hasError() == false)
+		.map(x -> x.getCacheKey())
+		.collect(Collectors.toList());
+		JnAsyncMensageriaSender.INSTANCE.send(JnAsyncBusiness.deleteKeysFromCache, CcpConstants.EMPTY_JSON.put("keysToDeleteInCache", keysToDeleteInCache));
 	}
 	private Function<CcpBulkOperationResult, CcpJsonRepresentation> getReprocessJsonMapper() {
 		return result -> {

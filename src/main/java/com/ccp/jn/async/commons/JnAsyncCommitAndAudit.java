@@ -46,9 +46,9 @@ public class JnAsyncCommitAndAudit {
 	}
 	
 	public void executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
-		CcpEntity mirrorEntity = entity.getTwinEntity();
+		CcpEntity twinEntity = entity.getTwinEntity();
 		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
-		CcpBulkItem bulkItem2 = mirrorEntity.toBulkItem(json, operation);
+		CcpBulkItem bulkItem2 = twinEntity.toBulkItem(json, operation);
 		this.executeBulk(bulkItem, bulkItem2);
 	}
 	
@@ -121,13 +121,12 @@ public class JnAsyncCommitAndAudit {
 	
 	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpEntity mirrorEntity = entity.getTwinEntity();
-		CcpEntity[] array = new CcpEntity[] {entity, mirrorEntity};
-		CcpSelectUnionAll unionAll = crud.unionAll(json, array);
-		CcpBulkItem mirror = new CcpBulkItem(json, unionAll, mirrorEntity);
+		CcpSelectUnionAll unionAll = crud.unionBetweenMainAndTwinEntities(json, entity);
+		CcpEntity twinEntity = entity.getTwinEntity();
+		CcpBulkItem twin = new CcpBulkItem(json, unionAll, twinEntity);
 		CcpBulkItem main = new CcpBulkItem(json, unionAll, entity);
 		
-		this.executeBulk(main, mirror);
+		this.executeBulk(main, twin);
 		return unionAll;
 	}
 	
@@ -169,7 +168,7 @@ public class JnAsyncCommitAndAudit {
 	}
 
 	@SuppressWarnings("unchecked")
-	public CcpJsonRepresentation executeSelectUnionAllThenSaveInTheMainAndMirrorEntities(CcpJsonRepresentation json, 
+	public CcpJsonRepresentation executeSelectUnionAllThenSaveInTheMainAndTwinEntities(CcpJsonRepresentation json, 
 			CcpEntity mainEntity, Function<CcpJsonRepresentation, CcpJsonRepresentation> whenPresentInMainEntityOrIsNewRecord) {
 		
 		CcpEntity supportEntity = mainEntity.getTwinEntity();

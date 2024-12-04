@@ -24,8 +24,8 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
-		CcpEntity mirrorEntity = JnEntityLoginPassword.ENTITY.getTwinEntity();
-		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(mirrorEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
+		CcpEntity twinEntity = JnEntityLoginPassword.ENTITY.getTwinEntity();
+		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(twinEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
 		CcpEntity entityAttempts = JnEntityLoginPasswordAttempts.ENTITY;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 

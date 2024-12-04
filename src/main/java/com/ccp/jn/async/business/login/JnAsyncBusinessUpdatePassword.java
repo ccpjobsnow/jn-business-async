@@ -29,8 +29,8 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 
 		TransferRecordToReverseEntity executeLogout = new TransferRecordToReverseEntity(JnEntityLoginSessionCurrent.ENTITY, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
 		
-		CcpEntity mirrorEntity = JnEntityLoginPassword.ENTITY.getTwinEntity();
-		TransferRecordToReverseEntity registerUnlock = new TransferRecordToReverseEntity(mirrorEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
+		CcpEntity twinEntity = JnEntityLoginPassword.ENTITY.getTwinEntity();
+		TransferRecordToReverseEntity registerUnlock = new TransferRecordToReverseEntity(twinEntity, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING, CcpConstants.DO_NOTHING);
 		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginPasswordAttempts.ENTITY);
 
 		JnAsyncCommitAndAudit.INSTANCE.

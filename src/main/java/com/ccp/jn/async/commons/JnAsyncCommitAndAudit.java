@@ -18,7 +18,7 @@ import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
-import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
+import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.jn.async.actions.SaveMainEntity;
@@ -133,7 +133,7 @@ public class JnAsyncCommitAndAudit {
 	
 	
 	@SuppressWarnings("unchecked")
-	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation json,  HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
+	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation json,  CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
 		Set<CcpEntity> collect = Arrays.asList(handlers).stream().map(x -> x.getEntityToSearch()).collect(Collectors.toSet());
 		CcpEntity[] array = collect.toArray(new CcpEntity[collect.size()]);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
@@ -141,7 +141,7 @@ public class JnAsyncCommitAndAudit {
 		
 		Set<CcpBulkItem> all = new HashSet<>();
 		
-		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
+		for (CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
 			List<CcpBulkItem> list =  unionAll.handleRecordInUnionAll(json, handler);
 			all.addAll(list);
 		}
@@ -149,7 +149,7 @@ public class JnAsyncCommitAndAudit {
 
 		CcpJsonRepresentation data = json;
 	
-		for (HandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
+		for (CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>> handler : handlers) {
 			
 			CcpEntity entityToSearch = handler.getEntityToSearch();
 			
@@ -177,7 +177,7 @@ public class JnAsyncCommitAndAudit {
 		
 		SaveSupportEntity saveSupportEntity = new SaveSupportEntity(supportEntity);
 		
-		HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>[] array = new HandleWithSearchResultsInTheEntity[]{
+		CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>[] array = new CcpHandleWithSearchResultsInTheEntity[]{
 				saveMainEntity,
 				saveSupportEntity
 		};

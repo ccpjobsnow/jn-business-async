@@ -6,11 +6,11 @@ import java.util.List;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
-import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
+import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.entities.JnEntityLoginPassword;
 
-public class UpdatePassword implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
+public class UpdatePassword implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
 	private UpdatePassword() {
 		

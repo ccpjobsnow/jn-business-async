@@ -7,10 +7,10 @@ import java.util.List;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
-import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
+import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public class SaveSupportEntity implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
+public class SaveSupportEntity implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
 	private final CcpEntity supportEntity;
 	

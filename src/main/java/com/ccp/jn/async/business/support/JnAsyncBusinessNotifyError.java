@@ -13,15 +13,13 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 
 	public static final JnAsyncBusinessNotifyError INSTANCE = new JnAsyncBusinessNotifyError();
 	
-	private JnAsyncBusinessNotifyError() {
-		
-	}
+	private JnAsyncBusinessNotifyError() {}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
 		String name = JnAsyncBusiness.notifyError.name();
 		JnAsyncSendMessage x = new JnAsyncSendMessageIgnoringProcessErrors();
-		JnAsyncNotifySupport.INSTANCE.apply(json, name, JnEntityJobsnowError.ENTITY, x);
+		JnAsyncNotifySupport.INSTANCE.apply1(json, name, JnEntityJobsnowError.ENTITY, x);
 
 		return json;
 	}

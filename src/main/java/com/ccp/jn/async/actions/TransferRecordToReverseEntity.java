@@ -7,10 +7,10 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
-import com.ccp.especifications.db.crud.HandleWithSearchResultsInTheEntity;
+import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 
-public class TransferRecordToReverseEntity implements HandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
+public class TransferRecordToReverseEntity implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
 	private final CcpEntity from; 
 	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> doAfterSavingIfRecordIsFound;

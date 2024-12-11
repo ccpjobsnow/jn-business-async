@@ -102,7 +102,8 @@ public class JnAsyncCommitAndAudit {
 		.filter(x -> x.hasError() == false)
 		.map(x -> x.getCacheKey())
 		.collect(Collectors.toList());
-		JnAsyncMensageriaSender.INSTANCE.send(JnAsyncBusiness.deleteKeysFromCache, CcpConstants.EMPTY_JSON.put("keysToDeleteInCache", keysToDeleteInCache));
+		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("keysToDeleteInCache", keysToDeleteInCache);
+		JnAsyncMensageriaSender.INSTANCE.send(JnAsyncBusiness.deleteKeysFromCache, put);
 	}
 	private Function<CcpBulkOperationResult, CcpJsonRepresentation> getReprocessJsonMapper() {
 		return result -> {

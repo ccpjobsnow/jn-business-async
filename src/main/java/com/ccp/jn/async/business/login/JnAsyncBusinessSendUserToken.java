@@ -21,12 +21,14 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		String topic = JnAsyncBusiness.sendUserToken.name();
 		JnAsyncSendMessage getMessage = new JnAsyncSendMessage();
 		
+		CcpJsonRepresentation request = entityValue.getInnerJson("request");
+		
 		getMessage
 		.addDefaultProcessForEmailSending()
 		.soWithAllAddedProcessAnd()
 		.withTheTemplateEntity(topic)
 		.andWithTheEntityToBlockMessageResend(JnEntityLoginToken.ENTITY)
-		.andWithTheMessageValuesFromJson(entityValue)
+		.andWithTheMessageValuesFromJson(request)
 		.andWithTheSupportLanguage(language)
 		.sendAllMessages()
 		;

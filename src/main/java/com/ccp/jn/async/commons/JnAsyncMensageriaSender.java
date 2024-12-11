@@ -15,6 +15,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.exceptions.process.CcpAsyncTask;
 import com.jn.commons.entities.JnEntityAsyncTask;
+import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
@@ -23,24 +24,23 @@ public class JnAsyncMensageriaSender {
 	
 	public static final JnAsyncMensageriaSender INSTANCE = new JnAsyncMensageriaSender();
 	
-	public void send(String topic, CcpEntity entity, CcpJsonRepresentation... messages) {
-		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(message -> this.getMessageDetails(topic, message)).collect(Collectors.toList());
-		List<CcpBulkItem> bulkItems = msgs.stream().map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
+	public void send(JnTopic topic, CcpEntity entity, CcpJsonRepresentation... messages) {
+		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(json -> this.getMessageDetails(topic.name(), json)).collect(Collectors.toList());
+		List<CcpBulkItem> bulkItems = msgs.stream().filter(x -> topic.canSave()).map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
 		JnAsyncCommitAndAudit.INSTANCE.executeBulk(bulkItems);
-		this.mensageriaSender.send(topic, msgs);
+		this.mensageriaSender.send(topic.name(), msgs);
 	}
 	
-	public void send(Enum<?> topic,  List<CcpJsonRepresentation> messages) {
-		String topicName = topic.name();
+	public void send(JnTopic topic,  List<CcpJsonRepresentation> messages) {
+		
 		int size = messages.size();
 		CcpJsonRepresentation[] a = new CcpJsonRepresentation[size];
 		CcpJsonRepresentation[] array = messages.toArray(a);
-		this.send(topicName, JnEntityAsyncTask.ENTITY, array);
+		this.send(topic, JnEntityAsyncTask.ENTITY, array);
 	}
 
-	public void send(Enum<?> topic,  CcpJsonRepresentation... messages) {
-		String topicName = topic.name();
-		this.send(topicName, JnEntityAsyncTask.ENTITY, messages);
+	public void send(JnTopic topic,  CcpJsonRepresentation... messages) {
+		this.send(topic, JnEntityAsyncTask.ENTITY, messages);
 	}
 	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {
@@ -50,16 +50,21 @@ public class JnAsyncMensageriaSender {
 	}
 	
 	private CcpJsonRepresentation getMessageDetails(String topic, CcpJsonRepresentation json) {
+		
 		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
+		
+		long currentTimeMillis = System.currentTimeMillis();
+		
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
-				.put("started", System.currentTimeMillis())
-				.put("data", formattedCurrentDateTime)
-				.put("request", json)
-				.put("topic", topic)
+				.put(JnEntityAsyncTask.Fields.data.name(), formattedCurrentDateTime)
+				.put(JnEntityAsyncTask.Fields.messageId.name(), currentTimeMillis)
+				.put(JnEntityAsyncTask.Fields.started.name(), currentTimeMillis)
+				.put(JnEntityAsyncTask.Fields.request.name(), json)
+				.put(JnEntityAsyncTask.Fields.topic.name(), topic)
 				.putAll(json)
 				;
-		CcpJsonRepresentation transformed = messageDetails.putRandomToken(20, "id");
-		return transformed;
+		
+		return messageDetails;
 	}
 	private void saveResult(
 			CcpEntity entity, 

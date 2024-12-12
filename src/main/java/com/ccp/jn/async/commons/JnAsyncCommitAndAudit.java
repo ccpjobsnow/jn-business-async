@@ -89,10 +89,9 @@ public class JnAsyncCommitAndAudit {
 	
 	private void commitAndSaveErrorsAndDeleteRecordsFromCache(CcpDbBulkExecutor dbBulkExecutor) {
 
-		Function<CcpBulkOperationResult, CcpJsonRepresentation> reprocessJsonMapper = this.getReprocessJsonMapper();
 		List<CcpBulkOperationResult> allResults = dbBulkExecutor.getBulkOperationResult();
 		List<CcpBulkOperationResult> errors = allResults.stream().filter(x -> x.hasError()).collect(Collectors.toList());
-		List<CcpBulkItem> collect = errors.stream().map(x -> x.getReprocess(reprocessJsonMapper, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
+		List<CcpBulkItem> collect = errors.stream().map(x -> x.getReprocess(ReprocessMapper.INSTANCE, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
 		this.executeBulk(collect);
 		this.deleteKeysFromCache(allResults);
 	}
@@ -104,20 +103,6 @@ public class JnAsyncCommitAndAudit {
 		.collect(Collectors.toList());
 		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("keysToDeleteInCache", keysToDeleteInCache);
 		JnAsyncMensageriaSender.INSTANCE.send(JnAsyncBusiness.deleteKeysFromCache, put);
-	}
-	private Function<CcpBulkOperationResult, CcpJsonRepresentation> getReprocessJsonMapper() {
-		return result -> {
-			long currentTimeMillis = System.currentTimeMillis();
-			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
-					.put("timestamp", currentTimeMillis);
-			CcpBulkItem bulkItem = result.getBulkItem();
-			CcpJsonRepresentation putAll = put.putAll(bulkItem.json);
-			CcpJsonRepresentation errorDetails = result.getErrorDetails();
-			CcpJsonRepresentation putAll2 = putAll.putAll(errorDetails);
-			CcpJsonRepresentation renameKey = putAll2.renameField("type", "errorType");
-			CcpJsonRepresentation jsonPiece = renameKey.getJsonPiece("errorType", "reason");
-			return jsonPiece;
-		};
 	}
 	
 	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {

@@ -8,7 +8,6 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.async.business.factory.CcpAsyncBusinessFactory;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
-import com.ccp.jn.async.business.commons.JnAsyncDeleteKeysFromCache;
 import com.ccp.jn.async.business.login.JnAsyncBusinessExecuteLogin;
 import com.ccp.jn.async.business.login.JnAsyncBusinessExecuteLogout;
 import com.ccp.jn.async.business.login.JnAsyncBusinessLockPassword;
@@ -18,6 +17,8 @@ import com.ccp.jn.async.business.login.JnAsyncBusinessUpdatePassword;
 import com.ccp.jn.async.business.support.JnAsyncBusinessNotifyContactUs;
 import com.ccp.jn.async.business.support.JnAsyncBusinessNotifyError;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
+
 
 class JnAsyncBusinessFactory implements CcpAsyncBusinessFactory {
 
@@ -32,7 +33,7 @@ class JnAsyncBusinessFactory implements CcpAsyncBusinessFactory {
 		this.map.put(JnAsyncBusiness.updatePassword.name(), JnAsyncBusinessUpdatePassword.INSTANCE);
 		this.map.put(JnAsyncBusiness.sendUserToken.name(), JnAsyncBusinessSendUserToken.INSTANCE);
 		this.map.put(JnAsyncBusiness.executeLogout.name(), JnAsyncBusinessExecuteLogout.INSTANCE);
-		this.map.put(JnAsyncBusiness.deleteKeysFromCache.name(), JnAsyncDeleteKeysFromCache.INSTANCE);
+		this.map.put(JnAsyncBusiness.deleteKeysFromCache.name(), JnDeleteKeysFromCache.INSTANCE);
 		this.map.put(JnAsyncBusiness.executeLogin.name(), JnAsyncBusinessExecuteLogin.INSTANCE);
 		this.map.put(JnAsyncBusiness.lockPassword.name(), JnAsyncBusinessLockPassword.INSTANCE);
 		this.map.put(JnAsyncBusiness.notifyError.name(), JnAsyncBusinessNotifyError.INSTANCE);

@@ -39,8 +39,9 @@ public class JnAsyncMensageriaSender {
 		this.send(topic, JnEntityAsyncTask.ENTITY, array);
 	}
 
-	public void send(JnTopic topic,  CcpJsonRepresentation... messages) {
+	public CcpJsonRepresentation send(JnTopic topic,  CcpJsonRepresentation... messages) {
 		this.send(topic, JnEntityAsyncTask.ENTITY, messages);
+		return CcpConstants.EMPTY_JSON;
 	}
 	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {

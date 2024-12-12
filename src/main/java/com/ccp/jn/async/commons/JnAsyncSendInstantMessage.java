@@ -12,6 +12,7 @@ import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 
+
 public class JnAsyncSendInstantMessage {
 
 	

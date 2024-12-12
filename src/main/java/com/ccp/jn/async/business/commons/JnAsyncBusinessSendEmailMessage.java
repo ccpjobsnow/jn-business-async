@@ -12,6 +12,7 @@ import com.ccp.jn.async.commons.JnAsyncSendHttpRequest;
 import com.jn.commons.entities.JnEntityEmailMessageSent;
 import com.jn.commons.entities.JnEntityEmailReportedAsSpam;
 
+
 public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	public static final JnAsyncBusinessSendEmailMessage INSTANCE = new JnAsyncBusinessSendEmailMessage();

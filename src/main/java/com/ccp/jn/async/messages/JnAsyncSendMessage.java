@@ -17,6 +17,7 @@ import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
 import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
 
+
 public class JnAsyncSendMessage {
 
 	private final List<Function<CcpJsonRepresentation, CcpJsonRepresentation>> process = new ArrayList<>();

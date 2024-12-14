@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
@@ -24,7 +23,7 @@ import com.ccp.exceptions.db.CcpEntityRecordNotFound;
 import com.ccp.jn.async.actions.SaveMainEntity;
 import com.ccp.jn.async.actions.SaveSupportEntity;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
-import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 
 public class JnAsyncCommitAndAudit {
@@ -98,17 +97,18 @@ public class JnAsyncCommitAndAudit {
 	}
 
 	private void deleteKeysFromCache(List<CcpBulkOperationResult> allResults) {
-		List<String> keysToDeleteInCache = new ArrayList<>(allResults).stream()
+		Set<String> keysToDeleteInCache = new ArrayList<>(allResults).stream()
 		.filter(x -> x.hasError() == false)
 		.map(x -> x.getCacheKey())
-		.collect(Collectors.toList());
-		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("keysToDeleteInCache", keysToDeleteInCache);
-		JnAsyncMensageriaSender.INSTANCE.send(JnAsyncBusiness.deleteKeysFromCache, put);
+		.collect(Collectors.toSet());
+		String[] array = keysToDeleteInCache.toArray(new String[keysToDeleteInCache.size()]);
+		
+		JnDeleteKeysFromCache.INSTANCE.accept(array);
 	}
 	
 	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpSelectUnionAll unionAll = crud.unionBetweenMainAndTwinEntities(json, entity);
+		CcpSelectUnionAll unionAll = crud.unionBetweenMainAndTwinEntities(json, JnDeleteKeysFromCache.INSTANCE, entity);
 		CcpEntity twinEntity = entity.getTwinEntity();
 		CcpBulkItem twin = new CcpBulkItem(json, unionAll, twinEntity);
 		CcpBulkItem main = new CcpBulkItem(json, unionAll, entity);
@@ -117,14 +117,12 @@ public class JnAsyncCommitAndAudit {
 		return unionAll;
 	}
 	
-	
-	
 	@SuppressWarnings("unchecked")
 	public CcpSelectUnionAll executeSelectUnionAllThenExecuteBulkOperation(CcpJsonRepresentation json,  CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>> ... handlers) {
 		Set<CcpEntity> collect = Arrays.asList(handlers).stream().map(x -> x.getEntityToSearch()).collect(Collectors.toSet());
 		CcpEntity[] array = collect.toArray(new CcpEntity[collect.size()]);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
-		CcpSelectUnionAll unionAll = crud.unionAll(json, array);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, JnDeleteKeysFromCache.INSTANCE, array);
 		
 		Set<CcpBulkItem> all = new HashSet<>();
 		
@@ -188,7 +186,6 @@ public class JnAsyncCommitAndAudit {
 		return json;
 	}
 
-	
 	public void executeBulk(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity...entities) {
 		
 		List<CcpBulkItem> items = new ArrayList<>();

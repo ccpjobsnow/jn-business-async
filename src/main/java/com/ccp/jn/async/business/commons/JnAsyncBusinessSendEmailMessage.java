@@ -11,6 +11,7 @@ import com.ccp.jn.async.commons.JnAsyncHttpRequestType;
 import com.ccp.jn.async.commons.JnAsyncSendHttpRequest;
 import com.jn.commons.entities.JnEntityEmailMessageSent;
 import com.jn.commons.entities.JnEntityEmailReportedAsSpam;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 
 public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
@@ -27,7 +28,7 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 		
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll unionAll = crud.unionAll(json, JnEntityEmailMessageSent.ENTITY, JnEntityEmailReportedAsSpam.ENTITY);
+		CcpSelectUnionAll unionAll = crud.unionAll(json, JnDeleteKeysFromCache.INSTANCE, JnEntityEmailMessageSent.ENTITY, JnEntityEmailReportedAsSpam.ENTITY);
 		
 		boolean emailAlreadySent = JnEntityEmailMessageSent.ENTITY.isPresentInThisUnionAll(unionAll, json);
 		

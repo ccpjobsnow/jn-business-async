@@ -11,6 +11,7 @@ import com.ccp.exceptions.instant.messenger.CcpThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 
 public class JnAsyncSendInstantMessage {
@@ -30,7 +31,7 @@ public class JnAsyncSendInstantMessage {
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
 		json = json.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
-		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnEntityInstantMessengerBotLocked.ENTITY, JnEntityInstantMessengerMessageSent.ENTITY);
+		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnDeleteKeysFromCache.INSTANCE, JnEntityInstantMessengerBotLocked.ENTITY, JnEntityInstantMessengerMessageSent.ENTITY);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  JnEntityInstantMessengerMessageSent.ENTITY.isPresentInThisUnionAll(dataFromThisRecipient , json);
 

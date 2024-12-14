@@ -11,9 +11,7 @@ public class JnAsyncBusinessTryToSendInstantMessage implements Function<CcpJsonR
 	
 	public static final JnAsyncBusinessTryToSendInstantMessage INSTANCE = new JnAsyncBusinessTryToSendInstantMessage();
 	
-	private JnAsyncBusinessTryToSendInstantMessage() {
-		
-	}
+	private JnAsyncBusinessTryToSendInstantMessage() {}
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		CcpJsonRepresentation instantMessengerData = JnAsyncSendHttpRequest.INSTANCE.execute(json, x -> JnAsyncSendInstantMessage.INSTANCE.apply(x), JnAsyncHttpRequestType.instantMessenger, "subjectType");

@@ -17,7 +17,9 @@ public class JnAsyncNotifySupport {
 	public CcpJsonRepresentation apply1(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncSendMessage sender) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 		
-		if(supportLanguage.trim().isEmpty()) {
+		boolean hasNotLanguage = supportLanguage.trim().isEmpty();
+		
+		if(hasNotLanguage) {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 

@@ -16,6 +16,7 @@ import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
 import com.jn.commons.entities.JnEntityInstantMessengerTemplateMessage;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 
 public class JnAsyncSendMessage {
@@ -31,14 +32,14 @@ public class JnAsyncSendMessage {
 	}
 	
 	public AddDefaultStep addDefaultProcessForEmailSending() {
-		this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.ENTITY, JnEntityEmailTemplateMessage.ENTITY);
-		return new AddDefaultStep(this);
+		JnAsyncSendMessage addOneStep = this.addOneStep(JnAsyncBusinessSendEmailMessage.INSTANCE, JnEntityEmailParametersToSend.ENTITY, JnEntityEmailTemplateMessage.ENTITY);
+		return new AddDefaultStep(addOneStep);
 	}
 
 	
 	public AddDefaultStep addDefaultStepForTelegramSending() {
-		this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.ENTITY, JnEntityInstantMessengerTemplateMessage.ENTITY);
-		return new AddDefaultStep(this);
+		JnAsyncSendMessage addOneStep = this.addOneStep(JnAsyncBusinessTryToSendInstantMessage.INSTANCE, JnEntityInstantMessengerParametersToSend.ENTITY, JnEntityInstantMessengerTemplateMessage.ENTITY);
+		return new AddDefaultStep(addOneStep);
 	}
 	
 	JnAsyncSendMessage addOneStep(Function<CcpJsonRepresentation, CcpJsonRepresentation> process, CcpEntity parameterEntity, CcpEntity messageEntity) {
@@ -68,7 +69,7 @@ public class JnAsyncSendMessage {
 				.put("templateId", templateId);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
-		CcpSelectUnionAll unionAll = crud.unionAll(idToSearch, entities);
+		CcpSelectUnionAll unionAll = crud.unionAll(idToSearch, JnDeleteKeysFromCache.INSTANCE, entities);
 		
 		boolean alreadySaved = entityToSave.isPresentInThisUnionAll(unionAll, idToSearch);
 		

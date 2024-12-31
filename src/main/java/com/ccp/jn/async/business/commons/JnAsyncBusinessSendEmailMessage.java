@@ -10,6 +10,7 @@ import com.ccp.especifications.email.CcpEmailSender;
 import com.ccp.jn.async.commons.JnAsyncHttpRequestType;
 import com.ccp.jn.async.commons.JnAsyncSendHttpRequest;
 import com.jn.commons.entities.JnEntityEmailMessageSent;
+import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailReportedAsSpam;
 import com.jn.commons.utils.JnDeleteKeysFromCache;
 
@@ -18,9 +19,7 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 
 	public static final JnAsyncBusinessSendEmailMessage INSTANCE = new JnAsyncBusinessSendEmailMessage();
 	
-	private JnAsyncBusinessSendEmailMessage() {
-		
-	}
+	private JnAsyncBusinessSendEmailMessage() {	}
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
@@ -43,7 +42,7 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 			return json;
 		}
 		
-		JnAsyncSendHttpRequest.INSTANCE.execute(json, x -> emailSender.send(x),JnAsyncHttpRequestType.email, "subjectType");
+		JnAsyncSendHttpRequest.INSTANCE.execute(json, x -> emailSender.send(x),JnAsyncHttpRequestType.email, JnEntityEmailParametersToSend.Fields.subjectType.name());
 		JnEntityEmailMessageSent.ENTITY.createOrUpdate(json);
 		return json;
 	}

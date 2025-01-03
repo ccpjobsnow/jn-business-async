@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
+import com.ccp.constantes.CcpStringConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityOperationType;
@@ -15,17 +16,15 @@ import com.jn.commons.entities.JnEntityLoginConflict;
 
 public class SolveLoginConflict implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
-	private SolveLoginConflict() {
-		
-	}
+	private SolveLoginConflict() {}
 	
 	public static final SolveLoginConflict INSTANCE = new SolveLoginConflict();
 	
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 	
-		String email = recordFound.getAsString("email");
+		String email = recordFound.getAsString(CcpStringConstants.EMAIL.value);
 		CcpJsonRepresentation newLogin = JnEntityLoginSessionCurrent.ENTITY.getOnlyExistingFields(json);
-		CcpJsonRepresentation loginConflict = CcpConstants.EMPTY_JSON.put("email", email).put("newLogin", newLogin).put("oldLogin", recordFound);
+		CcpJsonRepresentation loginConflict = CcpOtherConstants.EMPTY_JSON.put(CcpStringConstants.EMAIL.value, email).put("newLogin", newLogin).put("oldLogin", recordFound);
 		CcpBulkItem itemLoginLoginConflict = new CcpBulkItem(loginConflict, CcpEntityOperationType.create, JnEntityLoginConflict.ENTITY);
 		
 		List<CcpBulkItem> asList = Arrays.asList(itemLoginLoginConflict);

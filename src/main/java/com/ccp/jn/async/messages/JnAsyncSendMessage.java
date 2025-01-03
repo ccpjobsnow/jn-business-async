@@ -65,8 +65,9 @@ public class JnAsyncSendMessage {
 		allEntitiesToSearch.add(entityToSave);
 		
 		CcpEntity[] entities = allEntitiesToSearch.toArray(new CcpEntity[allEntitiesToSearch.size()]);
-		CcpJsonRepresentation idToSearch = entityValues.put("language", languageToUseInErrorCases)
-				.put("templateId", templateId);
+		CcpJsonRepresentation idToSearch = entityValues
+				.put(JnEntityEmailTemplateMessage.Fields.language.name(), languageToUseInErrorCases)
+				.put(JnEntityEmailTemplateMessage.Fields.templateId.name(), templateId);
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		
 		CcpSelectUnionAll unionAll = crud.unionAll(idToSearch, JnDeleteKeysFromCache.INSTANCE, entities);
@@ -84,17 +85,17 @@ public class JnAsyncSendMessage {
 			CcpEntity parameterEntity = this.parameterEntities.get(k);
 			
 			CcpJsonRepresentation parameterData = parameterEntity.getRequiredEntityRow(unionAll, idToSearch);
-			CcpJsonRepresentation moreParameters = parameterData.getInnerJson("moreParameters");
-			CcpJsonRepresentation allParameters = parameterData.removeField("moreParameters").putAll(moreParameters);
+			CcpJsonRepresentation moreParameters = parameterData.getInnerJson(JnEntityEmailParametersToSend.Fields.moreParameters.name());
+			CcpJsonRepresentation allParameters = parameterData.removeField(JnEntityEmailParametersToSend.Fields.moreParameters.name()).putAll(moreParameters);
 			CcpJsonRepresentation messageData = messageEntity.getRequiredEntityRow(unionAll, idToSearch);
 			
 			CcpJsonRepresentation allDataTogether = messageData.putAll(allParameters).putAll(entityValues);
 			
- 			Set<String> keySet = messageData.fieldSet();
+ 			Set<String> allFields = allDataTogether.fieldSet();
 			
 			CcpJsonRepresentation messageToSend = allDataTogether;
 			
-			for (String key : keySet) {
+			for (String key : allFields) {
 				messageToSend = messageToSend.putFilledTemplate(key, key);
 			}
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> process = this.process.get(k);

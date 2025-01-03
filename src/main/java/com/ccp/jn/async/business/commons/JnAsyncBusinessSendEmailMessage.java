@@ -38,7 +38,6 @@ public class JnAsyncBusinessSendEmailMessage implements  Function<CcpJsonReprese
 		boolean emailReportedAsSpam = JnEntityEmailReportedAsSpam.ENTITY.isPresentInThisUnionAll(unionAll, json);
 		
 		if(emailReportedAsSpam) {
-			//DOUBT alerta de envio de e-mail pra alguem que reportou como spam
 			return json;
 		}
 		

@@ -2,7 +2,7 @@ package com.ccp.jn.async.commons;
 
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpBulkOperationResult;
@@ -15,7 +15,7 @@ class ReprocessMapper implements Function<CcpBulkOperationResult, CcpJsonReprese
 
 	public CcpJsonRepresentation apply(CcpBulkOperationResult result) {
 		long currentTimeMillis = System.currentTimeMillis();
-		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
+		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON
 				.put("timestamp", currentTimeMillis);
 		CcpBulkItem bulkItem = result.getBulkItem();
 		CcpJsonRepresentation putAll = put.putAll(bulkItem.json);

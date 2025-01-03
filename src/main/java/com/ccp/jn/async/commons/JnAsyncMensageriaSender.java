@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
@@ -41,7 +41,7 @@ public class JnAsyncMensageriaSender {
 
 	public CcpJsonRepresentation send(JnTopic topic,  CcpJsonRepresentation... messages) {
 		this.send(topic, JnEntityAsyncTask.ENTITY, messages);
-		return CcpConstants.EMPTY_JSON;
+		return CcpOtherConstants.EMPTY_JSON;
 	}
 	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {
@@ -56,7 +56,7 @@ public class JnAsyncMensageriaSender {
 		
 		long currentTimeMillis = System.currentTimeMillis();
 		
-		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
+		CcpJsonRepresentation messageDetails = CcpOtherConstants.EMPTY_JSON
 				.put(JnEntityAsyncTask.Fields.data.name(), formattedCurrentDateTime)
 				.put(JnEntityAsyncTask.Fields.messageId.name(), currentTimeMillis)
 				.put(JnEntityAsyncTask.Fields.started.name(), currentTimeMillis)

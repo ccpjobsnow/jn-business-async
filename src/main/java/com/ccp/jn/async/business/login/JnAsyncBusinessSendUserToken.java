@@ -7,6 +7,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityLoginToken;
+import com.jn.commons.json.transformers.JnJsonTransformerPutRandomTokenSecret;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
@@ -17,15 +18,14 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		String language = json.getAsString(JnEntityEmailTemplateMessage.Fields.language.name());
-		CcpJsonRepresentation entityValue = json.putRandomPassword(8, "token", "tokenHash");
-		CcpJsonRepresentation jsonPiece = entityValue.getJsonPiece("token", "tokenHash");
+		CcpJsonRepresentation jsonPiece = JnEntityLoginToken.ENTITY.getHandledJson(json);
 		
 		String topic = JnAsyncBusiness.sendUserToken.name();
 		JnAsyncSendMessage getMessage = new JnAsyncSendMessage();
 		
-		CcpJsonRepresentation request = entityValue.getInnerJson("request");
+		CcpJsonRepresentation request = json.getInnerJson("request");
 		CcpJsonRepresentation duplicateValueFromField = request.putAll(jsonPiece)
-				.duplicateValueFromField("originalEmail", "email", "recipient")
+				.duplicateValueFromField("originalEmail", JnEntityLoginToken.Fields.email.name(), "recipient")
 				;
 		getMessage
 		.addDefaultProcessForEmailSending()

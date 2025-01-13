@@ -20,7 +20,7 @@ public class JnAsyncSendMessageIgnoringProcessErrors extends JnAsyncSendMessage{
 				CcpJsonRepresentation errorDetails = new CcpJsonRepresentation(e);
 				String name = JnAsyncBusiness.notifyError.name();
 				JnAsyncSendMessage x = new JnAsyncSendMessageAndJustErrors();
-				JnAsyncNotifySupport.INSTANCE.apply1(errorDetails, name, JnEntityJobsnowWarning.ENTITY, x);
+				JnAsyncNotifySupport.INSTANCE.apply(errorDetails, name, JnEntityJobsnowWarning.ENTITY, x);
 				return values;
 			}
 		};

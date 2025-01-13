@@ -17,12 +17,9 @@ import com.jn.commons.entities.JnEntityLoginSessionCurrent;
 
 public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
-
 	public static final JnAsyncBusinessUpdatePassword INSTANCE = new JnAsyncBusinessUpdatePassword();
 	
-	private JnAsyncBusinessUpdatePassword() {
-		
-	}
+	private JnAsyncBusinessUpdatePassword() {}
 
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
@@ -46,7 +43,4 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 		
 		return CcpOtherConstants.EMPTY_JSON;
 	}
-
-	
-
 }

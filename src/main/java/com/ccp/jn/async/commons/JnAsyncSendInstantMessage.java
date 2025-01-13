@@ -7,7 +7,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
-import com.ccp.exceptions.instant.messenger.CcpThisBotWasBlockedByThisUser;
+import com.ccp.exceptions.instant.messenger.CcpInstantMessageThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
@@ -57,7 +57,7 @@ public class JnAsyncSendInstantMessage {
 			
 			return this.retryToSendMessage(json);
 			
-		} catch(CcpThisBotWasBlockedByThisUser e) {
+		} catch(CcpInstantMessageThisBotWasBlockedByThisUser e) {
 			return saveBlockedBot(json, e.token);
 		}
 	}

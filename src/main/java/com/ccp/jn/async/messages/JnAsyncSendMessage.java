@@ -99,6 +99,7 @@ public class JnAsyncSendMessage {
 				messageToSend = messageToSend.putFilledTemplate(key, key);
 			}
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> process = this.process.get(k);
+			
 			process.apply(messageToSend);
 			k++;
 		}

@@ -1,5 +1,7 @@
 package com.ccp.jn.async.messages;
 
+import com.ccp.decorators.CcpJsonRepresentation;
+
 public class AndWithTheSupportLanguage {
 
 	final AndWithTheJsonValues andWithJsonValues;
@@ -11,9 +13,10 @@ public class AndWithTheSupportLanguage {
 		this.supportLanguage = supportLanguage;
 	}
 	
-	public void sendAllMessages() {
-		this.andWithJsonValues.andWithEntityToSave.withTemplateId.soExecuteAllAddedSteps.getMessage.
+	public CcpJsonRepresentation sendAllMessages() {
+		CcpJsonRepresentation executeAllSteps = this.andWithJsonValues.andWithEntityToSave.withTemplateId.soExecuteAllAddedSteps.getMessage.
 		executeAllSteps(this.andWithJsonValues.andWithEntityToSave.withTemplateId.templateId, 
 				this.andWithJsonValues.andWithEntityToSave.entityToSave, this.andWithJsonValues.jsonValues, supportLanguage);
+		return executeAllSteps;
 	}
 }

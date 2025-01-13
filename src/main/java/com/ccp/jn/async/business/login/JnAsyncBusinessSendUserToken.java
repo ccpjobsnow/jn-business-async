@@ -7,7 +7,6 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityLoginToken;
-import com.jn.commons.json.transformers.JnJsonTransformerPutRandomTokenSecret;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresentation, CcpJsonRepresentation>{
@@ -26,6 +25,7 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		CcpJsonRepresentation request = json.getInnerJson("request");
 		CcpJsonRepresentation duplicateValueFromField = request.putAll(jsonPiece)
 				.duplicateValueFromField("originalEmail", JnEntityLoginToken.Fields.email.name(), "recipient")
+				.duplicateValueFromField("originalToken", "token")
 				;
 		getMessage
 		.addDefaultProcessForEmailSending()

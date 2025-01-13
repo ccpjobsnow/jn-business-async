@@ -4,6 +4,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
+import com.jn.commons.entities.JnEntityJobsnowPenddingError;
 
 public class JnAsyncNotifySupport {
 	
@@ -14,7 +15,7 @@ public class JnAsyncNotifySupport {
 		
 	}
 	
-	public CcpJsonRepresentation apply1(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncSendMessage sender) {
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json, String topic, CcpEntity entityToSaveError, JnAsyncSendMessage sender) {
 		String supportLanguage = new CcpStringDecorator("application_properties").propertiesFrom().environmentVariablesOrClassLoaderOrFile().getAsString("supportLanguage");
 		
 		boolean hasNotLanguage = supportLanguage.trim().isEmpty();
@@ -23,19 +24,19 @@ public class JnAsyncNotifySupport {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 
-		CcpJsonRepresentation renameKey = json.duplicateValueFromField("message", "msg");
-		
-		sender
+		CcpJsonRepresentation duplicateValueFromField = json.renameField("message", "msg");
+		CcpJsonRepresentation result = sender
 		.addDefaultProcessForEmailSending()
 		.and()
 		.addDefaultStepForTelegramSending()
 		.soWithAllAddedProcessAnd()
 		.withTheTemplateEntity(topic)
 		.andWithTheEntityToBlockMessageResend(entityToSaveError)
-		.andWithTheMessageValuesFromJson(renameKey)
+		.andWithTheMessageValuesFromJson(duplicateValueFromField)
 		.andWithTheSupportLanguage(supportLanguage)
-		.sendAllMessages()
-		;
+		.sendAllMessages();
+		
+		JnEntityJobsnowPenddingError.ENTITY.createOrUpdate(result);
 		
 
 		return json;

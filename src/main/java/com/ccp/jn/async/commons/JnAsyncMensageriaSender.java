@@ -44,9 +44,9 @@ public class JnAsyncMensageriaSender {
 		return CcpOtherConstants.EMPTY_JSON;
 	}
 	
-	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation msg) {
-		String asyncTaskId = entity.calculateId(msg);
-		CcpBulkItem bulkItem = new CcpBulkItem(msg, CcpEntityOperationType.create, entity, asyncTaskId);
+	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation json) {
+		String asyncTaskId = entity.calculateId(json);
+		CcpBulkItem bulkItem = new CcpBulkItem(json, CcpEntityOperationType.create, entity, asyncTaskId);
 		return bulkItem;
 	}
 	

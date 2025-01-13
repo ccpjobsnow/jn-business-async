@@ -19,7 +19,7 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 		
 		String name = JnAsyncBusiness.notifyError.name();
 		JnAsyncSendMessage x = new JnAsyncSendMessageIgnoringProcessErrors();
-		JnAsyncNotifySupport.INSTANCE.apply1(json, name, JnEntityJobsnowError.ENTITY, x);
+		JnAsyncNotifySupport.INSTANCE.apply(json, name, JnEntityJobsnowError.ENTITY, x);
 
 		return json;
 	}
@@ -27,8 +27,8 @@ public class JnAsyncBusinessNotifyError implements Function<CcpJsonRepresentatio
 	public CcpJsonRepresentation apply(Throwable e) {
 		
 		CcpJsonRepresentation json = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation renameKey = json.renameField("message", "msg");
-		CcpJsonRepresentation execute = this.apply(renameKey);
+		
+		CcpJsonRepresentation execute = this.apply(json);
 		return execute;
 	}
 

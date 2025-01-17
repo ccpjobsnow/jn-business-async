@@ -40,7 +40,7 @@ public class JnAsyncCommitAndAudit {
 			return;
 		}
 		
-		List<CcpBulkItem> collect = records.stream().map(json -> new CcpBulkItem(json, operation, entity)).collect(Collectors.toList());
+		List<CcpBulkItem> collect = records.stream().map(json -> entity.toBulkItem(json, operation)).collect(Collectors.toList());
 		
 		this.executeBulk(collect);
 	}
@@ -110,8 +110,8 @@ public class JnAsyncCommitAndAudit {
 		CcpCrud crud = CcpDependencyInjection.getDependency(CcpCrud.class);
 		CcpSelectUnionAll unionAll = crud.unionBetweenMainAndTwinEntities(json, JnDeleteKeysFromCache.INSTANCE, entity);
 		CcpEntity twinEntity = entity.getTwinEntity();
-		CcpBulkItem twin = new CcpBulkItem(json, unionAll, twinEntity);
-		CcpBulkItem main = new CcpBulkItem(json, unionAll, entity);
+		CcpBulkItem twin = twinEntity.toBulkItemToCreateOrDelete(unionAll, json);
+		CcpBulkItem main = entity.toBulkItemToCreateOrDelete(unionAll, json);
 		
 		this.executeBulk(main, twin);
 		return unionAll;

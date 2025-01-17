@@ -25,7 +25,7 @@ public class SolveLoginConflict implements CcpHandleWithSearchResultsInTheEntity
 		String email = recordFound.getAsString(CcpStringConstants.EMAIL.value);
 		CcpJsonRepresentation newLogin = JnEntityLoginSessionCurrent.ENTITY.getOnlyExistingFields(json);
 		CcpJsonRepresentation loginConflict = CcpOtherConstants.EMPTY_JSON.put(CcpStringConstants.EMAIL.value, email).put("newLogin", newLogin).put("oldLogin", recordFound);
-		CcpBulkItem itemLoginLoginConflict = new CcpBulkItem(loginConflict, CcpEntityOperationType.create, JnEntityLoginConflict.ENTITY);
+		CcpBulkItem itemLoginLoginConflict = JnEntityLoginConflict.ENTITY.toBulkItem(loginConflict, CcpEntityOperationType.create);
 		
 		List<CcpBulkItem> asList = Arrays.asList(itemLoginLoginConflict);
 		return asList;

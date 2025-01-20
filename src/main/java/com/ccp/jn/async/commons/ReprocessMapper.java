@@ -24,7 +24,7 @@ class ReprocessMapper implements Function<CcpBulkOperationResult, CcpJsonReprese
 		CcpJsonRepresentation renameKey = putAll2.renameField("type", "errorType");
 		CcpJsonRepresentation jsonPiece = renameKey.getJsonPiece("errorType", "reason");
 		return jsonPiece;
-	}
+	} 
 	
 	
 	

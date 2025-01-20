@@ -84,7 +84,7 @@ public class JnAsyncCommitAndAudit {
 
 			}
 		}
-		this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
+ 		this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
 	}
 	
 	private void commitAndSaveErrorsAndDeleteRecordsFromCache(CcpDbBulkExecutor dbBulkExecutor) {
@@ -93,7 +93,7 @@ public class JnAsyncCommitAndAudit {
 		List<CcpBulkOperationResult> errors = allResults.stream().filter(x -> x.hasError()).collect(Collectors.toList());
 		List<CcpBulkItem> collect = errors.stream().map(x -> x.getReprocess(ReprocessMapper.INSTANCE, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
 		this.executeBulk(collect);
-		this.deleteKeysFromCache(allResults);
+		this.deleteKeysFromCache(allResults); 
 	}
 
 	private void deleteKeysFromCache(List<CcpBulkOperationResult> allResults) {

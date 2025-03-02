@@ -4,6 +4,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
+import com.jn.commons.entities.JnEntityJobsnowError;
 import com.jn.commons.entities.JnEntityJobsnowPenddingError;
 
 public class JnAsyncNotifySupport {
@@ -24,7 +25,7 @@ public class JnAsyncNotifySupport {
 			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
 		}
 
-		CcpJsonRepresentation duplicateValueFromField = json.renameField("message", "msg");
+		CcpJsonRepresentation duplicateValueFromField = json.renameField(JnEntityJobsnowError.Fields.message.name(), "msg");
 		CcpJsonRepresentation result = sender
 		.addDefaultProcessForEmailSending()
 		.and()

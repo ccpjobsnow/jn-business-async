@@ -101,9 +101,13 @@ public class JnAsyncMensageriaSender {
 	private void saveResult(CcpEntity entity, CcpJsonRepresentation messageDetails, CcpJsonRepresentation response, boolean success) {
 		Long finished = System.currentTimeMillis();
 		CcpJsonRepresentation oneById = entity.getOneById(messageDetails);
-		Long started = oneById.getAsLongNumber("started");
+		Long started = oneById.getAsLongNumber(JnEntityAsyncTask.Fields.started.name());
 		Long enlapsedTime = finished - started;
-		CcpJsonRepresentation processResult = messageDetails.put("enlapsedTime", enlapsedTime).put("response", response).put("finished", finished).put("success", success);
+		CcpJsonRepresentation processResult = messageDetails
+				.put(JnEntityAsyncTask.Fields.enlapsedTime.name(), enlapsedTime)
+				.put(JnEntityAsyncTask.Fields.response.name(), response)
+				.put(JnEntityAsyncTask.Fields.finished.name(), finished)
+				.put(JnEntityAsyncTask.Fields.success.name(), success);
 		entity.createOrUpdate(processResult);
 	}
 

@@ -6,6 +6,8 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
+import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
+import com.jn.commons.entities.JnEntityInstantMessengerParametersToSend;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -24,8 +26,9 @@ public class JnAsyncBusinessSendUserToken implements  Function<CcpJsonRepresenta
 		
 		CcpJsonRepresentation request = json.getInnerJson("request");
 		CcpJsonRepresentation duplicateValueFromField = request.putAll(jsonPiece)
-				.duplicateValueFromField("originalEmail", JnEntityLoginToken.Fields.email.name(), "recipient")
-				.duplicateValueFromField("originalToken", "token")
+				.duplicateValueFromField("originalEmail", JnEntityLoginToken.Fields.email.name(), 
+						JnEntityInstantMessengerParametersToSend.Fields.recipient.name())
+				.duplicateValueFromField("originalToken", JnEntityInstantMessengerMessageSent.Fields.token.name())
 				;
 		getMessage
 		.addDefaultProcessForEmailSending()

@@ -9,6 +9,7 @@ import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.exceptions.instant.messenger.CcpInstantMessageThisBotWasBlockedByThisUser;
 import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
+import com.jn.commons.entities.JnEntityHttpApiParameters;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
 import com.jn.commons.utils.JnDeleteKeysFromCache;
@@ -30,13 +31,13 @@ public class JnAsyncSendInstantMessage {
 		String token = instantMessenger.getToken(json);
 		
 		long totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia = new CcpTimeDecorator().getSecondsEnlapsedSinceMidnight();
-		json = json.put("interval", totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put("token", token);
+		json = json.put(JnEntityInstantMessengerMessageSent.Fields.interval.name(), totalDeSegundosDecorridosDesdeMeiaNoiteDesteDia / 3).put(JnEntityInstantMessengerMessageSent.Fields.token.name(), token);
 		CcpSelectUnionAll dataFromThisRecipient = crud.unionAll(json, JnDeleteKeysFromCache.INSTANCE, JnEntityInstantMessengerBotLocked.ENTITY, JnEntityInstantMessengerMessageSent.ENTITY);
 
 		boolean thisRecipientRecentlyReceivedThisMessageFromThisBot =  JnEntityInstantMessengerMessageSent.ENTITY.isPresentInThisUnionAll(dataFromThisRecipient , json);
 
 		if(thisRecipientRecentlyReceivedThisMessageFromThisBot) {
-			Integer sleep = json.getAsIntegerNumber("sleep");
+			Integer sleep = json.getAsIntegerNumber(JnEntityHttpApiParameters.Fields.sleep.name());
 			new CcpTimeDecorator().sleep(sleep);
 			CcpJsonRepresentation execute = this.apply(json);
 			return execute;
@@ -80,7 +81,7 @@ public class JnAsyncSendInstantMessage {
 	}
 
 	private CcpJsonRepresentation saveBlockedBot(CcpJsonRepresentation putAll, String token) {
-		JnEntityInstantMessengerBotLocked.ENTITY.createOrUpdate(putAll.put("token", token));
+		JnEntityInstantMessengerBotLocked.ENTITY.createOrUpdate(putAll.put(JnEntityInstantMessengerBotLocked.Fields.token.name(), token));
 		return putAll;
 	}
 

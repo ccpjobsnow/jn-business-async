@@ -32,37 +32,40 @@ public class JnAsyncCommitAndAudit {
 	
 	private JnAsyncCommitAndAudit() {}
 	
-	public void executeBulk(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
+	public JnAsyncCommitAndAudit executeBulk(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
 		
 		boolean emptyRecords = records.isEmpty();
 		
 		if(emptyRecords) {
-			return;
+			return this;
 		}
 		
 		List<CcpBulkItem> collect = records.stream().map(json -> entity.toBulkItem(json, operation)).collect(Collectors.toList());
 		
-		this.executeBulk(collect);
+		JnAsyncCommitAndAudit executeBulk = this.executeBulk(collect);
+		return executeBulk;
 	}
 	
-	public void executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
+	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
 		CcpEntity twinEntity = entity.getTwinEntity();
 		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
 		CcpBulkItem bulkItem2 = twinEntity.toBulkItem(json, operation);
-		this.executeBulk(bulkItem, bulkItem2);
+		JnAsyncCommitAndAudit executeBulk = this.executeBulk(bulkItem, bulkItem2);
+		return executeBulk;
 	}
 	
-	public void executeBulk(CcpBulkItem... items) {
+	public JnAsyncCommitAndAudit executeBulk(CcpBulkItem... items) {
 		List<CcpBulkItem> asList = Arrays.asList(items);
-		this.executeBulk(asList);
+		JnAsyncCommitAndAudit executeBulk = this.executeBulk(asList);
+		return executeBulk;
 	}
 	
-	public void executeBulk(Collection<CcpBulkItem> items) {
+	public JnAsyncCommitAndAudit executeBulk(Collection<CcpBulkItem> items) {
 		
 		boolean emptyItems = items.isEmpty();
 		
 		if(emptyItems) {
-			return;
+			return this;
 		}
 
 		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
@@ -84,19 +87,21 @@ public class JnAsyncCommitAndAudit {
 
 			}
 		}
- 		this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
+ 		JnAsyncCommitAndAudit commitAndSaveErrorsAndDeleteRecordsFromCache = this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
+		return commitAndSaveErrorsAndDeleteRecordsFromCache;
 	}
 	
-	private void commitAndSaveErrorsAndDeleteRecordsFromCache(CcpDbBulkExecutor dbBulkExecutor) {
+	private JnAsyncCommitAndAudit commitAndSaveErrorsAndDeleteRecordsFromCache(CcpDbBulkExecutor dbBulkExecutor) {
 
 		List<CcpBulkOperationResult> allResults = dbBulkExecutor.getBulkOperationResult();
 		List<CcpBulkOperationResult> errors = allResults.stream().filter(x -> x.hasError()).collect(Collectors.toList());
 		List<CcpBulkItem> collect = errors.stream().map(x -> x.getReprocess(ReprocessMapper.INSTANCE, JnEntityRecordToReprocess.ENTITY)).collect(Collectors.toList());
 		this.executeBulk(collect);
-		this.deleteKeysFromCache(allResults); 
+		JnAsyncCommitAndAudit deleteKeysFromCache = this.deleteKeysFromCache(allResults);
+		return deleteKeysFromCache; 
 	}
 
-	private void deleteKeysFromCache(List<CcpBulkOperationResult> allResults) {
+	private JnAsyncCommitAndAudit deleteKeysFromCache(List<CcpBulkOperationResult> allResults) {
 		Set<String> keysToDeleteInCache = new ArrayList<>(allResults).stream()
 		.filter(x -> x.hasError() == false)
 		.map(x -> x.getCacheKey())
@@ -104,6 +109,7 @@ public class JnAsyncCommitAndAudit {
 		String[] array = keysToDeleteInCache.toArray(new String[keysToDeleteInCache.size()]);
 		
 		JnDeleteKeysFromCache.INSTANCE.accept(array);
+		return this;
 	}
 	
 	public CcpSelectUnionAll changeStatus(CcpJsonRepresentation json, CcpEntity entity) {
@@ -186,7 +192,7 @@ public class JnAsyncCommitAndAudit {
 		return json;
 	}
 
-	public void executeBulk(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity...entities) {
+	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity...entities) {
 		
 		List<CcpBulkItem> items = new ArrayList<>();
  		
@@ -195,6 +201,7 @@ public class JnAsyncCommitAndAudit {
 			items.add(bulkItem);
 		}
 		
-		this.executeBulk(items);
+		JnAsyncCommitAndAudit executeBulk = this.executeBulk(items);
+		return executeBulk;
 	}
 }

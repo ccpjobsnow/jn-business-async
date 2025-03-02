@@ -18,9 +18,11 @@ public class AndWithTheTemplateEntity {
 		return new CreateStep(this.andWithParametersEntity.withProcess.createStep.getMessage);
 	}
 
-	private void addStep() {
+	private AndWithTheTemplateEntity addStep() {
 		this.andWithParametersEntity.withProcess.createStep.getMessage
 		.addOneStep(this.andWithParametersEntity.withProcess.process, this.andWithParametersEntity.parametersEntity, this.templateEntity);
+		return this;
+
 	}
 	
 	public SoWithAllAddedStepsAnd soWithAllAddedStepsAnd() {

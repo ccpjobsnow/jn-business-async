@@ -10,6 +10,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.exceptions.http.CcpHttpError;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessSendEmailMessage;
 import com.ccp.jn.async.business.commons.JnAsyncBusinessTryToSendInstantMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
@@ -99,11 +100,15 @@ public class JnAsyncSendMessage {
 				messageToSend = messageToSend.putFilledTemplate(key, key);
 			}
 			Function<CcpJsonRepresentation, CcpJsonRepresentation> process = this.process.get(k);
-			
-			process.apply(messageToSend);
+			try {
+				process.apply(messageToSend);
+			} catch (CcpHttpError e) {
+
+			}
 			k++;
 		}
-		entityToSave.createOrUpdate(entityValues);
+		CcpJsonRepresentation renameField = entityValues.renameField("msg", "message");
+		entityToSave.createOrUpdate(renameField);
 		return entityValues;
 	}
 }

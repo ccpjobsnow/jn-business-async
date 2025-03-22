@@ -4,9 +4,9 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
+import com.ccp.exceptions.http.CcpHttpClientError;
 import com.ccp.exceptions.http.CcpHttpError;
-import com.ccp.jn.async.exceptions.HttpClientError;
-import com.ccp.jn.async.exceptions.HttpServerError;
+import com.ccp.exceptions.http.CcpHttpServerError;
 import com.jn.commons.entities.JnEntityHttpApiErrorClient;
 import com.jn.commons.entities.JnEntityHttpApiErrorServer;
 import com.jn.commons.entities.JnEntityHttpApiParameters;
@@ -25,22 +25,17 @@ public class JnAsyncSendHttpRequest {
 		try {
 			CcpJsonRepresentation apply = processThatSendsHttpRequest.apply(jsonWithHttpApiParameters);
 			return apply;
-		} catch (CcpHttpError e) {
-			
+		}catch (CcpHttpServerError e) {
 			String details = jsonWithHttpApiParameters.getJsonPiece(keys).asUgglyJson();
-			
 			CcpJsonRepresentation httpErrorDetails = e.entity.putAll(jsonWithHttpApiParameters).put(JnEntityHttpApiErrorClient.Fields.details.name(), details);
-			
-			if(e.clientError) {
-				String request = httpErrorDetails.getAsString(JnEntityHttpApiErrorClient.Fields.request.name());
-				httpErrorDetails = httpErrorDetails.put(JnEntityHttpApiErrorClient.Fields.request.name(), request);
-				JnEntityHttpApiErrorClient.ENTITY.createOrUpdate(httpErrorDetails);
-				throw new HttpClientError(e);
-			}
-			
-			if(e.serverError) {
-				return this.retryToSendIntantMessage(e, json, httpErrorDetails, processThatSendsHttpRequest, httpRequestType, keys);
-			}
+			CcpJsonRepresentation retryToSendIntantMessage = this.retryToSendIntantMessage(e, json, httpErrorDetails, processThatSendsHttpRequest, httpRequestType, keys);
+			return retryToSendIntantMessage;
+		}catch (CcpHttpClientError e) {
+			String details = jsonWithHttpApiParameters.getJsonPiece(keys).asUgglyJson();
+			CcpJsonRepresentation httpErrorDetails = e.entity.putAll(jsonWithHttpApiParameters).put(JnEntityHttpApiErrorClient.Fields.details.name(), details);
+			String request = httpErrorDetails.getAsString(JnEntityHttpApiErrorClient.Fields.request.name());
+			httpErrorDetails = httpErrorDetails.put(JnEntityHttpApiErrorClient.Fields.request.name(), request);
+			JnEntityHttpApiErrorClient.ENTITY.createOrUpdate(httpErrorDetails);
 			throw e;
 		}
 	}
@@ -52,7 +47,7 @@ public class JnAsyncSendHttpRequest {
 		
 		if(exceededTries) {
 			JnEntityHttpApiErrorServer.ENTITY.createOrUpdate(httpErrorDetails);
-			throw new HttpServerError(e);
+			throw e;
 		}
 		
 		Integer sleep = httpErrorDetails.getAsIntegerNumber(JnEntityHttpApiParameters.Fields.sleep.name());

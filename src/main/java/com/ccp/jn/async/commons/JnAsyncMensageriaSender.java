@@ -10,7 +10,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.exceptions.process.CcpAsyncTask;
@@ -49,7 +49,7 @@ public class JnAsyncMensageriaSender {
 	
 	private CcpBulkItem toBulkItem( CcpEntity entity, CcpJsonRepresentation json) {
 		String asyncTaskId = entity.calculateId(json);
-		CcpBulkItem bulkItem = new CcpBulkItem(json, CcpEntityOperationType.create, entity, asyncTaskId);
+		CcpBulkItem bulkItem = new CcpBulkItem(json, CcpEntityBulkOperationType.create, entity, asyncTaskId);
 		return bulkItem;
 	}
 	

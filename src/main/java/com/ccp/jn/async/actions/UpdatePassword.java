@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.entities.JnEntityLoginPassword;
@@ -20,12 +20,12 @@ public class UpdatePassword implements CcpHandleWithSearchResultsInTheEntity<Lis
 	
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 
-		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityOperationType.update);
+		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityBulkOperationType.update);
 		
 		return asList;
 	}
 
-	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityOperationType operation) {
+	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 
 		CcpBulkItem itemPassword =  JnEntityLoginPassword.ENTITY.toBulkItem(json, operation);
 		
@@ -36,7 +36,7 @@ public class UpdatePassword implements CcpHandleWithSearchResultsInTheEntity<Lis
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 
-		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityOperationType.create);
+		List<CcpBulkItem> asList = this.savePassword(json, CcpEntityBulkOperationType.create);
 		return asList;
 	}
 

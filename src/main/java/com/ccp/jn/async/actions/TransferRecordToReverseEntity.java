@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 
@@ -37,8 +37,8 @@ public class TransferRecordToReverseEntity implements CcpHandleWithSearchResults
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 	
 		CcpEntity twinEntity = this.from.getTwinEntity();
-		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityOperationType.create);
-		CcpBulkItem itemFrom = this.from.toBulkItem(json, CcpEntityOperationType.delete);
+		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityBulkOperationType.create);
+		CcpBulkItem itemFrom = this.from.toBulkItem(json, CcpEntityBulkOperationType.delete);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo, itemFrom);
 		
 		return asList;
@@ -46,7 +46,7 @@ public class TransferRecordToReverseEntity implements CcpHandleWithSearchResults
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 		CcpEntity twinEntity = this.from.getTwinEntity();
-		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityOperationType.create);
+		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityBulkOperationType.create);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo);
 		return asList;
 	}

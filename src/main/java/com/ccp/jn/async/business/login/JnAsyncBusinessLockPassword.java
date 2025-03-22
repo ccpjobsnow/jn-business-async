@@ -21,7 +21,6 @@ public class JnAsyncBusinessLockPassword implements Function<CcpJsonRepresentati
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
 		TransferRecordToReverseEntity registerLock = new TransferRecordToReverseEntity(JnEntityLoginPassword.ENTITY, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING);
-
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				json 

@@ -14,12 +14,9 @@ import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 
 public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
-
 	public static final JnAsyncBusinessExecuteLogin INSTANCE = new JnAsyncBusinessExecuteLogin();
 	
-	private JnAsyncBusinessExecuteLogin() {
-		
-	}
+	private JnAsyncBusinessExecuteLogin() {}
 	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {

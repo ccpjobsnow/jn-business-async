@@ -14,7 +14,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpBulkOperationResult;
 import com.ccp.especifications.db.bulk.CcpDbBulkExecutor;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
@@ -32,7 +32,7 @@ public class JnAsyncCommitAndAudit {
 	
 	private JnAsyncCommitAndAudit() {}
 	
-	public JnAsyncCommitAndAudit executeBulk(List<CcpJsonRepresentation> records, CcpEntityOperationType operation, CcpEntity entity) {
+	public JnAsyncCommitAndAudit executeBulk(List<CcpJsonRepresentation> records, CcpEntityBulkOperationType operation, CcpEntity entity) {
 		
 		boolean emptyRecords = records.isEmpty();
 		
@@ -46,7 +46,7 @@ public class JnAsyncCommitAndAudit {
 		return executeBulk;
 	}
 	
-	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityOperationType operation) {
+	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityBulkOperationType operation) {
 		CcpEntity twinEntity = entity.getTwinEntity();
 		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
 		CcpBulkItem bulkItem2 = twinEntity.toBulkItem(json, operation);
@@ -192,7 +192,7 @@ public class JnAsyncCommitAndAudit {
 		return json;
 	}
 
-	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntityOperationType operation, CcpEntity...entities) {
+	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntityBulkOperationType operation, CcpEntity...entities) {
 		
 		List<CcpBulkItem> items = new ArrayList<>();
  		

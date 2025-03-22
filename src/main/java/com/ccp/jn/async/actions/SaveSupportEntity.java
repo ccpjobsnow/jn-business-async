@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.bulk.CcpBulkItem;
-import com.ccp.especifications.db.bulk.CcpEntityOperationType;
+import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.utils.CcpEntity;
 
@@ -21,8 +21,8 @@ public class SaveSupportEntity implements CcpHandleWithSearchResultsInTheEntity<
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation searchParameter,	CcpJsonRepresentation recordFound) {
 		CcpEntity mainEntity = this.supportEntity.getTwinEntity();
-		CcpBulkItem updateIntoSupportEntity = this.supportEntity.toBulkItem(searchParameter, CcpEntityOperationType.update);
-		CcpBulkItem deleteFromMainEntity = mainEntity.toBulkItem(searchParameter, CcpEntityOperationType.delete);
+		CcpBulkItem updateIntoSupportEntity = this.supportEntity.toBulkItem(searchParameter, CcpEntityBulkOperationType.update);
+		CcpBulkItem deleteFromMainEntity = mainEntity.toBulkItem(searchParameter, CcpEntityBulkOperationType.delete);
 		List<CcpBulkItem> asList = Arrays.asList(updateIntoSupportEntity, deleteFromMainEntity);
 		return asList;
 	}

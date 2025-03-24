@@ -20,6 +20,11 @@ public class RegisterLogin implements CcpHandleWithSearchResultsInTheEntity<List
 	
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 
+		List<CcpBulkItem> bulkItems = this.getBulkItems(json);
+		return bulkItems;
+	}
+
+	private List<CcpBulkItem> getBulkItems(CcpJsonRepresentation json) {
 		CcpBulkItem newSession = JnEntityLoginSessionConflict.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
 		CcpBulkItem newLogin = JnEntityLoginSessionValidation.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
 		List<CcpBulkItem> asList = Arrays.asList(newLogin, newSession);
@@ -27,10 +32,8 @@ public class RegisterLogin implements CcpHandleWithSearchResultsInTheEntity<List
 	}
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
-		CcpBulkItem newLoginSessionConflict = JnEntityLoginSessionConflict.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
-		CcpBulkItem newLoginSessionValidation = JnEntityLoginSessionValidation.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
-		List<CcpBulkItem> asList = Arrays.asList(newLoginSessionValidation, newLoginSessionConflict);
-		return asList;
+		List<CcpBulkItem> bulkItems = this.getBulkItems(json);
+		return bulkItems;
 	}
 
 	public CcpEntity getEntityToSearch() {

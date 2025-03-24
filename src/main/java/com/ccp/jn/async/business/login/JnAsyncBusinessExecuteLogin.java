@@ -11,6 +11,7 @@ import com.ccp.jn.async.actions.RemoveAttempts;
 import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
+import com.jn.commons.entities.JnEntityLoginSessionValidation;
 
 public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -20,6 +21,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
+		CcpJsonRepresentation renameField = json.renameField("sessionToken", JnEntityLoginSessionValidation.Fields.token.name());
 		
 		CcpEntity twinEntity = JnEntityLoginPassword.ENTITY.getTwinEntity();
 		TransferRecordToReverseEntity executeUnlock = new TransferRecordToReverseEntity(twinEntity, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING);
@@ -28,7 +30,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
-				json 
+				renameField 
 				, executeUnlock
 				, removeAttempts
 				, RegisterLogin.INSTANCE

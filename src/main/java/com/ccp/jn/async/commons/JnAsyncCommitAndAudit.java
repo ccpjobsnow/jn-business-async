@@ -19,7 +19,7 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.CcpEntityRecordNotFound;
+import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.jn.async.actions.SaveMainEntity;
 import com.ccp.jn.async.actions.SaveSupportEntity;
 import com.jn.commons.entities.JnEntityRecordToReprocess;

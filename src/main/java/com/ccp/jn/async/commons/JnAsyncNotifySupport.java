@@ -6,6 +6,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.messages.JnAsyncSendMessage;
 import com.jn.commons.entities.JnEntityJobsnowError;
 import com.jn.commons.entities.JnEntityJobsnowPenddingError;
+import com.jn.commons.exceptions.JnAsyncSupportLanguageIsMissing;
 
 public class JnAsyncNotifySupport {
 	
@@ -22,7 +23,7 @@ public class JnAsyncNotifySupport {
 		boolean hasNotLanguage = supportLanguage.trim().isEmpty();
 		
 		if(hasNotLanguage) {
-			throw new RuntimeException("It is missing the configuration 'supportLanguage'");
+			throw new JnAsyncSupportLanguageIsMissing();
 		}
 
 		CcpJsonRepresentation duplicateValueFromField = json.renameField(JnEntityJobsnowError.Fields.message.name(), "msg");

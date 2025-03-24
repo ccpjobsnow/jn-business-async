@@ -12,6 +12,7 @@ import com.ccp.exceptions.instant.messenger.CcpTooManyRequests;
 import com.jn.commons.entities.JnEntityHttpApiParameters;
 import com.jn.commons.entities.JnEntityInstantMessengerBotLocked;
 import com.jn.commons.entities.JnEntityInstantMessengerMessageSent;
+import com.jn.commons.exceptions.JnAsyncUnableToSendInstantMessage;
 import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 
@@ -69,7 +70,7 @@ public class JnAsyncSendInstantMessage {
 		Integer triesToSendMessage = json.getOrDefault("triesToSendMessage", 1);
 		
 		if(triesToSendMessage >= maxTriesToSendMessage) {
-			throw new RuntimeException("This message couldn't be sent. Details: " + json);
+			throw new JnAsyncUnableToSendInstantMessage(json);
 		}
 		
 		Integer sleepToSendMessage = json.getAsIntegerNumber("sleepToSendMessage");

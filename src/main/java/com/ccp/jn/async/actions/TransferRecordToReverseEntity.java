@@ -44,6 +44,8 @@ public class TransferRecordToReverseEntity implements CcpHandleWithSearchResults
 		return asList;
 	}
 
+	//DOUBT DÁ PRA ESVAZIAR ESSA LISTA SEM CAUSAR REPERCUÇÕE???
+	//LATER NO CASO DO LOGOUT FAZER UM TESTE DE TOKEN NAO ENCONTRADO
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 		CcpEntity twinEntity = this.from.getTwinEntity();
 		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityBulkOperationType.create);

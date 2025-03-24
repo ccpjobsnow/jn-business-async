@@ -13,7 +13,7 @@ import com.ccp.especifications.db.bulk.CcpBulkItem;
 import com.ccp.especifications.db.bulk.CcpEntityBulkOperationType;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.exceptions.process.CcpAsyncTask;
+import com.ccp.process.CcpAsyncTask;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopic;
 

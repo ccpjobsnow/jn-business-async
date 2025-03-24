@@ -30,9 +30,10 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 		TransferRecordToReverseEntity registerUnlock = new TransferRecordToReverseEntity(twinEntity, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING);
 		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginPasswordAttempts.ENTITY);
 
+		CcpJsonRepresentation renameField = json.renameField("sessionToken", JnEntityLoginSessionValidation.Fields.token.name());
 		JnAsyncCommitAndAudit.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
-				json 
+				renameField 
 				, UpdatePassword.INSTANCE
 				, registerUnlock
 				, removeAttempts

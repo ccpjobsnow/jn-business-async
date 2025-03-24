@@ -12,9 +12,7 @@ import com.jn.commons.entities.JnEntityLoginPassword;
 
 public class UpdatePassword implements CcpHandleWithSearchResultsInTheEntity<List<CcpBulkItem>>{
 
-	private UpdatePassword() {
-		
-	}
+	private UpdatePassword() {}
 	
 	public static final UpdatePassword INSTANCE = new UpdatePassword();
 	

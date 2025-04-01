@@ -25,8 +25,8 @@ public class RegisterLogin implements CcpHandleWithSearchResultsInTheEntity<List
 	}
 
 	private List<CcpBulkItem> getBulkItems(CcpJsonRepresentation json) {
-		CcpBulkItem newSession = JnEntityLoginSessionConflict.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
-		CcpBulkItem newLogin = JnEntityLoginSessionValidation.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.create);
+		CcpBulkItem newSession = JnEntityLoginSessionConflict.ENTITY.getMainBulkItem(json, CcpEntityBulkOperationType.create);
+		CcpBulkItem newLogin = JnEntityLoginSessionValidation.ENTITY.getMainBulkItem(json, CcpEntityBulkOperationType.create);
 		List<CcpBulkItem> asList = Arrays.asList(newLogin, newSession);
 		return asList;
 	}

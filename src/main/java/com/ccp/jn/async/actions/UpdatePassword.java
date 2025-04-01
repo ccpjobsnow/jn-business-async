@@ -25,7 +25,7 @@ public class UpdatePassword implements CcpHandleWithSearchResultsInTheEntity<Lis
 
 	private List<CcpBulkItem> savePassword(CcpJsonRepresentation json, CcpEntityBulkOperationType operation) {
 
-		CcpBulkItem itemPassword =  JnEntityLoginPassword.ENTITY.toBulkItem(json, operation);
+		CcpBulkItem itemPassword =  JnEntityLoginPassword.ENTITY.getMainBulkItem(json, operation);
 		
 		List<CcpBulkItem> asList = Arrays.asList(itemPassword);
 		

@@ -19,13 +19,13 @@ public class SaveMainEntity implements CcpHandleWithSearchResultsInTheEntity<Lis
 	
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation searchParameter,	CcpJsonRepresentation recordFound) {
-		CcpBulkItem updateIntoMainEntity = this.mainEntity.toBulkItem(searchParameter, CcpEntityBulkOperationType.update);
+		CcpBulkItem updateIntoMainEntity = this.mainEntity.getMainBulkItem(searchParameter, CcpEntityBulkOperationType.update);
 		List<CcpBulkItem> asList = Arrays.asList(updateIntoMainEntity);
 		return asList;
 	}
 
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation searchParameter) {
-		CcpBulkItem createIntoMainEntity = this.mainEntity.toBulkItem(searchParameter, CcpEntityBulkOperationType.create);
+		CcpBulkItem createIntoMainEntity = this.mainEntity.getMainBulkItem(searchParameter, CcpEntityBulkOperationType.create);
 		List<CcpBulkItem> asList = Arrays.asList(createIntoMainEntity);
 		return asList;
 	}

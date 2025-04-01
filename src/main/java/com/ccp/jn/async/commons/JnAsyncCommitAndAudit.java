@@ -19,7 +19,6 @@ import com.ccp.especifications.db.crud.CcpCrud;
 import com.ccp.especifications.db.crud.CcpHandleWithSearchResultsInTheEntity;
 import com.ccp.especifications.db.crud.CcpSelectUnionAll;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.db.utils.CcpEntityRecordNotFound;
 import com.ccp.jn.async.actions.SaveMainEntity;
 import com.ccp.jn.async.actions.SaveSupportEntity;
 import com.jn.commons.entities.JnEntityRecordToReprocess;
@@ -40,7 +39,7 @@ public class JnAsyncCommitAndAudit {
 			return this;
 		}
 		
-		List<CcpBulkItem> collect = records.stream().map(json -> entity.toBulkItem(json, operation)).collect(Collectors.toList());
+		List<CcpBulkItem> collect = records.stream().map(json -> entity.getMainBulkItem(json, operation)).collect(Collectors.toList());
 		
 		JnAsyncCommitAndAudit executeBulk = this.executeBulk(collect);
 		return executeBulk;
@@ -48,8 +47,8 @@ public class JnAsyncCommitAndAudit {
 	
 	public JnAsyncCommitAndAudit executeBulk(CcpJsonRepresentation json, CcpEntity entity, CcpEntityBulkOperationType operation) {
 		CcpEntity twinEntity = entity.getTwinEntity();
-		CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
-		CcpBulkItem bulkItem2 = twinEntity.toBulkItem(json, operation);
+		CcpBulkItem bulkItem = entity.getMainBulkItem(json, operation);
+		CcpBulkItem bulkItem2 = twinEntity.getMainBulkItem(json, operation);
 		JnAsyncCommitAndAudit executeBulk = this.executeBulk(bulkItem, bulkItem2);
 		return executeBulk;
 	}
@@ -71,21 +70,7 @@ public class JnAsyncCommitAndAudit {
 		CcpDbBulkExecutor dbBulkExecutor = CcpDependencyInjection.getDependency(CcpDbBulkExecutor.class);
 		
 		for (CcpBulkItem item : items) {
-			
 			dbBulkExecutor = dbBulkExecutor.addRecord(item);
-			
-			boolean canNotSaveCopy = item.entity.isCopyableEntity() == false;
-			
-			if(canNotSaveCopy) {
-				continue;
-			}
-			
-			try {
-				CcpBulkItem recordToBulkOperation = item.getSecondRecordToBulkOperation();
-				dbBulkExecutor = dbBulkExecutor.addRecord(recordToBulkOperation);
-			} catch (CcpEntityRecordNotFound | UnsupportedOperationException e) {
-
-			}
 		}
  		JnAsyncCommitAndAudit commitAndSaveErrorsAndDeleteRecordsFromCache = this.commitAndSaveErrorsAndDeleteRecordsFromCache(dbBulkExecutor);
 		return commitAndSaveErrorsAndDeleteRecordsFromCache;
@@ -197,8 +182,10 @@ public class JnAsyncCommitAndAudit {
 		List<CcpBulkItem> items = new ArrayList<>();
  		
 		for (CcpEntity entity : entities) {
-			CcpBulkItem bulkItem = entity.toBulkItem(json, operation);
-			items.add(bulkItem);
+			List<CcpBulkItem> bulkItems = entity.toBulkItems(json, operation);
+			for (CcpBulkItem bulkItem : bulkItems) {
+				items.add(bulkItem);
+			}			
 		}
 		
 		JnAsyncCommitAndAudit executeBulk = this.executeBulk(items);

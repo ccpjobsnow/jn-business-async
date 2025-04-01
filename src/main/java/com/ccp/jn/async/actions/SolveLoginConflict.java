@@ -33,8 +33,8 @@ public class SolveLoginConflict implements CcpHandleWithSearchResultsInTheEntity
 				.put(CcpStringConstants.EMAIL.value, email)
 				;
 		
-		CcpBulkItem itemLoginLoginConflict = JnEntityLoginConflict.ENTITY.toBulkItem(loginConflict, CcpEntityBulkOperationType.create);
-		CcpBulkItem deleteLoginConflict = JnEntityLoginSessionConflict.ENTITY.toBulkItem(json, CcpEntityBulkOperationType.delete);
+		CcpBulkItem itemLoginLoginConflict = JnEntityLoginConflict.ENTITY.getMainBulkItem(loginConflict, CcpEntityBulkOperationType.create);
+		CcpBulkItem deleteLoginConflict = JnEntityLoginSessionConflict.ENTITY.getMainBulkItem(json, CcpEntityBulkOperationType.delete);
 		List<CcpBulkItem> asList = Arrays.asList(itemLoginLoginConflict, deleteLoginConflict);
 		return asList;
 	}

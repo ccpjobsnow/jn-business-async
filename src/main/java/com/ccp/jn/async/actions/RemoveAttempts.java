@@ -20,7 +20,7 @@ public class RemoveAttempts implements CcpHandleWithSearchResultsInTheEntity<Lis
 
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 	
-		CcpBulkItem attempts = this.entityAttempts.toBulkItem(json, CcpEntityBulkOperationType.delete);
+		CcpBulkItem attempts = this.entityAttempts.getMainBulkItem(json, CcpEntityBulkOperationType.delete);
 		List<CcpBulkItem> asList = Arrays.asList(attempts);
 		return asList;
 	}

@@ -37,8 +37,8 @@ public class TransferRecordToReverseEntity implements CcpHandleWithSearchResults
 	public List<CcpBulkItem> whenRecordWasFoundInTheEntitySearch(CcpJsonRepresentation json, CcpJsonRepresentation recordFound) {
 	
 		CcpEntity twinEntity = this.from.getTwinEntity();
-		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityBulkOperationType.create);
-		CcpBulkItem itemFrom = this.from.toBulkItem(json, CcpEntityBulkOperationType.delete);
+		CcpBulkItem itemTo = twinEntity.getMainBulkItem(json, CcpEntityBulkOperationType.create);
+		CcpBulkItem itemFrom = this.from.getMainBulkItem(json, CcpEntityBulkOperationType.delete);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo, itemFrom);
 		
 		return asList;
@@ -48,7 +48,7 @@ public class TransferRecordToReverseEntity implements CcpHandleWithSearchResults
 	//LATER NO CASO DO LOGOUT FAZER UM TESTE DE TOKEN NAO ENCONTRADO
 	public List<CcpBulkItem> whenRecordWasNotFoundInTheEntitySearch(CcpJsonRepresentation json) {
 		CcpEntity twinEntity = this.from.getTwinEntity();
-		CcpBulkItem itemTo = twinEntity.toBulkItem(json, CcpEntityBulkOperationType.create);
+		CcpBulkItem itemTo = twinEntity.getMainBulkItem(json, CcpEntityBulkOperationType.create);
 		List<CcpBulkItem> asList = Arrays.asList(itemTo);
 		return asList;
 	}

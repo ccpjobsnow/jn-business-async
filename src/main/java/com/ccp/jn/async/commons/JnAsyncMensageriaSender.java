@@ -15,6 +15,7 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.process.CcpAsyncTask;
 import com.jn.commons.entities.JnEntityAsyncTask;
+import com.jn.commons.utils.JnCommonsExecuteBulkOperation;
 import com.jn.commons.utils.JnTopic;
 
 public class JnAsyncMensageriaSender {
@@ -28,7 +29,7 @@ public class JnAsyncMensageriaSender {
 	public JnAsyncMensageriaSender send(JnTopic topic, CcpEntity entity, CcpJsonRepresentation... messages) {
 		List<CcpJsonRepresentation> msgs = Arrays.asList(messages).stream().map(json -> this.getMessageDetails(topic.name(), json)).collect(Collectors.toList());
 		List<CcpBulkItem> bulkItems = msgs.stream().filter(x -> topic.canSave()).map(msg -> this.toBulkItem(entity, msg)).collect(Collectors.toList());
-		JnAsyncCommitAndAudit.INSTANCE.executeBulk(bulkItems);
+		JnCommonsExecuteBulkOperation.INSTANCE.executeBulk(bulkItems);
 		this.mensageriaSender.send(topic.name(), msgs);
 		return this;
 	}

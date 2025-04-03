@@ -8,10 +8,10 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.async.actions.TransferRecordToReverseEntity;
 import com.ccp.jn.async.actions.RegisterLogin;
 import com.ccp.jn.async.actions.RemoveAttempts;
-import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginSessionValidation;
+import com.jn.commons.utils.JnCommonsExecuteBulkOperation;
 
 public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -28,7 +28,7 @@ public class JnAsyncBusinessExecuteLogin implements Function<CcpJsonRepresentati
 		CcpEntity entityAttempts = JnEntityLoginPasswordAttempts.ENTITY;
 		RemoveAttempts removeAttempts = new RemoveAttempts(entityAttempts);
 
-		JnAsyncCommitAndAudit.INSTANCE.
+		JnCommonsExecuteBulkOperation.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				renameField 
 				, executeUnlock

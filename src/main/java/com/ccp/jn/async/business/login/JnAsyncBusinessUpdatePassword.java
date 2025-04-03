@@ -10,10 +10,10 @@ import com.ccp.jn.async.actions.RemoveAttempts;
 import com.ccp.jn.async.actions.SolveLoginConflict;
 import com.ccp.jn.async.actions.TransferRecordToReverseEntity;
 import com.ccp.jn.async.actions.UpdatePassword;
-import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginSessionValidation;
+import com.jn.commons.utils.JnCommonsExecuteBulkOperation;
 
 public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -31,7 +31,7 @@ public class JnAsyncBusinessUpdatePassword implements Function<CcpJsonRepresenta
 		RemoveAttempts removeAttempts = new RemoveAttempts(JnEntityLoginPasswordAttempts.ENTITY);
 
 		CcpJsonRepresentation renameField = json.renameField("sessionToken", JnEntityLoginSessionValidation.Fields.token.name());
-		JnAsyncCommitAndAudit.INSTANCE.
+		JnCommonsExecuteBulkOperation.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				renameField 
 				, UpdatePassword.INSTANCE

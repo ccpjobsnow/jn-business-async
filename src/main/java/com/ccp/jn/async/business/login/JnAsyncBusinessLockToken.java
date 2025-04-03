@@ -5,8 +5,8 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.actions.TransferRecordToReverseEntity;
-import com.ccp.jn.async.commons.JnAsyncCommitAndAudit;
 import com.jn.commons.entities.JnEntityLoginToken;
+import com.jn.commons.utils.JnCommonsExecuteBulkOperation;
 
 public class JnAsyncBusinessLockToken implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 
@@ -22,7 +22,7 @@ public class JnAsyncBusinessLockToken implements Function<CcpJsonRepresentation,
 		
 		TransferRecordToReverseEntity registerLock = new TransferRecordToReverseEntity(JnEntityLoginToken.ENTITY, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING, CcpOtherConstants.DO_NOTHING);
 
-		JnAsyncCommitAndAudit.INSTANCE.
+		JnCommonsExecuteBulkOperation.INSTANCE.
 		executeSelectUnionAllThenExecuteBulkOperation(
 				json 
 				, registerLock
